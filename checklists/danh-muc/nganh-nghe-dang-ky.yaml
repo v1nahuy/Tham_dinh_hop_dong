@@ -1,0 +1,48 @@
+ten: Ngành nghề kinh doanh đã đăng ký của Công ty
+trang_thai: da-soan
+nguon: Checklist thẩm định hợp đồng đầu ra V1 (260716), Mục 2
+muc:
+  - {ma: "4652", ten: "Bán buôn thiết bị và linh kiện điện tử, viễn thông"}
+  - {ma: "4932", ten: "Vận tải hành khách đường bộ khác"}
+  - {ma: "4933", ten: "Vận tải hàng hóa bằng đường bộ"}
+  - {ma: "6810", ten: "Kinh doanh bất động sản, quyền sử dụng đất thuộc chủ sở hữu, chủ sử dụng hoặc đi thuê"}
+  - {ma: "9311", ten: "Hoạt động của các cơ sở thể thao"}
+  - {ma: "9312", ten: "Hoạt động của các câu lạc bộ thể thao"}
+  - {ma: "6190", ten: "Hoạt động viễn thông khác"}
+  - {ma: "4610", ten: "Đại lý, môi giới, đấu giá hàng hóa"}
+  - {ma: "7110", ten: "Hoạt động kiến trúc và tư vấn kỹ thuật có liên quan"}
+  - {ma: "7212", ten: "Nghiên cứu khoa học và phát triển công nghệ trong lĩnh vực khoa học kỹ thuật và công nghệ"}
+  - {ma: "7320", ten: "Nghiên cứu thị trường và thăm dò dư luận"}
+  - {ma: "4659", ten: "Bán buôn máy móc, thiết bị và phụ tùng máy khác"}
+  - {ma: "4321", ten: "Lắp đặt hệ thống điện"}
+  - {ma: "3320", ten: "Lắp đặt máy móc và thiết bị công nghiệp"}
+  - {ma: "7730", ten: "Cho thuê máy móc, thiết bị và đồ dùng hữu hình khác không kèm người điều khiển"}
+  - {ma: "8299", ten: "Hoạt động dịch vụ hỗ trợ kinh doanh khác còn lại chưa được phân vào đâu"}
+  - {ma: "8559", ten: "Giáo dục khác chưa được phân vào đâu"}
+  - {ma: "7310", ten: "Quảng cáo"}
+  - {ma: "7911", ten: "Đại lý lữ hành"}
+  - {ma: "6220", ten: "Tư vấn máy tính và quản lý cơ sở hạ tầng máy tính"}
+  - {ma: "6829", ten: "Hoạt động bất động sản khác trên cơ sở phí hoặc hợp đồng"}
+  - {ma: "6219", ten: "Lập trình máy tính khác", chinh: true}
+  - {ma: "6290", ten: "Hoạt động dịch vụ máy tính và công nghệ thông tin khác"}
+  - {ma: "6120", ten: "Hoạt động bán lẻ dịch vụ viễn thông và dịch vụ trung gian cho hoạt động viễn thông"}
+  - {ma: "6821", ten: "Dịch vụ trung gian cho hoạt động bất động sản"}
+  - {ma: "7491", ten: "Hoạt động môi giới và tiếp thị bằng sáng chế"}
+  - {ma: "9510", ten: "Sửa chữa, bảo dưỡng máy tính, thiết bị thông tin và truyền thông"}
+  - {ma: "7821", ten: "Cung ứng lao động tạm thời"}
+  - {ma: "9111", ten: "Hoạt động thư viện"}
+  - {ma: "6211", ten: "Phát triển trò chơi điện tử, phần mềm trò chơi điện tử và các công cụ phần mềm trò chơi điện tử"}
+  - {ma: "8210", ten: "Hoạt động hành chính và hỗ trợ văn phòng"}
+  - {ma: "3312", ten: "Sửa chữa, bảo dưỡng máy móc, thiết bị"}
+  - {ma: "7499", ten: "Hoạt động chuyên môn, khoa học và công nghệ khác chưa được phân vào đâu"}
+  - {ma: "5829", ten: "Xuất bản phần mềm khác"}
+  - {ma: "4740", ten: "Bán lẻ thiết bị công nghệ thông tin và truyền thông"}
+  - {ma: "8569", ten: "Hoạt động hỗ trợ giáo dục khác"}
+  - {ma: "7020", ten: "Hoạt động tư vấn quản lý kinh doanh và hoạt động tư vấn quản lý khác"}
+  - {ma: "6310", ten: "Cơ sở hạ tầng công nghệ thông tin, xử lý dữ liệu, lưu trữ và các hoạt động liên quan"}
+  - {ma: "6110", ten: "Hoạt động viễn thông có dây, không dây và vệ tinh"}
+  - {ma: "6390", ten: "Hoạt động cổng tìm kiếm web và các dịch vụ thông tin khác"}
+  - {ma: "4651", ten: "Bán buôn máy tính, thiết bị ngoại vi và phần mềm"}
+  - {ma: "3313", ten: "Sửa chữa, bảo dưỡng thiết bị điện tử và quang học"}
+  - {ma: "7822", ten: "Cung ứng nguồn nhân lực khác"}
+  - {ma: "9112", ten: "Hoạt động lưu trữ"}

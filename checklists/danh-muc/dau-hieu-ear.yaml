@@ -1,0 +1,61 @@
+ten: Dấu hiệu cần xem xét Quy định Kiểm soát Xuất khẩu Hoa Kỳ (EAR)
+# Bản nháp để pháp chế duyệt. Dùng cho Mục 6 (tiêu chí 6.D1, 6.L1).
+# Khớp bất kỳ dấu hiệu nào → Lưu ý "cần xác minh lại EAR". Danh mục này chỉ để sàng lọc, không kết luận
+# hàng hóa có thuộc phạm vi EAR hay không; việc phân loại (ECCN / EAR99) do bộ phận tuân thủ thực hiện.
+trang_thai: ban-nhap
+nguon: Export Administration Regulations, 15 CFR Parts 730–774 (bản hiện hành trên eCFR)
+muc:
+  - ma: xuat-xu-my
+    dau_hieu: >-
+      Hợp đồng cung cấp hàng hóa, phần mềm hoặc công nghệ có xuất xứ Mỹ, hoặc nêu tên sản phẩm của hãng Mỹ
+      (ví dụ Cisco, Oracle, Microsoft, IBM, Dell, HPE, VMware, Intel, NVIDIA, Fortinet, Palo Alto Networks)
+    nguon: 15 CFR §734.3(a)(1)–(2) (hàng hóa xuất xứ Mỹ, ở bất kỳ đâu, thuộc phạm vi EAR)
+  - ma: phan-cung-thiet-bi
+    dau_hieu: >-
+      Hợp đồng có cung cấp phần cứng, thiết bị (máy chủ, thiết bị mạng, lưu trữ, thiết bị bảo mật, linh kiện điện tử),
+      kể cả khi Công ty mua lại từ nhà phân phối
+    nguon: 15 CFR §734.3 (phạm vi hàng hóa chịu EAR); Commerce Control List, Supplement No. 1 to Part 774
+  - ma: noi-dung-my
+    dau_hieu: >-
+      Sản phẩm của Công ty hoặc của bên thứ ba ngoài Mỹ có tích hợp linh kiện, thư viện, phần mềm hoặc mã nguồn
+      có xuất xứ Mỹ (có thể chịu EAR nếu tỷ lệ nội dung Mỹ thuộc diện kiểm soát vượt ngưỡng de minimis, thường là 25%)
+    ghi_chu: Phần mềm mã nguồn mở công bố công khai thường không thuộc phạm vi EAR, trừ một số trường hợp về mã hóa.
+    nguon: 15 CFR §734.4 (quy tắc de minimis); §734.3(b)(3) và §734.7 (thông tin công bố công khai)
+  - ma: ma-hoa
+    dau_hieu: >-
+      Phần mềm hoặc thiết bị có chức năng mã hóa: VPN, TLS/SSL, mã hóa dữ liệu, quản lý khóa, HSM, tường lửa,
+      chữ ký số, hệ thống bảo mật
+    nguon: >-
+      CCL Category 5 Part 2 "Information Security" (Supplement No. 1 to Part 774); 15 CFR §740.17
+      (License Exception ENC)
+  - ma: tinh-toan-tien-tien
+    dau_hieu: >-
+      Hợp đồng cung cấp chip, GPU, bộ tăng tốc AI, máy chủ AI/HPC hoặc hạ tầng tính toán hiệu năng cao
+    nguon: 15 CFR §742.6(a)(6) và §744.23 (kiểm soát hàng hóa tính toán tiên tiến; ECCN 3A090, 4A090)
+  - ma: muc-dich-quan-su
+    dau_hieu: >-
+      Khách hàng, người dùng cuối hoặc mục đích sử dụng liên quan đến quân đội, quốc phòng, công an, an ninh, tình
+      báo; doanh nghiệp quốc phòng; hoặc Hợp đồng nêu mục đích quân sự, lưỡng dụng
+    nguon: >-
+      15 CFR §744.21 (người dùng cuối/mục đích quân sự); §744.22 (người dùng cuối tình báo quân sự);
+      §744.2–§744.4 (hạt nhân, tên lửa, vũ khí hóa học/sinh học)
+  - ma: ben-bi-han-che
+    dau_hieu: >-
+      Khách hàng, người dùng cuối hoặc bên trung gian thuộc danh sách hạn chế của Mỹ (Entity List, Unverified List,
+      Military End-User List, Denied Persons List), hoặc là công ty con/liên kết của tổ chức trong danh sách
+    ghi_chu: >-
+      Quy định mở rộng sang công ty con/liên kết (Affiliates Rule, công bố 09/2025): cần kiểm tra tình trạng áp dụng
+      hiện hành trước khi kết luận.
+    nguon: >-
+      15 CFR Part 744: Supplement No. 4 (Entity List), Supplement No. 6 (Unverified List), Supplement No. 7
+      (Military End-User List); Denied Persons List theo 15 CFR Part 764
+  - ma: tai-xuat
+    dau_hieu: >-
+      Hàng hóa, phần mềm sẽ được chuyển tiếp, tái xuất hoặc triển khai cho người dùng ở nước thứ ba, đặc biệt các
+      nước bị cấm vận hoặc hạn chế (Cuba, Iran, Triều Tiên, Syria, Nga, Belarus...)
+    nguon: 15 CFR §734.14 (tái xuất); Part 746 (cấm vận); Country Groups, Supplement No. 1 to Part 740
+  - ma: chuyen-giao-cong-nghe
+    dau_hieu: >-
+      Hợp đồng chuyển giao mã nguồn, tài liệu kỹ thuật hoặc công nghệ có nguồn gốc Mỹ cho Khách hàng, hoặc cho nhân sự
+      mang quốc tịch nước thứ ba
+    nguon: 15 CFR §734.13(b) và §734.14(b) (xuất khẩu/tái xuất được coi là, "deemed export/reexport")

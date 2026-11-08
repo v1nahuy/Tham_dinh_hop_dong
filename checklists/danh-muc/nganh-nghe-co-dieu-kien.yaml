@@ -1,0 +1,115 @@
+ten: Ngành nghề kinh doanh có điều kiện
+# Bản nháp để pháp chế duyệt.
+# Chỉ trích những ngành, nghề gần với lĩnh vực của Công ty, không phải toàn bộ Phụ lục IV (198 ngành, nghề).
+trang_thai: ban-nhap
+nguon: >-
+  Phụ lục IV Luật Đầu tư số 143/2025/QH15 (Điều 7 và Phụ lục IV có hiệu lực từ 01/7/2026, thay Phụ lục IV
+  Luật Đầu tư 2020). Nội dung lấy qua nguồn thứ cấp (expertis.vn, thuvienphapluat.vn); CẦN PHÁP CHẾ ĐỐI CHIẾU BẢN GỐC.
+ghi_chu: >-
+  Theo nguồn thứ cấp, Phụ lục IV mới không còn mục "dịch vụ việc làm" và "cho thuê lại lao động". Công ty đã đăng ký
+  7821 (Cung ứng lao động tạm thời) và 7822 (Cung ứng nguồn nhân lực khác): pháp chế cần xác nhận hai hoạt động này
+  có còn là ngành nghề có điều kiện không.
+  `nganh_dang_ky_lien_quan`: mã ngành đã đăng ký của Công ty có thể dẫn đến ngành nghề có điều kiện này (gợi ý tra cứu).
+muc:
+  - ma: "98"
+    ten: Kinh doanh dịch vụ viễn thông
+    nganh_dang_ky_lien_quan: ["6110", "6120", "6190"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 98
+  - ma: "99"
+    ten: Kinh doanh dịch vụ tin cậy
+    nganh_dang_ky_lien_quan: ["6290", "6310"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 99
+  - ma: "110"
+    ten: Kinh doanh dịch vụ xác thực điện tử
+    nganh_dang_ky_lien_quan: ["6290", "6310"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 110
+  - ma: "111"
+    ten: Kinh doanh sản phẩm, dịch vụ an ninh mạng (không bao gồm kinh doanh sản phẩm, dịch vụ mật mã dân sự)
+    nganh_dang_ky_lien_quan: ["6219", "6220", "6290", "4651"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 111
+  - ma: "113"
+    ten: Kinh doanh sản phẩm, dịch vụ mật mã dân sự
+    nganh_dang_ky_lien_quan: ["6219", "6290", "4651", "4652"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 113
+  - ma: "194"
+    ten: Kinh doanh sản phẩm, dịch vụ trung gian dữ liệu
+    nganh_dang_ky_lien_quan: ["6310", "6390"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 194
+  - ma: "195"
+    ten: Kinh doanh sản phẩm, dịch vụ phân tích, tổng hợp dữ liệu
+    nganh_dang_ky_lien_quan: ["6310", "6290"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 195
+  - ma: "196"
+    ten: Kinh doanh dịch vụ sàn dữ liệu
+    nganh_dang_ky_lien_quan: ["6310", "6390"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 196
+  - ma: "198"
+    ten: Dịch vụ xử lý dữ liệu cá nhân
+    nganh_dang_ky_lien_quan: ["6310", "6290"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 198
+  - ma: "103"
+    ten: Kinh doanh dịch vụ mạng xã hội
+    nganh_dang_ky_lien_quan: ["6390"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 103
+  - ma: "104"
+    ten: Kinh doanh trò chơi trên mạng viễn thông, mạng Internet
+    nganh_dang_ky_lien_quan: ["6211"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 104
+  - ma: "105"
+    ten: Kinh doanh dịch vụ phát thanh, truyền hình trả tiền
+    nganh_dang_ky_lien_quan: ["6110", "6190"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 105
+  - ma: "106"
+    ten: Kinh doanh dịch vụ thiết lập trang thông tin điện tử tổng hợp
+    nganh_dang_ky_lien_quan: ["6390"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 106
+  - ma: "108"
+    ten: Kinh doanh dịch vụ nội dung thông tin trên mạng viễn thông di động, mạng Internet
+    nganh_dang_ky_lien_quan: ["6390", "6190"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 108
+  - ma: "109"
+    ten: Kinh doanh dịch vụ đăng ký, duy trì tên miền
+    nganh_dang_ky_lien_quan: ["6310", "6190"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 109
+  - ma: "107"
+    ten: >-
+      Dịch vụ gia công, sửa chữa hàng hóa thuộc Danh mục sản phẩm công nghệ thông tin đã qua sử dụng cấm nhập khẩu,
+      cho thương nhân nước ngoài để tiêu thụ ở nước ngoài (diễn đạt lại, không phải nguyên văn)
+    nganh_dang_ky_lien_quan: ["9510", "3313"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 107
+  - ma: "114"
+    ten: Kinh doanh các thiết bị gây nhiễu, phá sóng thông tin di động
+    nganh_dang_ky_lien_quan: ["4652"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 114
+  - ma: "4"
+    ten: Kinh doanh thiết bị, phần mềm ngụy trang dùng để ghi âm, ghi hình, định vị
+    nganh_dang_ky_lien_quan: ["4652", "6219"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 4
+  - ma: "172"
+    ten: Kinh doanh trò chơi điện tử (trừ kinh doanh trò chơi điện tử có thưởng dành cho người nước ngoài ...; xem nguyên văn)
+    nganh_dang_ky_lien_quan: ["6211"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 172
+  - ma: "97"
+    ten: Kinh doanh dịch vụ bưu chính
+    nganh_dang_ky_lien_quan: []
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 97
+  - ma: "159"
+    ten: Kinh doanh dịch vụ đánh giá, thẩm định giá và giám định công nghệ
+    nganh_dang_ky_lien_quan: ["7110", "7499"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 159
+  - ma: "54"
+    ten: Hoạt động giáo dục nghề nghiệp
+    nganh_dang_ky_lien_quan: ["8559", "8569"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 54
+  - ma: "59"
+    ten: Kinh doanh dịch vụ đưa người lao động đi làm việc ở nước ngoài
+    nganh_dang_ky_lien_quan: ["7822"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 59
+  - ma: "86"
+    ten: Kinh doanh bất động sản
+    nganh_dang_ky_lien_quan: ["6810", "6821", "6829"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 86
+  - ma: "165"
+    ten: Kinh doanh dịch vụ lữ hành
+    nganh_dang_ky_lien_quan: ["7911"]
+    nguon: Phụ lục IV Luật Đầu tư 143/2025/QH15, STT 165

@@ -1,0 +1,46 @@
+[project]
+name = "thamdinh"
+version = "0.1.0"
+description = "Thẩm định Dự thảo Hợp đồng đầu ra"
+requires-python = ">=3.12"
+dependencies = [
+    "streamlit",
+    "httpx",
+    "jsonschema",
+    "python-dotenv",
+    "pyyaml",
+    "pypdfium2",
+    "python-docx",
+    "pandas",
+    "pillow",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+# OCR cho trang có lớp text kém (docs/cai-ocr.md). torch bản CPU cài từ PyPI; VietOCR 0.3.12 cần setuptools<81
+# (gdown dùng pkg_resources).
+ocr = [
+    "numpy",
+    "pillow",
+    "opencv-python",
+    "rapidocr_onnxruntime==1.3.24",
+    "torch",
+    "vietocr==0.3.12",
+    "setuptools<81",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Test chậm / cần tài nguyên ngoài bị bỏ qua mặc định; chạy riêng bằng `pytest -m llm` hoặc `pytest -m ocr`.
+addopts = "-m 'not llm and not ocr'"
+markers = [
+    "llm: cần llama-server đang chạy với model Qwen3.5 (docs/chay-model-local.md)",
+    "ocr: cần model OCR, chạy chậm",
+]

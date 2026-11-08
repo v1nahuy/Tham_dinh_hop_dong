@@ -1,0 +1,608 @@
+# Checklist thẩm định hợp đồng đầu ra — Phiên bản 1.1
+# Phiên bản là bất biến: mọi thay đổi nội dung phải tạo file phiên bản mới.
+# Khác biệt so với V1: xem dau-ra-v1.1-khac-biet.md.
+#
+# Quy ước:
+# - "Công ty" là VTIT; "Khách hàng" là bên đối tác, bất kể là Bên A hay Bên B trong Hợp đồng.
+# - Tiêu chí bắt đầu bằng "Nếu ..." được coi là thỏa khi điều kiện không xảy ra.
+# - Tiêu chí định lượng: LLM chỉ trích xuất giá trị `truong`; code so sánh với `nguong`.
+# - `dieu_kien`: tiêu chí chỉ áp dụng khi giá trị trích từ Hợp đồng thỏa điều kiện (code so sánh);
+#   không áp dụng thì tiêu chí Đạt coi là thỏa, tiêu chí Lưu ý/Vi phạm coi là không thỏa.
+# - `can_thong_tin_ngoai: true`: tiêu chí cần thông tin ngoài Hợp đồng; nếu Mục ra Vi phạm do tiêu chí này,
+#   kết quả kèm thông báo "các tiêu chí này cần thông tin ngoài Hợp đồng".
+
+ma: dau-ra
+phien_ban: "1.1"
+ten: Checklist thẩm định hợp đồng đầu ra
+dua_tren: "V1 (260716)"
+
+chu_de:
+  - {ma: cac-ben-ky-ket, ten: "Các bên, người đại diện ký kết, ủy quyền"}
+  - {ma: gia-tri-hop-dong, ten: "Giá trị hợp đồng, đơn giá"}
+  - {ma: doi-tuong-pham-vi, ten: "Đối tượng hợp đồng, phạm vi công việc, hàng hóa/dịch vụ cung cấp"}
+  - {ma: so-huu-tri-tue, ten: "Bản quyền, sở hữu trí tuệ, mã nguồn, license"}
+  - {ma: du-lieu-ca-nhan, ten: "Bảo vệ dữ liệu cá nhân"}
+  - {ma: bao-mat-thong-tin, ten: "Bảo mật thông tin"}
+  - {ma: xuat-nhap-khau, ten: "Xuất khẩu, nhập khẩu, mục đích sử dụng hàng hóa"}
+  - {ma: phat-vi-pham, ten: "Phạt vi phạm"}
+  - {ma: boi-thuong, ten: "Bồi thường thiệt hại, giới hạn trách nhiệm"}
+  - {ma: cham-dut, ten: "Chấm dứt hợp đồng và hậu quả"}
+  - {ma: thau-phu, ten: "Nhà thầu phụ"}
+  - {ma: thanh-toan, ten: "Thanh toán, tạm ứng, hồ sơ thanh toán"}
+  - {ma: thue, ten: "Thuế, thuế suất"}
+  - {ma: thay-doi-dieu-chinh-gia, ten: "Yêu cầu thay đổi, điều chỉnh giá, đồng tiền thanh toán"}
+  - {ma: cam-ket-chat-luong, ten: "Cam kết chất lượng dịch vụ, SLA"}
+  - {ma: ho-tro-van-hanh, ten: "Hỗ trợ vận hành, thời gian phản hồi, ca trực"}
+  - {ma: nghiem-thu, ten: "Nghiệm thu, tiêu chí nghiệm thu, xử lý lỗi"}
+  - {ma: tien-do, ten: "Tiến độ, kế hoạch triển khai, milestone"}
+  - {ma: bat-kha-khang, ten: "Bất khả kháng"}
+  - {ma: nhan-su, ten: "Đầu mối, nhân sự chủ chốt, không lôi kéo nhân sự"}
+  - {ma: ban-giao, ten: "Bàn giao, tài liệu bàn giao"}
+  - {ma: bao-hanh, ten: "Bảo hành, hỗ trợ sau nghiệm thu"}
+
+danh_muc_tham_chieu:
+  nganh-nghe-dang-ky: danh-muc/nganh-nghe-dang-ky.yaml
+  nganh-nghe-co-dieu-kien: danh-muc/nganh-nghe-co-dieu-kien.yaml
+  thue-gtgt: danh-muc/thue-gtgt.yaml
+  dau-hieu-ear: danh-muc/dau-hieu-ear.yaml
+
+muc:
+  - so: 1
+    cau_hoi: Người đại diện ký hợp đồng đã xác định đúng theo phân cấp, ủy quyền ký kết chưa?
+    chu_de: [cac-ben-ky-ket, gia-tri-hop-dong]
+    ghi_chu_khong_ro: cần đối chiếu giấy ủy quyền ký kết
+    tieu_chi:
+      dat:
+        - ma: "1.D1"
+          mo_ta: Người ký phía Công ty là Giám đốc/Tổng Giám đốc, hoặc ký theo giấy ủy quyền hợp lệ (đúng phạm vi, còn hiệu lực tại ngày ký)
+          loai: dinh_tinh
+      luu_y: []
+      vi_pham:
+        - ma: "1.V1"
+          mo_ta: Người ký phía Công ty không có thẩm quyền và không có ủy quyền
+          loai: dinh_tinh
+        - ma: "1.V2"
+          mo_ta: Hợp đồng có giá trị trên 2 tỷ đồng nhưng người ký phía Công ty không phải Giám đốc/Tổng Giám đốc (kể cả khi ký theo ủy quyền)
+          loai: dinh_tinh
+          dieu_kien: {truong: gia_tri_hop_dong_vnd, phep_so_sanh: ">", nguong: 2000000000}
+        - ma: "1.V3"
+          mo_ta: Ngày của giấy ủy quyền sau ngày ký hợp đồng
+          loai: dinh_tinh
+
+  - so: 2
+    cau_hoi: Công ty có được thực hiện các công việc, dịch vụ hoặc bán các hàng hóa theo hợp đồng không?
+    chu_de: [doi-tuong-pham-vi]
+    danh_muc: [nganh-nghe-dang-ky, nganh-nghe-co-dieu-kien]
+    ghi_chu_khong_ro: cần xác minh giấy phép kinh doanh ngành nghề có điều kiện của Công ty
+    tieu_chi:
+      dat:
+        - ma: "2.D1"
+          mo_ta: Mọi hàng hóa/dịch vụ Công ty cung cấp theo Hợp đồng đều thuộc ngành nghề đã đăng ký (Danh mục nganh-nghe-dang-ky)
+          loai: dinh_tinh
+      luu_y:
+        - ma: "2.L1"
+          mo_ta: Hàng hóa/dịch vụ theo Hợp đồng thuộc ngành nghề kinh doanh có điều kiện (Danh mục nganh-nghe-co-dieu-kien)
+          loai: dinh_tinh
+      vi_pham:
+        - ma: "2.V1"
+          mo_ta: Có hàng hóa/dịch vụ theo Hợp đồng không thuộc ngành nghề Công ty đã đăng ký
+          loai: dinh_tinh
+        - ma: "2.V2"
+          mo_ta: Hàng hóa/dịch vụ thuộc ngành nghề có điều kiện mà Công ty chưa có giấy phép
+          loai: dinh_tinh
+          can_thong_tin_ngoai: true
+
+  - so: 3
+    cau_hoi: Điều khoản bản quyền, sở hữu trí tuệ đã đầy đủ chưa? Xác định đúng đối tượng chưa?
+    chu_de: [so-huu-tri-tue]
+    tieu_chi:
+      dat:
+        - ma: "3.D1"
+          mo_ta: Xác định rõ chủ sở hữu quyền tác giả đối với sản phẩm tạo ra theo Hợp đồng là Công ty
+          loai: dinh_tinh
+        - ma: "3.D2"
+          mo_ta: Xác định rõ phạm vi quyền Công ty được giữ lại (sản phẩm, công cụ, thư viện, tài sản trí tuệ có sẵn)
+          loai: dinh_tinh
+        - ma: "3.D3"
+          mo_ta: Xác định rõ phạm vi license cấp cho Khách hàng (độc quyền/không độc quyền, thời hạn, lãnh thổ)
+          loai: dinh_tinh
+        - ma: "3.D4"
+          mo_ta: Có điều khoản về mã nguồn (source code)
+          loai: dinh_tinh
+        - ma: "3.D5"
+          mo_ta: Có cam kết bảo đảm không vi phạm quyền sở hữu trí tuệ của bên thứ ba
+          loai: dinh_tinh
+        - ma: "3.D6"
+          mo_ta: Quyền sở hữu chỉ được chuyển giao cho Khách hàng khi Khách hàng đã thanh toán 100% giá trị Hợp đồng
+          loai: dinh_tinh
+      luu_y:
+        - ma: "3.L1"
+          mo_ta: Chỉ quy định chung "quyền sở hữu trí tuệ thuộc một bên" mà không liệt kê rõ đối tượng (phần mềm, tài liệu, dữ liệu...)
+          loai: dinh_tinh
+      vi_pham:
+        - ma: "3.V1"
+          mo_ta: "Không thỏa thuận hoặc thỏa thuận không đầy đủ ít nhất một nội dung: phạm vi Công ty được giữ lại; phạm vi license cấp cho Khách hàng; mã nguồn; bảo đảm không vi phạm sở hữu trí tuệ của bên thứ ba (khả năng xảy ra tranh chấp)"
+          loai: dinh_tinh
+
+  - so: 4
+    cau_hoi: Điều khoản bảo mật thông tin và bảo vệ dữ liệu cá nhân có đảm bảo tuân thủ quy định pháp luật không?
+    chu_de: [du-lieu-ca-nhan, bao-mat-thong-tin]
+    can_cu_phap_ly:
+      - Luật Bảo vệ dữ liệu cá nhân
+      - Luật An ninh mạng hiện hành
+    tieu_chi:
+      dat:
+        - ma: "4.D1"
+          mo_ta: Hợp đồng xác định rõ có hay không có hoạt động chuyển giao, xử lý dữ liệu cá nhân giữa các bên (nếu không có thì phải có quy định nêu rõ Hợp đồng không có hoạt động này)
+          loai: dinh_tinh
+        - ma: "4.D2"
+          mo_ta: Nếu có chuyển giao dữ liệu cá nhân, xác định rõ loại dữ liệu cá nhân được xử lý
+          loai: dinh_tinh
+        - ma: "4.D3"
+          mo_ta: Nếu có chuyển giao dữ liệu cá nhân, xác định rõ mục đích xử lý và thời gian lưu trữ
+          loai: dinh_tinh
+        - ma: "4.D4"
+          mo_ta: Nếu có chuyển giao dữ liệu cá nhân, có cam kết xóa dữ liệu sau khi kết thúc Hợp đồng
+          loai: dinh_tinh
+        - ma: "4.D5"
+          mo_ta: Nếu có chuyển giao dữ liệu cá nhân, có cam kết phối hợp thực hiện quyền của chủ thể dữ liệu và yêu cầu của cơ quan nhà nước có thẩm quyền
+          loai: dinh_tinh
+      luu_y:
+        - ma: "4.L1"
+          mo_ta: Điều khoản bảo vệ dữ liệu cá nhân không phân biệt dữ liệu cá nhân thông thường và dữ liệu nhạy cảm (sức khỏe, tài chính, sinh trắc học)
+          loai: dinh_tinh
+        - ma: "4.L2"
+          mo_ta: Điều khoản bảo vệ dữ liệu cá nhân không phân biệt dữ liệu có chuyển ra nước ngoài (xuyên biên giới) hay không
+          loai: dinh_tinh
+      vi_pham:
+        - ma: "4.V1"
+          mo_ta: Hợp đồng có chuyển dữ liệu cá nhân ra nước ngoài mà không có đánh giá tác động/thông báo theo quy định (phạt đến 5% tổng doanh thu năm tài chính tại Việt Nam)
+          loai: dinh_tinh
+
+  - so: 5
+    cau_hoi: Điều khoản bảo mật thông tin có đảm bảo quyền lợi của Công ty không?
+    chu_de: [bao-mat-thong-tin]
+    tieu_chi:
+      dat:
+        - ma: "5.D1"
+          mo_ta: Có định nghĩa thông tin mật
+          loai: dinh_tinh
+        - ma: "5.D2"
+          mo_ta: Có quy định nghĩa vụ bảo mật và thời hạn bảo mật
+          loai: dinh_tinh
+        - ma: "5.D3"
+          mo_ta: Có các trường hợp ngoại lệ của nghĩa vụ bảo mật
+          loai: dinh_tinh
+        - ma: "5.D4"
+          mo_ta: Công ty được tiết lộ thông tin cho nhà thầu (thầu phụ) của mình
+          loai: dinh_tinh
+        - ma: "5.D5"
+          mo_ta: Công ty được quyền sử dụng thông tin về Hợp đồng để chứng minh năng lực
+          loai: dinh_tinh
+      luu_y:
+        - ma: "5.L1"
+          mo_ta: Quy định mức bồi thường thiệt hại cố định khi vi phạm bảo mật thông tin
+          loai: dinh_tinh
+      vi_pham:
+        - ma: "5.V1"
+          mo_ta: Chỉ quy định nghĩa vụ bảo mật của Công ty mà không quy định nghĩa vụ bảo mật của Khách hàng
+          loai: dinh_tinh
+
+  - so: 6
+    cau_hoi: Việc kiểm soát xuất khẩu, nhập khẩu phần mềm/hàng hóa (nếu có) có tuân thủ quy định pháp luật không?
+    chu_de: [doi-tuong-pham-vi, xuat-nhap-khau]
+    danh_muc: [dau-hieu-ear]
+    can_cu_phap_ly:
+      - Quy định Kiểm soát Xuất khẩu Hoa Kỳ (U.S. Export Administration Regulations – EAR)
+    ghi_chu_khong_ro: cần xác minh lại EAR
+    tieu_chi:
+      dat:
+        - ma: "6.D1"
+          mo_ta: Hàng hóa/phần mềm cung cấp theo Hợp đồng không khớp dấu hiệu nào trong Danh mục dau-hieu-ear
+          loai: dinh_tinh
+        - ma: "6.D2"
+          mo_ta: Nếu Công ty bán hàng hóa, thiết bị theo Hợp đồng, Hợp đồng có điều khoản yêu cầu Khách hàng không xuất khẩu hàng hóa và không sử dụng cho mục đích quân sự
+          loai: dinh_tinh
+      luu_y:
+        - ma: "6.L1"
+          mo_ta: Hàng hóa/phần mềm cung cấp theo Hợp đồng khớp ít nhất một dấu hiệu trong Danh mục dau-hieu-ear
+          loai: dinh_tinh
+      vi_pham:
+        - ma: "6.V1"
+          mo_ta: Hàng hóa/phần mềm cung cấp theo Hợp đồng được xác định thuộc phạm vi điều chỉnh của EAR
+          loai: dinh_tinh
+
+  - so: 7
+    cau_hoi: Điều khoản phạt, bồi thường thiệt hại có đảm bảo bảo vệ quyền lợi của Công ty không?
+    chu_de: [phat-vi-pham, boi-thuong]
+    can_cu_phap_ly:
+      - Điều 301 Luật Thương mại số 36/2005/QH11 (mức phạt vi phạm không quá 8% giá trị phần nghĩa vụ bị vi phạm)
+    tieu_chi:
+      dat:
+        - ma: "7.D1"
+          mo_ta: Mức phạt vi phạm cao nhất áp dụng cho Công ty không vượt 8% giá trị phần nghĩa vụ vi phạm
+          loai: dinh_luong
+          truong: muc_phat_cao_nhat_phan_tram
+          phep_so_sanh: "<="
+          nguong: 8
+        - ma: "7.D2"
+          mo_ta: Có điều khoản bồi thường thiệt hại thực tế
+          loai: dinh_tinh
+        - ma: "7.D3"
+          mo_ta: Có giới hạn trách nhiệm phạt và bồi thường tối đa (liability cap)
+          loai: dinh_tinh
+        - ma: "7.D4"
+          mo_ta: Loại trừ trách nhiệm bồi thường thiệt hại gián tiếp, mất lợi nhuận
+          loai: dinh_tinh
+      luu_y:
+        - ma: "7.L1"
+          mo_ta: Phạt vi phạm/bồi thường chỉ áp dụng một chiều cho Công ty, không có quy định phạt và bồi thường đối với Khách hàng
+          loai: dinh_tinh
+        - ma: "7.L2"
+          mo_ta: Không có giới hạn trách nhiệm tối đa
+          loai: dinh_tinh
+      vi_pham:
+        - ma: "7.V1"
+          mo_ta: Mức phạt vi phạm vượt 8% giá trị phần nghĩa vụ vi phạm (phần vượt vô hiệu theo luật)
+          loai: dinh_luong
+          truong: muc_phat_cao_nhat_phan_tram
+          phep_so_sanh: ">"
+          nguong: 8
+        - ma: "7.V2"
+          mo_ta: Hợp đồng không có thỏa thuận phạt vi phạm (Công ty mất quyền phạt, chỉ được bồi thường thiệt hại thực tế và phải chứng minh)
+          loai: dinh_tinh
+
+  - so: 8
+    cau_hoi: Căn cứ, hậu quả chấm dứt hợp đồng có bảo vệ quyền lợi của Công ty khi xảy ra tranh chấp không?
+    chu_de: [cham-dut]
+    tieu_chi:
+      dat:
+        - ma: "8.D1"
+          mo_ta: Xác định rõ các vi phạm cơ bản (material breach) dẫn đến chấm dứt ngay
+          loai: dinh_tinh
+        - ma: "8.D2"
+          mo_ta: Chấm dứt thuận tiện (for convenience) yêu cầu thông báo trước tối thiểu 30 ngày
+          loai: dinh_luong
+          truong: thoi_han_bao_truoc_cham_dut_thuan_tien_ngay
+          phep_so_sanh: ">="
+          nguong: 30
+        - ma: "8.D3"
+          mo_ta: Khi chấm dứt thuận tiện, Khách hàng phải thanh toán phần công việc đã hoàn thành
+          loai: dinh_tinh
+        - ma: "8.D4"
+          mo_ta: Liệt kê rõ các điều khoản tiếp tục có hiệu lực sau khi chấm dứt (bảo mật, sở hữu trí tuệ, thanh toán)
+          loai: dinh_tinh
+      luu_y:
+        - ma: "8.L1"
+          mo_ta: Điều kiện chấm dứt mơ hồ hoặc chỉ có lợi cho Khách hàng, Công ty không có quyền chấm dứt tương xứng
+          loai: dinh_tinh
+      vi_pham:
+        - ma: "8.V1"
+          mo_ta: Khách hàng có thể chấm dứt Hợp đồng bất kỳ lúc nào mà không phải bồi thường
+          loai: dinh_tinh
+        - ma: "8.V2"
+          mo_ta: Không có điều khoản về hậu quả chấm dứt Hợp đồng
+          loai: dinh_tinh
+
+  - so: 9
+    cau_hoi: Hợp đồng có cấm sử dụng nhà thầu phụ không?
+    chu_de: [thau-phu]
+    ghi_chu_khong_ro: cần xác minh kế hoạch sử dụng thầu phụ của Công ty
+    tieu_chi:
+      dat:
+        - ma: "9.D1"
+          mo_ta: Hợp đồng cho phép Công ty sử dụng nhà thầu phụ
+          loai: dinh_tinh
+        - ma: "9.D2"
+          mo_ta: Có quy định thủ tục thông báo/chấp thuận trước bằng văn bản khi sử dụng nhà thầu phụ
+          loai: dinh_tinh
+        - ma: "9.D3"
+          mo_ta: Có điều khoản về trách nhiệm đối với nhà thầu phụ
+          loai: dinh_tinh
+      luu_y:
+        - ma: "9.L1"
+          mo_ta: Hợp đồng cấm Công ty sử dụng nhà thầu phụ (cần đánh giá nhu cầu thuê ngoài và đàm phán điều chỉnh trước khi ký)
+          loai: dinh_tinh
+      vi_pham:
+        - ma: "9.V1"
+          mo_ta: Hợp đồng cấm thầu phụ nhưng Công ty dự kiến sử dụng thầu phụ (Khách hàng có quyền chấm dứt và yêu cầu bồi thường; Công ty chịu toàn bộ trách nhiệm)
+          loai: dinh_tinh
+          can_thong_tin_ngoai: true
+
+  - so: 10
+    cau_hoi: Điều khoản thanh toán đã phù hợp và bảo vệ quyền lợi cho Công ty không?
+    chu_de: [thanh-toan, nghiem-thu]
+    tieu_chi:
+      dat:
+        - ma: "10.D1"
+          mo_ta: Có đặt cọc/tạm ứng trước khi triển khai (đề xuất 20–30% giá trị)
+          loai: dinh_tinh
+        - ma: "10.D2"
+          mo_ta: Thanh toán theo các mốc (milestone) rõ ràng
+          loai: dinh_tinh
+        - ma: "10.D3"
+          mo_ta: Thời hạn thanh toán được xác định bằng số ngày cụ thể
+          loai: dinh_tinh
+        - ma: "10.D4"
+          mo_ta: Có quy định lãi chậm thanh toán
+          loai: dinh_tinh
+        - ma: "10.D5"
+          mo_ta: Công ty có quyền tạm dừng dịch vụ khi Khách hàng chậm thanh toán quá thời hạn
+          loai: dinh_tinh
+      luu_y:
+        - ma: "10.L1"
+          mo_ta: Thời hạn thanh toán ngắn (dưới 30 ngày)
+          loai: dinh_luong
+          truong: thoi_han_thanh_toan_ngay
+          phep_so_sanh: "<"
+          nguong: 30
+        - ma: "10.L2"
+          mo_ta: Điều kiện thanh toán phụ thuộc vào xác nhận chủ quan của Khách hàng
+          loai: dinh_tinh
+        - ma: "10.L3"
+          mo_ta: "Hồ sơ thanh toán phức tạp: đề nghị thanh toán, hóa đơn, nhiều loại biên bản nghiệm thu, chứng chỉ"
+          loai: dinh_tinh
+      vi_pham:
+        - ma: "10.V1"
+          mo_ta: Hồ sơ thanh toán yêu cầu tài liệu không phát sinh trong quá trình nghiệm thu, hoặc tài liệu do Khách hàng đơn phương lập
+          loai: dinh_tinh
+        - ma: "10.V2"
+          mo_ta: Thanh toán chỉ được thực hiện sau khi Khách hàng nhận được thanh toán từ bên thứ ba
+          loai: dinh_tinh
+
+  - so: 11
+    cau_hoi: Giá trị hợp đồng đã bao gồm, xác định đúng thuế, thuế suất chưa?
+    chu_de: [gia-tri-hop-dong, thue, doi-tuong-pham-vi]
+    danh_muc: [thue-gtgt]
+    can_cu_phap_ly:
+      - Khoản 21 Điều 5 Luật Thuế giá trị gia tăng số 48/2024/QH15 — sản phẩm phần mềm và dịch vụ phần mềm thuộc đối tượng không chịu thuế GTGT (CẦN PHÁP CHẾ ĐỐI CHIẾU BẢN GỐC)
+      - Khoản 13 Điều 4 Nghị định 181/2025/NĐ-CP — hướng dẫn đối tượng không chịu thuế đối với sản phẩm, dịch vụ phần mềm (CẦN PHÁP CHẾ ĐỐI CHIẾU BẢN GỐC)
+    tieu_chi:
+      dat:
+        - ma: "11.D1"
+          mo_ta: Ghi rõ giá chưa thuế và thuế GTGT tách riêng
+          loai: dinh_tinh
+        - ma: "11.D2"
+          mo_ta: Cách xử lý thuế GTGT phù hợp với loại hàng hóa/dịch vụ theo Danh mục thue-gtgt — sản phẩm phần mềm/dịch vụ phần mềm ghi không chịu thuế GTGT; dịch vụ khác áp dụng thuế suất 10%
+          loai: dinh_tinh
+        - ma: "11.D3"
+          mo_ta: Nếu Hợp đồng có yếu tố nước ngoài, ghi rõ bên nào chịu thuế nhà thầu
+          loai: dinh_tinh
+      luu_y:
+        - ma: "11.L1"
+          mo_ta: Giá ghi "đã bao gồm tất cả các loại thuế" nhưng không xác định cụ thể loại thuế và thuế suất
+          loai: dinh_tinh
+        - ma: "11.L2"
+          mo_ta: Áp dụng thuế suất GTGT 8% (mức giảm thuế tạm thời)
+          loai: dinh_tinh
+        - ma: "11.L3"
+          mo_ta: Hàng hóa/dịch vụ là hỗn hợp (phần mềm kèm hạ tầng, phần cứng, dịch vụ khác) hoặc không phân loại rõ được là sản phẩm/dịch vụ phần mềm
+          loai: dinh_tinh
+      vi_pham:
+        - ma: "11.V1"
+          mo_ta: Không xác định thuế suất/cách xử lý thuế GTGT, hoặc cách xử lý thuế GTGT sai so với loại hàng hóa/dịch vụ
+          loai: dinh_tinh
+        - ma: "11.V2"
+          mo_ta: Hợp đồng không cho điều chỉnh giá khi thuế suất thay đổi
+          loai: dinh_tinh
+        - ma: "11.V3"
+          mo_ta: Điều khoản điều chỉnh giá khi thuế thay đổi gây bất lợi cho Công ty
+          loai: dinh_tinh
+
+  - so: 12
+    cau_hoi: Các điều khoản thương mại (giá trị hợp đồng, điều kiện thanh toán, thời hạn thanh toán…) đã phù hợp chưa?
+    chu_de: [gia-tri-hop-dong, thay-doi-dieu-chinh-gia, thanh-toan]
+    tieu_chi:
+      dat:
+        - ma: "12.D1"
+          mo_ta: Có cơ chế điều chỉnh giá khi phát sinh thêm phạm vi công việc (yêu cầu thay đổi phải ký phụ lục)
+          loai: dinh_tinh
+        - ma: "12.D2"
+          mo_ta: Ghi rõ đồng tiền thanh toán và tỷ giá quy đổi (nếu có ngoại tệ)
+          loai: dinh_tinh
+        - ma: "12.D3"
+          mo_ta: Xác định rõ loại giá hợp đồng (đơn giá cố định, đơn giá điều chỉnh, T&M, ODC...)
+          loai: dinh_tinh
+      luu_y:
+        - ma: "12.L1"
+          mo_ta: Giá cố định (fixed price) nhưng phạm vi công việc mơ hồ
+          loai: dinh_tinh
+      vi_pham:
+        - ma: "12.V1"
+          mo_ta: Không có điều khoản yêu cầu thay đổi (change order) — Công ty phải thực hiện thêm việc mà không được tính phí
+          loai: dinh_tinh
+        - ma: "12.V2"
+          mo_ta: Cho phép thay đổi giá không có căn cứ hợp đồng
+          loai: dinh_tinh
+        - ma: "12.V3"
+          mo_ta: Quy định thanh toán bằng ngoại tệ trong khi Khách hàng là doanh nghiệp Việt Nam
+          loai: dinh_tinh
+
+  - so: 13
+    cau_hoi: Khách hàng yêu cầu phạm vi công việc, cam kết dịch vụ hoặc SLA nào?
+    chu_de: [cam-ket-chat-luong, ho-tro-van-hanh]
+    ghi_chu_khong_ro: cần xác minh năng lực hạ tầng và vận hành của Công ty
+    tieu_chi:
+      dat:
+        - ma: "13.D1"
+          mo_ta: SLA được định nghĩa bằng chỉ số đo lường được (uptime %, thời gian phản hồi theo mức P1/P2/P3)
+          loai: dinh_tinh
+        - ma: "13.D2"
+          mo_ta: Cơ chế đo lường SLA rõ ràng
+          loai: dinh_tinh
+        - ma: "13.D3"
+          mo_ta: Hậu quả vi phạm SLA có giới hạn tối đa — service credit không vượt 15% phí tháng vi phạm (đề xuất 10–15%)
+          loai: dinh_luong
+          truong: tran_giam_tru_sla_phan_tram_phi_thang
+          phep_so_sanh: "<="
+          nguong: 15
+      luu_y:
+        - ma: "13.L1"
+          mo_ta: Cam kết uptime từ 99,9% trở lên (cần đánh giá khả năng đáp ứng của hạ tầng trước khi ký)
+          loai: dinh_luong
+          truong: cam_ket_uptime_phan_tram
+          phep_so_sanh: ">="
+          nguong: 99.9
+      vi_pham:
+        - ma: "13.V1"
+          mo_ta: SLA không có giới hạn giảm trừ/service credit — Khách hàng có thể yêu cầu bồi thường không giới hạn
+          loai: dinh_tinh
+        - ma: "13.V2"
+          mo_ta: SLA vượt quá khả năng thực tế dựa trên giá trị Hợp đồng và thời gian thực hiện
+          loai: dinh_tinh
+          can_thong_tin_ngoai: true
+
+  - so: 14
+    cau_hoi: Các cam kết với khách hàng về bảo mật, hỗ trợ vận hành, nhân sự hoặc thời gian phản hồi có khả thi không?
+    chu_de: [ho-tro-van-hanh, nhan-su, cam-ket-chat-luong, boi-thuong]
+    ghi_chu_khong_ro: cần xác minh năng lực thực tế của Công ty (nhân sự, hạ tầng, ca trực)
+    tieu_chi:
+      dat:
+        - ma: "14.D1"
+          mo_ta: Mọi cam kết đã được đối chiếu với năng lực thực tế của Công ty (nhân sự, hạ tầng, ca trực)
+          loai: dinh_tinh
+          can_thong_tin_ngoai: true
+        - ma: "14.D2"
+          mo_ta: Cam kết hỗ trợ ngoài giờ hành chính có phụ phí hoặc giới hạn số lần mỗi tháng
+          loai: dinh_tinh
+        - ma: "14.D3"
+          mo_ta: Nhân sự chủ chốt được chỉ định và có quy trình thay thế
+          loai: dinh_tinh
+      luu_y:
+        - ma: "14.L1"
+          mo_ta: Cam kết hỗ trợ 24/7
+          loai: dinh_tinh
+      vi_pham:
+        - ma: "14.V1"
+          mo_ta: Cam kết vượt khả năng thực tế của Công ty
+          loai: dinh_tinh
+          can_thong_tin_ngoai: true
+        - ma: "14.V2"
+          mo_ta: Cam kết hỗ trợ ngoài giờ hành chính không có phụ phí
+          loai: dinh_tinh
+        - ma: "14.V3"
+          mo_ta: Cam kết về trách nhiệm vượt quá giá trị Hợp đồng
+          loai: dinh_tinh
+
+  - so: 15
+    cau_hoi: Phạm vi công việc, deliverables, tiêu chí nghiệm thu và timeline có đủ rõ ràng không?
+    chu_de: [doi-tuong-pham-vi, nghiem-thu, tien-do]
+    tieu_chi:
+      dat:
+        - ma: "15.D1"
+          mo_ta: Sản phẩm bàn giao (deliverables) được liệt kê cụ thể, đo lường được
+          loai: dinh_tinh
+        - ma: "15.D2"
+          mo_ta: Tiêu chí nghiệm thu định lượng (số test case, tỷ lệ pass, chỉ số hiệu năng)
+          loai: dinh_tinh
+        - ma: "15.D3"
+          mo_ta: Thời hạn nghiệm thu được xác định bằng số ngày
+          loai: dinh_tinh
+        - ma: "15.D4"
+          mo_ta: Có điều khoản nghiệm thu rõ ràng
+          loai: dinh_tinh
+        - ma: "15.D5"
+          mo_ta: Có cơ chế xử lý lỗi (defect) phân loại theo mức độ nghiêm trọng
+          loai: dinh_tinh
+      luu_y:
+        - ma: "15.L1"
+          mo_ta: Tiêu chí nghiệm thu chỉ định tính (ví dụ "đáp ứng yêu cầu kinh doanh") mà không có thước đo cụ thể
+          loai: dinh_tinh
+      vi_pham:
+        - ma: "15.V1"
+          mo_ta: Không có tiêu chí nghiệm thu — Khách hàng toàn quyền từ chối, Công ty không được thanh toán
+          loai: dinh_tinh
+        - ma: "15.V2"
+          mo_ta: Không có nghiệm thu mặc nhiên (deemed acceptance) khi Khách hàng không ký/không phản hồi trong thời hạn — dự án có thể treo vô hạn
+          loai: dinh_tinh
+        - ma: "15.V3"
+          mo_ta: Chỉ nghiệm thu sau khi bên thứ ba thực hiện nghiệm thu
+          loai: dinh_tinh
+
+  - so: 16
+    cau_hoi: Tiến độ dự án, milestone và thời gian phản hồi/yêu cầu hỗ trợ có khả thi không?
+    chu_de: [tien-do, bat-kha-khang]
+    tieu_chi:
+      dat:
+        - ma: "16.D1"
+          mo_ta: Milestone gắn với ngày cụ thể hoặc điều kiện rõ ràng
+          loai: dinh_tinh
+        - ma: "16.D2"
+          mo_ta: Có điều khoản điều chỉnh tiến độ khi Khách hàng chậm cung cấp thông tin/phê duyệt
+          loai: dinh_tinh
+        - ma: "16.D3"
+          mo_ta: Sự kiện bất khả kháng được định nghĩa rõ
+          loai: dinh_tinh
+        - ma: "16.D4"
+          mo_ta: Thời hạn thông báo sự kiện bất khả kháng không ngắn hơn 7 ngày
+          loai: dinh_luong
+          truong: thoi_han_thong_bao_bat_kha_khang_ngay
+          phep_so_sanh: ">="
+          nguong: 7
+        - ma: "16.D5"
+          mo_ta: Thời hạn thông báo sự kiện bất khả kháng không dài hơn 15 ngày
+          loai: dinh_luong
+          truong: thoi_han_thong_bao_bat_kha_khang_ngay
+          phep_so_sanh: "<="
+          nguong: 15
+      luu_y:
+        - ma: "16.L1"
+          mo_ta: Tiến độ phụ thuộc vào Khách hàng hoặc bên thứ ba (cung cấp dữ liệu, API...) nhưng không có điều khoản giãn tiến độ tương ứng
+          loai: dinh_tinh
+      vi_pham:
+        - ma: "16.V1"
+          mo_ta: Milestone cố định không có cơ chế điều chỉnh — Công ty bị phạt chậm tiến độ kể cả khi nguyên nhân từ phía Khách hàng
+          loai: dinh_tinh
+        - ma: "16.V2"
+          mo_ta: Không có điều khoản bất khả kháng
+          loai: dinh_tinh
+
+  - so: 17
+    cau_hoi: Các điều khoản về nhân sự chủ chốt, bàn giao, nghiệm thu, hỗ trợ sau nghiệm thu đã phù hợp chưa?
+    chu_de: [nhan-su, ban-giao, nghiem-thu, bao-hanh]
+    tieu_chi:
+      dat:
+        - ma: "17.D1"
+          mo_ta: Đầu mối phụ trách của các bên được chỉ định (tên hoặc vai trò)
+          loai: dinh_tinh
+        - ma: "17.D2"
+          mo_ta: Quy trình thay thế nhân sự chủ chốt yêu cầu thông báo trước từ 15 ngày (đề xuất 15–30 ngày)
+          loai: dinh_luong
+          truong: thoi_han_bao_truoc_thay_nhan_su_ngay
+          phep_so_sanh: ">="
+          nguong: 15
+        - ma: "17.D3"
+          mo_ta: Danh mục tài liệu bàn giao được liệt kê đầy đủ
+          loai: dinh_tinh
+        - ma: "17.D4"
+          mo_ta: Thời gian và phạm vi bảo hành được xác định rõ
+          loai: dinh_tinh
+        - ma: "17.D5"
+          mo_ta: Thời gian bảo hành tối thiểu 12 tháng
+          loai: dinh_luong
+          truong: thoi_han_bao_hanh_thang
+          phep_so_sanh: ">="
+          nguong: 12
+        - ma: "17.D6"
+          mo_ta: Có điều khoản không lôi kéo nhân sự (non-solicitation) cấm Khách hàng tuyển dụng nhân sự Công ty
+          loai: dinh_tinh
+        - ma: "17.D7"
+          mo_ta: Điều khoản non-solicitation có hiệu lực trong và sau Hợp đồng tối thiểu 12 tháng
+          loai: dinh_luong
+          truong: thoi_han_non_solicitation_sau_hop_dong_thang
+          phep_so_sanh: ">="
+          nguong: 12
+      luu_y:
+        - ma: "17.L1"
+          mo_ta: Bảo hành chỉ quy định thời gian mà không xác định phạm vi
+          loai: dinh_tinh
+      vi_pham:
+        - ma: "17.V1"
+          mo_ta: Không có điều khoản non-solicitation — Khách hàng có thể tuyển dụng nhân sự chủ chốt, Công ty mất năng lực thực hiện
+          loai: dinh_tinh
+        - ma: "17.V2"
+          mo_ta: Không có danh mục bàn giao cụ thể — dễ tranh chấp về mức độ hoàn thành, chậm thanh toán đợt cuối
+          loai: dinh_tinh
+        - ma: "17.V3"
+          mo_ta: Không quy định đầu mối phụ trách của các bên
+          loai: dinh_tinh

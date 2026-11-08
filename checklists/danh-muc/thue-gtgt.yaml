@@ -1,0 +1,53 @@
+ten: Thuế GTGT theo loại hàng hóa, dịch vụ
+# Bản nháp để pháp chế duyệt. Dùng cho Mục 11 (tiêu chí 11.D2, 11.L2, 11.L3, 11.V1).
+trang_thai: ban-nhap
+nguon: null
+muc:
+  - ma: phan-mem
+    loai: Sản phẩm phần mềm, dịch vụ phần mềm
+    xu_ly_thue: không chịu thuế GTGT
+    vi_du:
+      - Sản xuất, phát triển phần mềm theo đặt hàng
+      - Cài đặt, triển khai, tích hợp, bảo trì, nâng cấp phần mềm
+      - Tư vấn, đánh giá, kiểm thử chất lượng phần mềm
+      - Cung cấp, phân phối bản quyền sử dụng phần mềm (license)
+    ghi_chu: >-
+      Danh sách ví dụ do hệ thống soạn, chưa phải phạm vi pháp lý của "dịch vụ phần mềm". Pháp chế đối chiếu với
+      văn bản hướng dẫn hiện hành. Hàng hóa/dịch vụ không chịu thuế thì không áp dụng mức giảm 8%.
+    nguon: >-
+      Khoản 21 Điều 5 Luật Thuế GTGT số 48/2024/QH15; khoản 13 Điều 4 Nghị định 181/2025/NĐ-CP
+      (CẦN PHÁP CHẾ ĐỐI CHIẾU BẢN GỐC)
+  - ma: hon-hop
+    loai: >-
+      Gói hỗn hợp: phần mềm kèm phần cứng, thiết bị, hạ tầng, hoặc dịch vụ không phải dịch vụ phần mềm
+    xu_ly_thue: >-
+      Tách riêng giá trị từng phần: phần mềm không chịu thuế GTGT; phần còn lại theo thuế suất của từng loại.
+      Không tách được thì Lưu ý (11.L3).
+    ghi_chu: Pháp chế xác nhận cách xử lý khi Hợp đồng không tách giá trị.
+    nguon: Quy tắc của checklist V1.1, tiêu chí 11.L3 (dựa trên Luật Thuế GTGT số 48/2024/QH15)
+  - ma: dich-vu-khac
+    loai: >-
+      Hàng hóa, dịch vụ khác: phần cứng, thiết bị; cho thuê hạ tầng, máy chủ, trung tâm dữ liệu, điện toán đám mây;
+      dịch vụ vận hành, hỗ trợ kỹ thuật không gắn với phần mềm; đào tạo không thuộc diện không chịu thuế
+    xu_ly_thue: 10% (có thể giảm còn 8%, xem mục giam-8)
+    ghi_chu: >-
+      Cho thuê hạ tầng, điện toán đám mây có được coi là dịch vụ phần mềm hay không: cần pháp chế xác nhận.
+    nguon: Điều 9 Luật Thuế GTGT số 48/2024/QH15 (thuế suất 10%) (CẦN PHÁP CHẾ ĐỐI CHIẾU BẢN GỐC)
+  - ma: vien-thong
+    loai: Dịch vụ viễn thông
+    xu_ly_thue: 10%, không được giảm còn 8%
+    nguon: >-
+      Điều 9 Luật Thuế GTGT số 48/2024/QH15; Phụ lục I Nghị định 174/2025/NĐ-CP (viễn thông thuộc nhóm không
+      được giảm thuế) (CẦN PHÁP CHẾ ĐỐI CHIẾU BẢN GỐC)
+  - ma: giam-8
+    loai: Hàng hóa, dịch vụ đang chịu thuế suất 10%, trừ nhóm loại trừ
+    xu_ly_thue: 8% (giảm 2%) từ 01/7/2025 đến hết 31/12/2026
+    ghi_chu: >-
+      Nhóm loại trừ: viễn thông, tài chính, ngân hàng, chứng khoán, bảo hiểm, bất động sản, sản phẩm kim loại,
+      khai khoáng (trừ than) (Phụ lục I); hàng hóa, dịch vụ chịu thuế tiêu thụ đặc biệt trừ xăng (Phụ lục II).
+      Nghị định 174/2025 đã bỏ nhóm hàng hóa, dịch vụ công nghệ thông tin khỏi danh sách loại trừ (trước đây là
+      Phụ lục III Nghị định 180/2024), nên hàng hóa, dịch vụ CNTT chịu thuế 10% được giảm còn 8%.
+      Phần Hợp đồng thực hiện hoặc xuất hóa đơn sau 31/12/2026 quay về 10%, trừ khi có văn bản gia hạn.
+    nguon: >-
+      Nghị định 174/2025/NĐ-CP (theo Nghị quyết 204/2025/QH15); nguồn thứ cấp: MISA, LuatVietnam, KPMG
+      (CẦN PHÁP CHẾ ĐỐI CHIẾU BẢN GỐC)
