@@ -163,7 +163,7 @@ for m in sorted(luot.muc, key=lambda m: m.so):
         for i, tc in enumerate(m.tieu_chi):
             with st.container(border=True):
                 danh_gia = TEN_DANH_GIA.get(tc.danh_gia, tc.danh_gia)
-                if tc.danh_gia_llm != tc.danh_gia:
+                if tc.danh_gia_llm is not None and tc.danh_gia_llm != tc.danh_gia:  # định lượng: model không đánh giá
                     danh_gia += f" (model trả lời {TEN_DANH_GIA.get(tc.danh_gia_llm, tc.danh_gia_llm)})"
                 st.markdown(f"**{tc.ma}** · tiêu chí {TEN_KET_QUA[tc.muc_ket_qua]}: {mo_ta_de_doc(tc.mo_ta, ck)}  \n"
                             f"Đánh giá tiêu chí: **{danh_gia}**")

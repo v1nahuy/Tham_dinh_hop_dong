@@ -1,0 +1,405 @@
+# Câu hỏi sự kiện cho checklist dau-ra 1.1 (issue 19).
+#
+# Model trả lời câu hỏi về nội dung Hợp đồng (co | khong | khong_ro); code quy ra Đánh giá tiêu chí:
+# trả lời bằng `thoa_khi` thì Tiêu chí "thoa", trả lời ngược lại thì "khong_thoa", khong_ro giữ khong_ro.
+# Mỗi Tiêu chí định tính của checklist có đúng một mục ở đây; Tiêu chí định lượng không có (code so ngưỡng).
+#
+# Cách soạn:
+# - Câu hỏi viết dạng khẳng định về một sự kiện trong Hợp đồng, tránh phủ định để model không phải đảo chiều.
+# - Câu hỏi bắt đầu bằng "Nếu …" được trả lời "co" khi điều kiện không xảy ra; vì vậy câu hỏi "Nếu …" chỉ dùng
+#   khi `thoa_khi: co` cho Tiêu chí Đạt, hoặc `thoa_khi: khong` cho Tiêu chí Lưu ý/Vi phạm.
+# - Tiêu chí là phần bù của nhau dùng chung một câu hỏi (2.D1/2.V1, 6.D1/6.L1, 7.D3/7.L2, 17.D1/17.V3, 17.D6/17.V1),
+#   để hai Đánh giá không mâu thuẫn.
+# - "# XEM KỸ" đánh dấu câu hỏi cần duyệt kỹ: Tiêu chí ghép nhiều ý, có "Nếu …", hoặc phải chọn một cách hiểu.
+# Soạn chỉ từ chữ trong checklist, không xem Bộ chuẩn hay Lượt thẩm định.
+
+checklist: "dau-ra 1.1"
+
+cau_hoi:
+  # Mục 1. Người đại diện ký kết
+  "1.D1":
+    cau_hoi: "Người ký phía Công ty có phải là Giám đốc/Tổng Giám đốc, hoặc ký theo giấy ủy quyền hợp lệ (đúng phạm vi, còn hiệu lực tại ngày ký) không?"
+    thoa_khi: co
+  # XEM KỸ: Tiêu chí "không có thẩm quyền VÀ không có ủy quyền" gộp thành một câu "có thẩm quyền (theo chức danh hoặc ủy quyền)".
+  "1.V1":
+    cau_hoi: "Người ký phía Công ty có thẩm quyền ký Hợp đồng (theo chức danh hoặc theo ủy quyền) không?"
+    thoa_khi: khong
+  # 1.V2 có điều kiện giá trị trên 2 tỷ; code xét điều kiện, câu hỏi chỉ hỏi chức danh.
+  "1.V2":
+    cau_hoi: "Người ký phía Công ty có phải chính là Giám đốc/Tổng Giám đốc (không phải người ký theo ủy quyền) không?"
+    thoa_khi: khong
+  # XEM KỸ: không ký theo ủy quyền thì trả lời "khong", tức không vi phạm.
+  "1.V3":
+    cau_hoi: "Hợp đồng có được ký theo giấy ủy quyền mà ngày của giấy ủy quyền sau ngày ký Hợp đồng không?"
+    thoa_khi: co
+
+  # Mục 2. Ngành nghề
+  "2.D1":
+    cau_hoi: "Mọi hàng hóa/dịch vụ Công ty cung cấp theo Hợp đồng có đều thuộc ngành nghề Công ty đã đăng ký (Danh mục nganh-nghe-dang-ky) không?"
+    thoa_khi: co
+  "2.L1":
+    cau_hoi: "Hàng hóa/dịch vụ theo Hợp đồng có thuộc ngành nghề kinh doanh có điều kiện (Danh mục nganh-nghe-co-dieu-kien) không?"
+    thoa_khi: co
+  "2.V1":
+    cau_hoi: "Mọi hàng hóa/dịch vụ Công ty cung cấp theo Hợp đồng có đều thuộc ngành nghề Công ty đã đăng ký (Danh mục nganh-nghe-dang-ky) không?"
+    thoa_khi: khong
+  # XEM KỸ: "Nếu …"; giấy phép thường là thông tin ngoài Hợp đồng (khong_ro).
+  "2.V2":
+    cau_hoi: "Nếu hàng hóa/dịch vụ theo Hợp đồng thuộc ngành nghề kinh doanh có điều kiện, Công ty có giấy phép tương ứng không?"
+    thoa_khi: khong
+
+  # Mục 3. Sở hữu trí tuệ
+  "3.D1":
+    cau_hoi: "Hợp đồng có xác định rõ Công ty là chủ sở hữu quyền tác giả đối với sản phẩm tạo ra theo Hợp đồng không?"
+    thoa_khi: co
+  "3.D2":
+    cau_hoi: "Hợp đồng có xác định rõ phạm vi quyền Công ty được giữ lại (sản phẩm, công cụ, thư viện, tài sản trí tuệ có sẵn) không?"
+    thoa_khi: co
+  "3.D3":
+    cau_hoi: "Hợp đồng có xác định rõ phạm vi license cấp cho Khách hàng (độc quyền/không độc quyền, thời hạn, lãnh thổ) không?"
+    thoa_khi: co
+  "3.D4":
+    cau_hoi: "Hợp đồng có điều khoản về mã nguồn (source code) không?"
+    thoa_khi: co
+  "3.D5":
+    cau_hoi: "Hợp đồng có cam kết bảo đảm không vi phạm quyền sở hữu trí tuệ của bên thứ ba không?"
+    thoa_khi: co
+  "3.D6":
+    cau_hoi: "Hợp đồng có quy định quyền sở hữu chỉ được chuyển giao cho Khách hàng khi Khách hàng đã thanh toán 100% giá trị Hợp đồng không?"
+    thoa_khi: co
+  # XEM KỸ: "Nếu …"; Hợp đồng không có điều khoản sở hữu trí tuệ thì không tính là Lưu ý này.
+  "3.L1":
+    cau_hoi: "Nếu Hợp đồng có điều khoản sở hữu trí tuệ, điều khoản đó có liệt kê rõ từng đối tượng (phần mềm, tài liệu, dữ liệu…) thuộc về bên nào không?"
+    thoa_khi: khong
+  # XEM KỸ: ghép bốn nội dung; xét chặt nên thiếu một nội dung là "khong".
+  "3.V1":
+    cau_hoi: "Hợp đồng có thỏa thuận đầy đủ cả bốn nội dung: phạm vi Công ty được giữ lại; phạm vi license cấp cho Khách hàng; mã nguồn; bảo đảm không vi phạm sở hữu trí tuệ của bên thứ ba không?"
+    thoa_khi: khong
+
+  # Mục 4. Dữ liệu cá nhân
+  "4.D1":
+    cau_hoi: "Hợp đồng có xác định rõ có hay không có hoạt động chuyển giao, xử lý dữ liệu cá nhân giữa các bên (nếu không có thì có quy định nêu rõ điều đó) không?"
+    thoa_khi: co
+  "4.D2":
+    cau_hoi: "Nếu có chuyển giao dữ liệu cá nhân, Hợp đồng có xác định rõ loại dữ liệu cá nhân được xử lý không?"
+    thoa_khi: co
+  "4.D3":
+    cau_hoi: "Nếu có chuyển giao dữ liệu cá nhân, Hợp đồng có xác định rõ mục đích xử lý và thời gian lưu trữ không?"
+    thoa_khi: co
+  "4.D4":
+    cau_hoi: "Nếu có chuyển giao dữ liệu cá nhân, Hợp đồng có cam kết xóa dữ liệu sau khi kết thúc Hợp đồng không?"
+    thoa_khi: co
+  "4.D5":
+    cau_hoi: "Nếu có chuyển giao dữ liệu cá nhân, Hợp đồng có cam kết phối hợp thực hiện quyền của chủ thể dữ liệu và yêu cầu của cơ quan nhà nước có thẩm quyền không?"
+    thoa_khi: co
+  # XEM KỸ: "Nếu …"; không có điều khoản bảo vệ dữ liệu cá nhân thì không tính là Lưu ý này.
+  "4.L1":
+    cau_hoi: "Nếu Hợp đồng có điều khoản bảo vệ dữ liệu cá nhân, điều khoản đó có phân biệt dữ liệu cá nhân thông thường và dữ liệu nhạy cảm (sức khỏe, tài chính, sinh trắc học) không?"
+    thoa_khi: khong
+  # XEM KỸ: như 4.L1.
+  "4.L2":
+    cau_hoi: "Nếu Hợp đồng có điều khoản bảo vệ dữ liệu cá nhân, điều khoản đó có phân biệt trường hợp dữ liệu được chuyển ra nước ngoài (xuyên biên giới) với trường hợp không chuyển không?"
+    thoa_khi: khong
+  # XEM KỸ: "Nếu …".
+  "4.V1":
+    cau_hoi: "Nếu Hợp đồng có chuyển dữ liệu cá nhân ra nước ngoài, Hợp đồng có quy định đánh giá tác động/thông báo theo quy định pháp luật không?"
+    thoa_khi: khong
+
+  # Mục 5. Bảo mật thông tin
+  "5.D1":
+    cau_hoi: "Hợp đồng có định nghĩa thông tin mật không?"
+    thoa_khi: co
+  "5.D2":
+    cau_hoi: "Hợp đồng có quy định nghĩa vụ bảo mật và thời hạn bảo mật không?"
+    thoa_khi: co
+  "5.D3":
+    cau_hoi: "Hợp đồng có quy định các trường hợp ngoại lệ của nghĩa vụ bảo mật không?"
+    thoa_khi: co
+  "5.D4":
+    cau_hoi: "Hợp đồng có cho phép Công ty tiết lộ thông tin cho nhà thầu (thầu phụ) của mình không?"
+    thoa_khi: co
+  "5.D5":
+    cau_hoi: "Hợp đồng có cho phép Công ty sử dụng thông tin về Hợp đồng để chứng minh năng lực không?"
+    thoa_khi: co
+  "5.L1":
+    cau_hoi: "Hợp đồng có quy định một mức bồi thường thiệt hại cố định (số tiền hoặc tỷ lệ định trước) khi vi phạm bảo mật thông tin không?"
+    thoa_khi: co
+  # XEM KỸ: "Nếu …"; Hợp đồng không quy định nghĩa vụ bảo mật của Công ty thì không tính là Vi phạm này.
+  "5.V1":
+    cau_hoi: "Nếu Hợp đồng quy định nghĩa vụ bảo mật của Công ty, Hợp đồng có quy định nghĩa vụ bảo mật của Khách hàng không?"
+    thoa_khi: khong
+
+  # Mục 6. Kiểm soát xuất khẩu
+  "6.D1":
+    cau_hoi: "Hàng hóa/phần mềm cung cấp theo Hợp đồng có khớp ít nhất một dấu hiệu trong Danh mục dau-hieu-ear không?"
+    thoa_khi: khong
+  "6.D2":
+    cau_hoi: "Nếu Công ty bán hàng hóa, thiết bị theo Hợp đồng, Hợp đồng có điều khoản yêu cầu Khách hàng không xuất khẩu hàng hóa và không sử dụng cho mục đích quân sự không?"
+    thoa_khi: co
+  "6.L1":
+    cau_hoi: "Hàng hóa/phần mềm cung cấp theo Hợp đồng có khớp ít nhất một dấu hiệu trong Danh mục dau-hieu-ear không?"
+    thoa_khi: co
+  "6.V1":
+    cau_hoi: "Hàng hóa/phần mềm cung cấp theo Hợp đồng có được xác định thuộc phạm vi điều chỉnh của EAR không?"
+    thoa_khi: co
+
+  # Mục 7. Phạt, bồi thường
+  "7.D2":
+    cau_hoi: "Hợp đồng có điều khoản bồi thường thiệt hại thực tế không?"
+    thoa_khi: co
+  "7.D3":
+    cau_hoi: "Hợp đồng có giới hạn trách nhiệm phạt và bồi thường tối đa (liability cap) không?"
+    thoa_khi: co
+  "7.D4":
+    cau_hoi: "Hợp đồng có loại trừ trách nhiệm bồi thường thiệt hại gián tiếp, mất lợi nhuận không?"
+    thoa_khi: co
+  # XEM KỸ: Lưu ý "chỉ một chiều cho Công ty" hỏi thành "Khách hàng có bị phạt/bồi thường không".
+  "7.L1":
+    cau_hoi: "Hợp đồng có quy định phạt vi phạm hoặc bồi thường thiệt hại áp dụng đối với Khách hàng không?"
+    thoa_khi: khong
+  "7.L2":
+    cau_hoi: "Hợp đồng có giới hạn trách nhiệm phạt và bồi thường tối đa (liability cap) không?"
+    thoa_khi: khong
+  "7.V2":
+    cau_hoi: "Hợp đồng có thỏa thuận phạt vi phạm không?"
+    thoa_khi: khong
+
+  # Mục 8. Chấm dứt
+  "8.D1":
+    cau_hoi: "Hợp đồng có xác định rõ các vi phạm cơ bản (material breach) dẫn đến chấm dứt ngay không?"
+    thoa_khi: co
+  "8.D3":
+    cau_hoi: "Hợp đồng có quy định khi chấm dứt thuận tiện (for convenience), Khách hàng phải thanh toán phần công việc đã hoàn thành không?"
+    thoa_khi: co
+  "8.D4":
+    cau_hoi: "Hợp đồng có liệt kê rõ các điều khoản tiếp tục có hiệu lực sau khi chấm dứt (bảo mật, sở hữu trí tuệ, thanh toán) không?"
+    thoa_khi: co
+  # XEM KỸ: ghép "mơ hồ" và "chỉ có lợi cho Khách hàng"; xét chặt nên thiếu một ý là "khong" (tức Lưu ý).
+  "8.L1":
+    cau_hoi: "Điều kiện chấm dứt Hợp đồng có rõ ràng, và Công ty có quyền chấm dứt tương xứng với quyền chấm dứt của Khách hàng không?"
+    thoa_khi: khong
+  "8.V1":
+    cau_hoi: "Khách hàng có quyền chấm dứt Hợp đồng bất kỳ lúc nào mà không phải bồi thường cho Công ty không?"
+    thoa_khi: co
+  "8.V2":
+    cau_hoi: "Hợp đồng có điều khoản về hậu quả chấm dứt Hợp đồng không?"
+    thoa_khi: khong
+
+  # Mục 9. Nhà thầu phụ
+  "9.D1":
+    cau_hoi: "Hợp đồng có cho phép Công ty sử dụng nhà thầu phụ không?"
+    thoa_khi: co
+  "9.D2":
+    cau_hoi: "Hợp đồng có quy định thủ tục thông báo/chấp thuận trước bằng văn bản khi sử dụng nhà thầu phụ không?"
+    thoa_khi: co
+  "9.D3":
+    cau_hoi: "Hợp đồng có điều khoản về trách nhiệm đối với nhà thầu phụ không?"
+    thoa_khi: co
+  "9.L1":
+    cau_hoi: "Hợp đồng có cấm Công ty sử dụng nhà thầu phụ không?"
+    thoa_khi: co
+  "9.V1":
+    cau_hoi: "Hợp đồng có cấm Công ty sử dụng nhà thầu phụ trong khi Công ty dự kiến sử dụng nhà thầu phụ không?"
+    thoa_khi: co
+
+  # Mục 10. Thanh toán
+  "10.D1":
+    cau_hoi: "Hợp đồng có quy định đặt cọc/tạm ứng trước khi triển khai không?"
+    thoa_khi: co
+  "10.D2":
+    cau_hoi: "Hợp đồng có quy định thanh toán theo các mốc (milestone) rõ ràng không?"
+    thoa_khi: co
+  "10.D3":
+    cau_hoi: "Thời hạn thanh toán có được xác định bằng số ngày cụ thể không?"
+    thoa_khi: co
+  "10.D4":
+    cau_hoi: "Hợp đồng có quy định lãi chậm thanh toán không?"
+    thoa_khi: co
+  "10.D5":
+    cau_hoi: "Hợp đồng có cho phép Công ty tạm dừng dịch vụ khi Khách hàng chậm thanh toán quá thời hạn không?"
+    thoa_khi: co
+  "10.L2":
+    cau_hoi: "Điều kiện thanh toán có phụ thuộc vào xác nhận chủ quan của Khách hàng không?"
+    thoa_khi: co
+  "10.L3":
+    cau_hoi: "Hồ sơ thanh toán có phức tạp, gồm nhiều loại giấy tờ (đề nghị thanh toán, hóa đơn, nhiều loại biên bản nghiệm thu, chứng chỉ) không?"
+    thoa_khi: co
+  "10.V1":
+    cau_hoi: "Hồ sơ thanh toán có yêu cầu tài liệu không phát sinh trong quá trình nghiệm thu, hoặc tài liệu do Khách hàng đơn phương lập không?"
+    thoa_khi: co
+  "10.V2":
+    cau_hoi: "Việc thanh toán cho Công ty có chỉ được thực hiện sau khi Khách hàng nhận được thanh toán từ bên thứ ba không?"
+    thoa_khi: co
+
+  # Mục 11. Thuế
+  "11.D1":
+    cau_hoi: "Hợp đồng có ghi rõ giá chưa thuế và thuế GTGT tách riêng không?"
+    thoa_khi: co
+  "11.D2":
+    cau_hoi: "Cách xử lý thuế GTGT trong Hợp đồng có phù hợp với loại hàng hóa/dịch vụ theo Danh mục thue-gtgt (sản phẩm/dịch vụ phần mềm ghi không chịu thuế GTGT; dịch vụ khác áp dụng thuế suất 10%) không?"
+    thoa_khi: co
+  "11.D3":
+    cau_hoi: "Nếu Hợp đồng có yếu tố nước ngoài, Hợp đồng có ghi rõ bên nào chịu thuế nhà thầu không?"
+    thoa_khi: co
+  # XEM KỸ: "Nếu …".
+  "11.L1":
+    cau_hoi: "Nếu giá ghi \"đã bao gồm tất cả các loại thuế\", Hợp đồng có xác định cụ thể loại thuế và thuế suất không?"
+    thoa_khi: khong
+  "11.L2":
+    cau_hoi: "Hợp đồng có áp dụng thuế suất GTGT 8% (mức giảm thuế tạm thời) không?"
+    thoa_khi: co
+  "11.L3":
+    cau_hoi: "Hàng hóa/dịch vụ theo Hợp đồng có phải là hỗn hợp (phần mềm kèm hạ tầng, phần cứng, dịch vụ khác) hoặc không phân loại rõ được là sản phẩm/dịch vụ phần mềm không?"
+    thoa_khi: co
+  # XEM KỸ: ghép "có xác định" và "xử lý đúng"; xét chặt nên thiếu một ý là "khong" (tức Vi phạm).
+  "11.V1":
+    cau_hoi: "Hợp đồng có xác định thuế suất/cách xử lý thuế GTGT, và cách xử lý đó đúng với loại hàng hóa/dịch vụ không?"
+    thoa_khi: khong
+  "11.V2":
+    cau_hoi: "Hợp đồng có cho phép điều chỉnh giá khi thuế suất thay đổi không?"
+    thoa_khi: khong
+  "11.V3":
+    cau_hoi: "Hợp đồng có điều khoản điều chỉnh giá khi thuế thay đổi gây bất lợi cho Công ty không?"
+    thoa_khi: co
+
+  # Mục 12. Điều khoản thương mại
+  "12.D1":
+    cau_hoi: "Hợp đồng có cơ chế điều chỉnh giá khi phát sinh thêm phạm vi công việc (yêu cầu thay đổi phải ký phụ lục) không?"
+    thoa_khi: co
+  "12.D2":
+    cau_hoi: "Hợp đồng có ghi rõ đồng tiền thanh toán, và tỷ giá quy đổi nếu có ngoại tệ, không?"
+    thoa_khi: co
+  "12.D3":
+    cau_hoi: "Hợp đồng có xác định rõ loại giá hợp đồng (đơn giá cố định, đơn giá điều chỉnh, T&M, ODC...) không?"
+    thoa_khi: co
+  "12.L1":
+    cau_hoi: "Hợp đồng có áp dụng giá cố định (fixed price) trong khi phạm vi công việc mơ hồ không?"
+    thoa_khi: co
+  # XEM KỸ: hỏi gộp "có điều khoản change order" và "Công ty được tính phí việc phát sinh".
+  "12.V1":
+    cau_hoi: "Hợp đồng có điều khoản yêu cầu thay đổi (change order) cho phép Công ty tính phí cho công việc phát sinh không?"
+    thoa_khi: khong
+  "12.V2":
+    cau_hoi: "Hợp đồng có cho phép thay đổi giá mà không dựa trên căn cứ nêu trong Hợp đồng không?"
+    thoa_khi: co
+  "12.V3":
+    cau_hoi: "Hợp đồng có quy định thanh toán bằng ngoại tệ trong khi Khách hàng là doanh nghiệp Việt Nam không?"
+    thoa_khi: co
+
+  # Mục 13. SLA
+  "13.D1":
+    cau_hoi: "SLA có được định nghĩa bằng chỉ số đo lường được (uptime %, thời gian phản hồi theo mức P1/P2/P3) không?"
+    thoa_khi: co
+  "13.D2":
+    cau_hoi: "Hợp đồng có cơ chế đo lường SLA rõ ràng không?"
+    thoa_khi: co
+  # XEM KỸ: "Nếu …"; Hợp đồng không có SLA thì không tính là Vi phạm này.
+  "13.V1":
+    cau_hoi: "Nếu Hợp đồng có SLA, Hợp đồng có giới hạn tối đa cho mức giảm trừ/service credit khi vi phạm SLA không?"
+    thoa_khi: khong
+  "13.V2":
+    cau_hoi: "SLA trong Hợp đồng có vượt quá khả năng thực tế dựa trên giá trị Hợp đồng và thời gian thực hiện không?"
+    thoa_khi: co
+
+  # Mục 14. Cam kết hỗ trợ, nhân sự
+  "14.D1":
+    cau_hoi: "Mọi cam kết trong Hợp đồng có được đối chiếu với năng lực thực tế của Công ty (nhân sự, hạ tầng, ca trực) không?"
+    thoa_khi: co
+  "14.D2":
+    cau_hoi: "Cam kết hỗ trợ ngoài giờ hành chính có phụ phí hoặc giới hạn số lần mỗi tháng không?"
+    thoa_khi: co
+  "14.D3":
+    cau_hoi: "Hợp đồng có chỉ định nhân sự chủ chốt và có quy trình thay thế nhân sự chủ chốt không?"
+    thoa_khi: co
+  "14.L1":
+    cau_hoi: "Công ty có cam kết hỗ trợ 24/7 không?"
+    thoa_khi: co
+  "14.V1":
+    cau_hoi: "Hợp đồng có cam kết vượt khả năng thực tế của Công ty không?"
+    thoa_khi: co
+  # XEM KỸ: "Nếu …"; không cam kết hỗ trợ ngoài giờ thì không tính là Vi phạm này.
+  "14.V2":
+    cau_hoi: "Nếu Công ty cam kết hỗ trợ ngoài giờ hành chính, cam kết đó có kèm phụ phí không?"
+    thoa_khi: khong
+  "14.V3":
+    cau_hoi: "Hợp đồng có cam kết trách nhiệm của Công ty vượt quá giá trị Hợp đồng không?"
+    thoa_khi: co
+
+  # Mục 15. Phạm vi, nghiệm thu
+  "15.D1":
+    cau_hoi: "Sản phẩm bàn giao (deliverables) có được liệt kê cụ thể, đo lường được không?"
+    thoa_khi: co
+  "15.D2":
+    cau_hoi: "Hợp đồng có tiêu chí nghiệm thu định lượng (số test case, tỷ lệ pass, chỉ số hiệu năng) không?"
+    thoa_khi: co
+  "15.D3":
+    cau_hoi: "Thời hạn nghiệm thu có được xác định bằng số ngày không?"
+    thoa_khi: co
+  "15.D4":
+    cau_hoi: "Hợp đồng có điều khoản nghiệm thu rõ ràng không?"
+    thoa_khi: co
+  "15.D5":
+    cau_hoi: "Hợp đồng có cơ chế xử lý lỗi (defect) phân loại theo mức độ nghiêm trọng không?"
+    thoa_khi: co
+  # XEM KỸ: "Nếu …"; không có tiêu chí nghiệm thu thì thuộc 15.V1, không tính là Lưu ý này.
+  "15.L1":
+    cau_hoi: "Nếu Hợp đồng có tiêu chí nghiệm thu, các tiêu chí đó có thước đo cụ thể (số lượng, tỷ lệ, chỉ số) không?"
+    thoa_khi: khong
+  "15.V1":
+    cau_hoi: "Hợp đồng có tiêu chí nghiệm thu không?"
+    thoa_khi: khong
+  "15.V2":
+    cau_hoi: "Hợp đồng có quy định nghiệm thu mặc nhiên (coi như đã nghiệm thu) khi Khách hàng không ký/không phản hồi trong thời hạn không?"
+    thoa_khi: khong
+  "15.V3":
+    cau_hoi: "Việc nghiệm thu có chỉ được thực hiện sau khi bên thứ ba thực hiện nghiệm thu không?"
+    thoa_khi: co
+
+  # Mục 16. Tiến độ, bất khả kháng
+  "16.D1":
+    cau_hoi: "Milestone có gắn với ngày cụ thể hoặc điều kiện rõ ràng không?"
+    thoa_khi: co
+  "16.D2":
+    cau_hoi: "Hợp đồng có điều khoản điều chỉnh tiến độ khi Khách hàng chậm cung cấp thông tin/phê duyệt không?"
+    thoa_khi: co
+  "16.D3":
+    cau_hoi: "Sự kiện bất khả kháng có được định nghĩa rõ không?"
+    thoa_khi: co
+  # XEM KỸ: "Nếu …".
+  "16.L1":
+    cau_hoi: "Nếu tiến độ phụ thuộc vào Khách hàng hoặc bên thứ ba (cung cấp dữ liệu, API...), Hợp đồng có điều khoản giãn tiến độ tương ứng không?"
+    thoa_khi: khong
+  # XEM KỸ: hỏi thành "có cơ chế điều chỉnh hoặc miễn phạt khi chậm do Khách hàng".
+  "16.V1":
+    cau_hoi: "Hợp đồng có cơ chế điều chỉnh milestone, hoặc miễn phạt chậm tiến độ cho Công ty, khi nguyên nhân chậm từ phía Khách hàng không?"
+    thoa_khi: khong
+  "16.V2":
+    cau_hoi: "Hợp đồng có điều khoản bất khả kháng không?"
+    thoa_khi: khong
+
+  # Mục 17. Nhân sự, bàn giao, bảo hành
+  "17.D1":
+    cau_hoi: "Hợp đồng có chỉ định đầu mối phụ trách của các bên (tên hoặc vai trò) không?"
+    thoa_khi: co
+  "17.D3":
+    cau_hoi: "Danh mục tài liệu bàn giao có được liệt kê đầy đủ không?"
+    thoa_khi: co
+  "17.D4":
+    cau_hoi: "Hợp đồng có xác định rõ thời gian và phạm vi bảo hành không?"
+    thoa_khi: co
+  "17.D6":
+    cau_hoi: "Hợp đồng có điều khoản không lôi kéo nhân sự (non-solicitation) cấm Khách hàng tuyển dụng nhân sự Công ty không?"
+    thoa_khi: co
+  # XEM KỸ: "Nếu …"; không quy định bảo hành thì không tính là Lưu ý này.
+  "17.L1":
+    cau_hoi: "Nếu Hợp đồng quy định thời gian bảo hành, Hợp đồng có xác định phạm vi bảo hành không?"
+    thoa_khi: khong
+  "17.V1":
+    cau_hoi: "Hợp đồng có điều khoản không lôi kéo nhân sự (non-solicitation) cấm Khách hàng tuyển dụng nhân sự Công ty không?"
+    thoa_khi: khong
+  "17.V2":
+    cau_hoi: "Hợp đồng có danh mục bàn giao cụ thể không?"
+    thoa_khi: khong
+  "17.V3":
+    cau_hoi: "Hợp đồng có chỉ định đầu mối phụ trách của các bên (tên hoặc vai trò) không?"
+    thoa_khi: khong

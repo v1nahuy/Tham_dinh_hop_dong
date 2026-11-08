@@ -53,13 +53,19 @@ def test_prompt_neu_quy_uoc_va_cac_ben():
     assert "Công ty là Bên B" in p
 
 
-def test_prompt_co_du_tieu_chi_cua_muc():
-    p = prompt(7)
+@pytest.mark.parametrize("so", [7, 8])
+def test_prompt_hoi_cau_hoi_su_kien_thay_cho_mo_ta_tieu_chi(so):
+    """Model chỉ trả lời câu hỏi về Hợp đồng, không biết Tiêu chí nào mô tả rủi ro, nên không phải tự đảo chiều (issue 19)."""
+    p = prompt(so)
 
-    for ds in MUC[7].tieu_chi.values():
+    for ds in MUC[so].tieu_chi.values():
         for tc in ds:
-            assert tc.ma in p and tc.mo_ta in p
-    assert MUC[7].cau_hoi in p
+            assert tc.ma in p
+            if tc.loai == "dinh_tinh":
+                assert tc.cau_hoi in p and tc.mo_ta not in p, tc.ma
+    for nhan in ("[Đạt]", "[Lưu ý]", "[Vi phạm]", "danh_gia"):
+        assert nhan not in p
+    assert MUC[so].cau_hoi in p
 
 
 def test_tieu_chi_dinh_luong_va_co_dieu_kien_neu_truong_va_don_vi():
@@ -78,11 +84,12 @@ def test_danh_muc_chi_dua_vao_muc_khai_bao():
 
 def tra_loi_muc_7(**sua):
     tl = {
-        tc.ma: {"danh_gia": "thoa", "ly_do": "…", "trich_dan": [{"so_hieu": "10.1", "nguyen_van": "Mức phạt"}]}
+        tc.ma: {"tra_loi": "co", "ly_do": "…", "trich_dan": [{"so_hieu": "10.1", "nguyen_van": "Mức phạt"}]}
         for ds in MUC[7].tieu_chi.values()
         for tc in ds
     }
     for tc in (t for ds in MUC[7].tieu_chi.values() for t in ds if t.loai == "dinh_luong"):
+        del tl[tc.ma]["tra_loi"]  # định lượng: chỉ trích giá trị, code so ngưỡng
         tl[tc.ma]["gia_tri"] = 8
     tl.update(sua)
     return tl
@@ -98,7 +105,8 @@ def test_schema_nhan_cau_tra_loi_dung():
         lambda tl: tl.pop("7.D1"),  # thiếu mã
         lambda tl: tl.update({"7.X9": tl["7.L1"]}),  # thừa mã
         lambda tl: tl["7.D1"].pop("gia_tri"),  # định lượng thiếu giá trị
-        lambda tl: tl["7.L1"].update(danh_gia="dat"),  # đánh giá sai giá trị
+        lambda tl: tl["7.L1"].update(tra_loi="thoa"),  # câu trả lời sự kiện chỉ là co/khong/khong_ro
+        lambda tl: tl["7.D1"].update(tra_loi="co"),  # định lượng không trả lời câu hỏi
     ],
 )
 def test_schema_tu_choi_cau_tra_loi_sai(sua_doi):
@@ -116,14 +124,23 @@ def test_schema_tieu_chi_co_dieu_kien_bat_buoc_gia_tri_dieu_kien():
 
 
 @pytest.mark.parametrize("so", [1, 7])
-def test_schema_dat_danh_gia_truoc_ly_do(so):
-    """Model sinh JSON theo thứ tự thuộc tính. Đã thử đặt ly_do trước (issue 17, Q127): model viết lý do thành nhận xét
-    "Hợp đồng tốt/xấu" rồi ghi "tốt" thành `thoa`, hiểu ngược nghĩa ở Tiêu chí Vi phạm/Lưu ý (79→83/122, 12 đúng→sai)."""
+def test_schema_dat_tra_loi_truoc_ly_do(so):
+    """Model sinh JSON theo thứ tự thuộc tính. Đã thử đặt ly_do trước danh_gia (issue 17, Q127): model viết lý do thành
+    nhận xét "Hợp đồng tốt/xấu" rồi ghi "tốt" thành `thoa`, hiểu ngược nghĩa ở Tiêu chí Vi phạm/Lưu ý (79→83/122,
+    12 đúng→sai). Câu trả lời sự kiện (issue 19) giữ vị trí cũ của danh_gia."""
     for ma, item in schema(so)["properties"].items():
         thu_tu = list(item["properties"])
-        assert thu_tu.index("danh_gia") < thu_tu.index("ly_do"), ma
+        if "tra_loi" in thu_tu:
+            assert thu_tu.index("tra_loi") < thu_tu.index("ly_do"), ma
     p = prompt(so)
-    assert p.index("danh_gia", p.index("Trả lời bằng JSON")) < p.index("ly_do", p.index("Trả lời bằng JSON"))
+    assert p.index("tra_loi", p.index("Trả lời bằng JSON")) < p.index("ly_do", p.index("Trả lời bằng JSON"))
+
+
+def test_schema_tieu_chi_dinh_luong_chi_trich_gia_tri():
+    item = schema(7)["properties"]["7.D1"]
+
+    assert "gia_tri" in item["required"] and "tra_loi" not in item["properties"]
+    assert schema(7)["properties"]["7.L1"]["properties"]["tra_loi"] == {"enum": ["co", "khong", "khong_ro"]}
 
 
 def test_prompt_cac_ben_chi_dung_phan_mo_dau():

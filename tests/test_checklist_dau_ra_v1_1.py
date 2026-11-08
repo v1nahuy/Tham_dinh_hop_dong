@@ -78,3 +78,10 @@ def test_danh_muc_da_soan_va_moi_muc_co_nguon(checklist, ma):
     assert danh_muc["muc"], f"Danh mục {ma} rỗng"
     for muc in danh_muc["muc"]:
         assert muc.get("nguon") or danh_muc.get("nguon"), f"Danh mục {ma}, mục {muc['ma']}: thiếu nguồn"
+
+
+def test_moi_tieu_chi_dinh_tinh_co_cau_hoi_su_kien(checklist):
+    tieu_chi = {tc.ma: tc for m in checklist.muc for ds in m.tieu_chi.values() for tc in ds}
+    assert all(tc.cau_hoi for tc in tieu_chi.values() if tc.loai == "dinh_tinh")
+    assert tieu_chi["8.V2"].thoa_khi == "khong"  # "Không có điều khoản về hậu quả chấm dứt"
+    assert tieu_chi["8.V2"].cau_hoi == "Hợp đồng có điều khoản về hậu quả chấm dứt Hợp đồng không?"

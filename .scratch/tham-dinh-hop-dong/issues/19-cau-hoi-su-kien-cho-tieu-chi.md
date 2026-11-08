@@ -46,3 +46,12 @@ Gốc của lỗi: model phải tự kết hợp hai bước, "Hợp đồng có
 - Ở Tiêu chí định lượng, `danh_gia_llm` không được dùng (`_danh_gia_cuoi` chỉ so `gia_tri`).
 
 **2026-11-08, triage xong.** Người dùng đồng ý Q151–Q158. Chuyển `ready-for-agent`.
+
+**2026-11-08, quyết định Q159–Q162 và đã làm.**
+- Q162: `git init` cục bộ (không remote), `.gitignore` loại `data/`, `eval/`, `sample/`, `models/`, `.venv/`, `.pytest_cache/`, `*.egg-info/`. Mốc trước issue này: commit `a60f599`.
+- Q159: soạn `checklists/cau-hoi-su-kien/dau-ra-v1.1.yaml` trước (111 câu, `# XEM KỸ` ở 20 câu), chờ người dùng duyệt; code làm song song. Tiêu chí là phần bù của nhau dùng chung câu hỏi (2.D1/2.V1, 6.D1/6.L1, 7.D3/7.L2, 17.D1/17.V3, 17.D6/17.V1).
+- Q160/S1: `load_checklist` gắn `cau_hoi`/`thoa_khi` vào `TieuChi` định tính từ `cau-hoi-su-kien/<tên file checklist>`; báo lỗi khi thiếu file, sai tên checklist, thiếu/thừa mã, Tiêu chí định lượng có câu hỏi, `thoa_khi` sai, hoặc câu "Nếu …" sai chiều (Đạt phải `co`, Lưu ý/Vi phạm phải `khong`; quy tắc này bắt được một lỗi soạn ở 3.L1).
+- S2: prompt "Các câu hỏi cần trả lời", không còn mô tả và nhãn Tiêu chí định tính; `HUONG_DAN_CHUNG`/`NHAC_LAI_QUY_UOC` viết theo có/không. Schema: `tra_loi` (`co`/`khong`/`khong_ro`) trước `ly_do`; định lượng chỉ `gia_tri`. Đuôi prompt ngắn hơn bản cũ (Mục 1: 1380/1566 ký tự).
+- S3: `quy_doi(tc, tra_loi)`; `danh_gia_llm` là giá trị quy đổi (None ở định lượng); `DanhGiaDeXuat` thêm `cau_hoi`, `tra_loi`. S4: Lượt cũ nạp được.
+- UI `ket_qua.py`: không hiện "(model trả lời …)" khi `danh_gia_llm` là None. `ModelGia` trong test nhận kịch bản theo `danh_gia` và đổi ra `tra_loi`.
+- 377 test thường xanh (cả `test_app`). Test `pytest -m llm` không phụ thuộc schema, chưa chạy.

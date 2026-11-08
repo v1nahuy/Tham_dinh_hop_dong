@@ -26,10 +26,27 @@ VAN_BAN = VanBanHieuLuc(
 )
 THAT = {"so_hieu": "Điều 10", "nguyen_van": "Mức phạt không vượt quá 8% giá trị phần nghĩa vụ bị vi phạm"}
 BIA = {"so_hieu": "Điều 10", "nguyen_van": "Bên A được miễn trừ mọi trách nhiệm"}
+TIEU_CHI = {tc.ma: tc for m in CHECKLIST.muc for ds in m.tieu_chi.values() for tc in ds}
+
+
+def theo_danh_gia(ma, tl):
+    """Kịch bản viết theo Đánh giá mong muốn ("danh_gia": "thoa") đổi thành câu trả lời sự kiện model sẽ trả."""
+    if "danh_gia" not in tl:
+        return tl
+    tl, tc = dict(tl), TIEU_CHI[ma]
+    dg = tl.pop("danh_gia")
+    if tc.loai == "dinh_tinh":
+        nguoc = "khong" if tc.thoa_khi == "co" else "co"
+        tl["tra_loi"] = {"thoa": tc.thoa_khi, "khong_thoa": nguoc}.get(dg, dg)
+    return tl
 
 
 class ModelGia:
-    """Thay cho LocalClient: trả lời theo kịch bản và ghi lại các prompt đã nhận."""
+    """Thay cho LocalClient: trả lời theo kịch bản và ghi lại các prompt đã nhận.
+
+    Mặc định Tiêu chí Đạt thỏa, Tiêu chí khác không thỏa. `sua_muc` ghi câu trả lời sự kiện ("tra_loi") hoặc Đánh giá
+    mong muốn ("danh_gia", đổi ra câu trả lời theo chiều quy đổi của Tiêu chí).
+    """
 
     def __init__(self, sua_muc=None, loi_muc=None, cat_muc=None):
         self.prompt: list[str] = []
@@ -58,8 +75,8 @@ class ModelGia:
                 tl["gia_tri"] = 8
             if "gia_tri_dieu_kien" in tc["properties"]:
                 tl["gia_tri_dieu_kien"] = 39_820_000_000
-            tra_loi[ma] = tl
-        tra_loi.update(self.sua_muc.get(so, {}))
+            tra_loi[ma] = theo_danh_gia(ma, tl)
+        tra_loi.update({ma: theo_danh_gia(ma, tl) for ma, tl in self.sua_muc.get(so, {}).items()})
         return tra_loi
 
 
@@ -99,9 +116,42 @@ def test_tieu_chi_dinh_luong_do_code_so_sanh():
 
     kq = tham_dinh(VAN_BAN, CHECKLIST, model)
 
-    assert tieu_chi(kq, "7.D1").danh_gia_llm == "thoa"
-    assert tieu_chi(kq, "7.D1").danh_gia == "khong_thoa"
+    d1 = tieu_chi(kq, "7.D1")
+    assert (d1.danh_gia_llm, d1.cau_hoi, d1.tra_loi) == (None, None, None)  # model chỉ trích giá trị
+    assert d1.danh_gia == "khong_thoa"
     assert muc(kq, 7).ket_qua.ket_qua == "vi_pham"
+
+
+def test_cau_tra_loi_su_kien_quy_ra_danh_gia_theo_chieu_cua_tieu_chi():
+    # 8.V2 "Không có điều khoản về hậu quả chấm dứt" hỏi "Hợp đồng có điều khoản về hậu quả chấm dứt không?"
+    model = ModelGia(sua_muc={8: {
+        "8.V2": {"tra_loi": "co", "ly_do": "Điều 12.4 quy định hậu quả chấm dứt", "trich_dan": [THAT]},
+        "8.V1": {"tra_loi": "co", "ly_do": "Khách hàng chấm dứt bất kỳ lúc nào", "trich_dan": [THAT]},
+        "8.D1": {"tra_loi": "khong_ro", "ly_do": "…", "trich_dan": [THAT]},
+    }})
+
+    kq = tham_dinh(VAN_BAN, CHECKLIST, model)
+
+    v2 = tieu_chi(kq, "8.V2")
+    assert (v2.tra_loi, v2.danh_gia_llm, v2.danh_gia) == ("co", "khong_thoa", "khong_thoa")
+    assert v2.cau_hoi == "Hợp đồng có điều khoản về hậu quả chấm dứt Hợp đồng không?"
+    assert (tieu_chi(kq, "8.V1").tra_loi, tieu_chi(kq, "8.V1").danh_gia) == ("co", "thoa")
+    assert tieu_chi(kq, "8.D1").danh_gia == "khong_ro"
+    assert muc(kq, 8).ket_qua.ket_qua == "vi_pham"
+    assert muc(kq, 8).ket_qua.tieu_chi_quyet_dinh == ("8.V1",)
+
+
+def test_nap_lai_luot_cu_chua_co_cau_hoi_su_kien(tmp_path):
+    file = luu_luot(tham_dinh(VAN_BAN, CHECKLIST, ModelGia()), tmp_path)
+    d = json.loads(file.read_text(encoding="utf-8"))
+    for m in d["muc"]:
+        for t in m["tieu_chi"]:
+            del t["cau_hoi"], t["tra_loi"]
+    file.write_text(json.dumps(d, ensure_ascii=False), encoding="utf-8")
+
+    tc = tieu_chi(nap_luot(file), "8.V2")
+
+    assert (tc.cau_hoi, tc.tra_loi) == (None, None)
 
 
 def test_kiem_tra_moi_trich_dan():

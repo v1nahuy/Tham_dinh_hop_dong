@@ -17,10 +17,8 @@ import yaml
 from thamdinh.checklist import MucChecklist, PhienBanChecklist, TieuChi
 from thamdinh.llm import LLMBiCatError, LLMClient, LLMResponseError
 from thamdinh.so_hoa import VanBanHieuLuc, hash_noi_dung
-from thamdinh.tong_hop import DanhGiaTieuChi, KetQuaMuc, tong_hop_muc
+from thamdinh.tong_hop import KHONG_RO, KHONG_THOA, THOA, DanhGiaTieuChi, KetQuaMuc, tong_hop_muc
 from thamdinh.trich_dan import TrichDan, kiem_tra_trich_dan
-
-TEN_MUC_KET_QUA = {"dat": "Đạt", "luu_y": "Lưu ý", "vi_pham": "Vi phạm"}
 
 HUONG_DAN_CHUNG = """\
 Bạn là chuyên viên pháp chế của Công ty (VTIT), thẩm định Dự thảo Hợp đồng đầu ra dưới đây để bảo vệ quyền lợi của Công ty.
@@ -30,17 +28,16 @@ Quy ước:
 - Hợp đồng có thể còn nhãn sửa đổi: [xóa: …] là chữ đã bị xóa, KHÔNG còn hiệu lực; [thêm: …] là chữ mới thêm; \
 [sửa: …] là đoạn được tô màu, vẫn có hiệu lực. Đánh giá theo nội dung sau khi chấp nhận các thay đổi.
 - Chỉ dựa vào nội dung Hợp đồng và Danh mục tham chiếu được cung cấp.
-- Mỗi Tiêu chí được đánh giá là "thoa", "khong_thoa" hoặc "khong_ro". Dùng "khong_ro" khi Hợp đồng không đủ thông tin \
-để kết luận, hoặc khi cần thông tin ngoài Hợp đồng (giấy ủy quyền, năng lực thực tế của Công ty…).
-- Ý nghĩa của danh_gia: "thoa" nghĩa là ĐIỀU ĐƯỢC MÔ TẢ TRONG TIÊU CHÍ ĐÚNG VỚI HỢP ĐỒNG, "khong_thoa" nghĩa là điều đó KHÔNG đúng \
-với Hợp đồng. Áp dụng như nhau cho mọi Tiêu chí, kể cả Tiêu chí [Vi phạm] và [Lưu ý]: chúng mô tả một vấn đề xấu, nên "thoa" nghĩa \
-là vấn đề đó CÓ xảy ra. Ví dụ: Tiêu chí [Vi phạm] "Không có điều khoản bất khả kháng", Hợp đồng có Điều 11 về bất khả kháng thì là "khong_thoa".
-- Xét chặt: Tiêu chí nêu nhiều yếu tố thì chỉ "thoa" khi Hợp đồng có ĐỦ từng yếu tố; thiếu một yếu tố, hoặc các điều khoản \
-mâu thuẫn nhau, là "khong_thoa". Có điều khoản cùng chủ đề chưa đủ để kết luận "thoa": đối chiếu từng yếu tố và ghi trong \
-ly_do yếu tố nào có, yếu tố nào thiếu. Ví dụ: Tiêu chí [Đạt] "Có điều khoản bảo hiểm, ghi rõ bên mua bảo hiểm và số tiền \
-bảo hiểm", Hợp đồng chỉ ghi Bên B mua bảo hiểm mà không ghi số tiền thì là "khong_thoa".
-- Tiêu chí bắt đầu bằng "Nếu …" được coi là "thoa" khi điều kiện không xảy ra. Ví dụ: "Nếu có thuê kho bãi, ghi rõ bên \
-chịu chi phí lưu kho", Hợp đồng không có thuê kho bãi thì là "thoa".
+- Mỗi câu hỏi về Hợp đồng được trả lời là "co", "khong" hoặc "khong_ro": "co" khi Hợp đồng đúng như câu hỏi nêu, "khong" \
+khi không. Dùng "khong_ro" khi Hợp đồng không đủ thông tin để trả lời, hoặc khi cần thông tin ngoài Hợp đồng (giấy ủy \
+quyền, năng lực thực tế của Công ty…). Ví dụ: câu hỏi "Hợp đồng có điều khoản bất khả kháng không?", Hợp đồng có Điều 11 \
+về bất khả kháng thì là "co".
+- Xét chặt: câu hỏi nêu nhiều yếu tố thì chỉ trả lời "co" khi Hợp đồng có ĐỦ từng yếu tố; thiếu một yếu tố, hoặc các điều \
+khoản mâu thuẫn nhau, là "khong". Có điều khoản cùng chủ đề chưa đủ để trả lời "co": đối chiếu từng yếu tố và ghi trong \
+ly_do yếu tố nào có, yếu tố nào thiếu. Ví dụ: câu hỏi "Hợp đồng có điều khoản bảo hiểm, ghi rõ bên mua bảo hiểm và số tiền \
+bảo hiểm không?", Hợp đồng chỉ ghi Bên B mua bảo hiểm mà không ghi số tiền thì là "khong".
+- Câu hỏi bắt đầu bằng "Nếu …" được trả lời "co" khi điều kiện không xảy ra. Ví dụ: "Nếu có thuê kho bãi, Hợp đồng có ghi \
+rõ bên chịu chi phí lưu kho không?", Hợp đồng không có thuê kho bãi thì là "co".
 - Trích dẫn: chép NGUYÊN VĂN câu trong Hợp đồng, không diễn đạt lại; "so_hieu" là số hiệu Điều khoản ghi sau dấu "###". \
 Có thể lược bớt giữa câu bằng "…". Nếu Hợp đồng không có điều khoản liên quan, để "trich_dan" rỗng và ghi "ly_do" là \
 "Không tìm thấy điều khoản về …".
@@ -63,11 +60,9 @@ dòng "BÊN A:" hay dòng "BÊN B:"?
 
 NHAC_LAI_QUY_UOC = """\
 Nhắc lại quy ước:
-- Ý nghĩa của danh_gia: "thoa" nghĩa là ĐIỀU ĐƯỢC MÔ TẢ TRONG TIÊU CHÍ ĐÚNG VỚI HỢP ĐỒNG, "khong_thoa" nghĩa là điều đó KHÔNG đúng \
-với Hợp đồng. Áp dụng như nhau cho mọi Tiêu chí, kể cả Tiêu chí [Vi phạm] và [Lưu ý]: chúng mô tả một vấn đề xấu, nên "thoa" nghĩa \
-là vấn đề đó CÓ xảy ra.
-- danh_gia là "thoa", "khong_thoa" hoặc "khong_ro" (khong_ro khi Hợp đồng không đủ thông tin hoặc cần thông tin ngoài \
-Hợp đồng). Tiêu chí bắt đầu bằng "Nếu …" là "thoa" khi điều kiện không xảy ra.
+- tra_loi là "co" khi Hợp đồng đúng như câu hỏi nêu, "khong" khi không, "khong_ro" khi Hợp đồng không đủ thông tin hoặc \
+cần thông tin ngoài Hợp đồng. Câu hỏi nêu nhiều yếu tố chỉ "co" khi có ĐỦ. Câu hỏi bắt đầu bằng "Nếu …" là "co" khi \
+điều kiện không xảy ra.
 - Bỏ qua chữ trong [xóa: …]; chữ trong [thêm: …] và [sửa: …] có hiệu lực.
 - trich_dan: chép NGUYÊN VĂN câu trong Hợp đồng; "so_hieu" là số hiệu ghi sau dấu "###". Không có điều khoản liên quan \
 thì để trich_dan rỗng và ly_do là "Không tìm thấy điều khoản về …".
@@ -77,7 +72,7 @@ thì để trich_dan rỗng và ly_do là "Không tìm thấy điều khoản v�
 # Giữ phần đuôi prompt của Mục 1 (từ "MỤC CHECKLIST" trở đi) dưới 516 token: Qwen3.5 chỉ dùng lại được phần đầu từ điểm lưu
 # trạng thái, cách cuối prompt 516 token. Đuôi dài hơn thì chế độ toàn văn đọc lại cả Hợp đồng ở mọi Mục (80 phút thay vì 15 phút).
 
-DANH_GIA = ["thoa", "khong_thoa", "khong_ro"]
+TRA_LOI = ["co", "khong", "khong_ro"]
 # Giới hạn số lượng và độ dài trích dẫn: llama-server ép theo schema, chặn model chép lặp không dừng
 TOI_DA_KY_TU_TRICH_DAN = 300
 SCHEMA_TRICH_DAN = {
@@ -160,14 +155,14 @@ def xay_prompt_muc(
         phan.append("Căn cứ pháp lý: " + "; ".join(muc.can_cu_phap_ly))
     for ma in muc.danh_muc:
         phan.append(f"\nDanh mục tham chiếu '{ma}':\n{_danh_muc(checklist, ma)}")
-    phan.append("\nCác Tiêu chí cần đánh giá:")
-    for muc_kq, ds in muc.tieu_chi.items():
-        for tc in ds:
-            if tc in tieu_chi:
-                phan.append(f"- {tc.ma} [{TEN_MUC_KET_QUA[muc_kq]}]: {tc.mo_ta}{_huong_dan_gia_tri(tc)}")
+    # Chỉ đưa câu hỏi sự kiện, không đưa mô tả và loại Tiêu chí: model không phải tự đảo chiều ở Tiêu chí mô tả rủi ro
+    # (issue 19). Tiêu chí định lượng chỉ cần trích giá trị.
+    phan.append("\nCác câu hỏi cần trả lời:")
+    for tc in tieu_chi:
+        phan.append(f"- {tc.ma}: {tc.cau_hoi or tc.mo_ta}{_huong_dan_gia_tri(tc)}")
     phan.append("\n" + NHAC_LAI_QUY_UOC.rstrip())
     phan.append(
-        "\nTrả lời bằng JSON: với mỗi mã Tiêu chí ở trên, ghi danh_gia, ly_do, trich_dan "
+        "\nTrả lời bằng JSON: với mỗi mã ở trên, ghi tra_loi (với câu hỏi), ly_do, trich_dan "
         "(và gia_tri / gia_tri_dieu_kien khi được yêu cầu; ghi null nếu Hợp đồng không nêu)."
     )
 
@@ -220,10 +215,13 @@ def _huong_dan_gia_tri(tc: TieuChi) -> str:
 
 
 def _schema_tieu_chi(tc: TieuChi) -> dict[str, Any]:
-    # Thứ tự thuộc tính là thứ tự model viết. Đặt ly_do trước danh_gia làm model hiểu ngược `thoa` (issue 17, Q127).
-    properties: dict[str, Any] = {"danh_gia": {"enum": DANH_GIA}}
+    # Thứ tự thuộc tính là thứ tự model viết. Đặt ly_do trước danh_gia làm model hiểu ngược `thoa` (issue 17, Q127);
+    # tra_loi giữ vị trí đó.
+    properties: dict[str, Any] = {}
     if tc.loai == "dinh_luong":
         properties["gia_tri"] = {"type": ["number", "null"]}
+    else:
+        properties["tra_loi"] = {"enum": TRA_LOI}
     if tc.dieu_kien:
         properties["gia_tri_dieu_kien"] = {"type": ["number", "null"]}
     properties["ly_do"] = {"type": "string"}
@@ -265,12 +263,14 @@ class DanhGiaDeXuat:
     muc_ket_qua: str  # dat | luu_y | vi_pham
     mo_ta: str
     danh_gia: str  # sau khi code so sánh định lượng / điều kiện
-    danh_gia_llm: str
+    danh_gia_llm: str | None  # quy đổi từ câu trả lời sự kiện; None với Tiêu chí định lượng
     gia_tri: float | None
     gia_tri_dieu_kien: float | None
     ly_do: str
     trich_dan: tuple[TrichDanDaKiemTra, ...]
     khong_tim_thay_dieu_khoan: bool
+    cau_hoi: str | None = None  # câu hỏi sự kiện đã hỏi model (issue 19); None ở Lượt cũ và Tiêu chí định lượng
+    tra_loi: str | None = None  # co | khong | khong_ro
 
 
 @dataclass(frozen=True)
@@ -487,9 +487,12 @@ def _danh_gia_muc(
     except LLMResponseError as e:
         return KetQuaMucDeXuat(muc.so, muc.cau_hoi, None, (), f"chưa đánh giá được: {e}")
 
+    theo_ma = {tc.ma: tc for ds in muc.tieu_chi.values() for tc in ds}
+    danh_gia_llm = {ma: quy_doi(theo_ma[ma], t.get("tra_loi")) for ma, t in tra_loi.items()}
     danh_gia = [
         DanhGiaTieuChi(
-            ma, t["danh_gia"], gia_tri=t.get("gia_tri"), gia_tri_dieu_kien=t.get("gia_tri_dieu_kien"), ly_do=t["ly_do"]
+            ma, danh_gia_llm[ma], gia_tri=t.get("gia_tri"), gia_tri_dieu_kien=t.get("gia_tri_dieu_kien"),
+            ly_do=t["ly_do"],
         )
         for ma, t in tra_loi.items()
     ]
@@ -510,15 +513,27 @@ def _danh_gia_muc(
                     muc_ket_qua=muc_kq,
                     mo_ta=tc.mo_ta,
                     danh_gia=tong_hop.danh_gia[tc.ma],
-                    danh_gia_llm=t["danh_gia"],
+                    danh_gia_llm=danh_gia_llm[tc.ma],
                     gia_tri=t.get("gia_tri"),
                     gia_tri_dieu_kien=t.get("gia_tri_dieu_kien"),
                     ly_do=t["ly_do"],
                     trich_dan=trich_dan,
                     khong_tim_thay_dieu_khoan=not trich_dan,
+                    cau_hoi=tc.cau_hoi,
+                    tra_loi=t.get("tra_loi"),
                 )
             )
     return KetQuaMucDeXuat(muc.so, muc.cau_hoi, tong_hop, tuple(tieu_chi), None)
+
+
+def quy_doi(tc: TieuChi, tra_loi: str | None) -> str | None:
+    """Câu trả lời sự kiện thành Đánh giá tiêu chí: trả lời bằng `thoa_khi` thì thỏa (issue 19).
+
+    Tiêu chí định lượng không có câu trả lời (None): code so ngưỡng.
+    """
+    if tra_loi is None or tra_loi == KHONG_RO:
+        return tra_loi
+    return THOA if tra_loi == tc.thoa_khi else KHONG_THOA
 
 
 def _kiem_tra(trich_dan: TrichDan, van_ban: VanBanHieuLuc) -> TrichDanDaKiemTra:
