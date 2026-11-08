@@ -1,6 +1,6 @@
 # 19 - Câu hỏi sự kiện cho Tiêu chí
 
-Status: ready-for-agent
+Status: wontfix
 
 ## Vấn đề
 
@@ -55,3 +55,17 @@ Gốc của lỗi: model phải tự kết hợp hai bước, "Hợp đồng có
 - S3: `quy_doi(tc, tra_loi)`; `danh_gia_llm` là giá trị quy đổi (None ở định lượng); `DanhGiaDeXuat` thêm `cau_hoi`, `tra_loi`. S4: Lượt cũ nạp được.
 - UI `ket_qua.py`: không hiện "(model trả lời …)" khi `danh_gia_llm` là None. `ModelGia` trong test nhận kịch bản theo `danh_gia` và đổi ra `tra_loi`.
 - 377 test thường xanh (cả `test_app`). Test `pytest -m llm` không phụ thuộc schema, chưa chạy.
+
+**2026-11-09, kết quả bước 1 (Q157): không đạt.** Chạy lại Mục 1, 5, 11, 16 với file câu hỏi bản nháp (commit `25b3553`), ngân sách 16k, 23:21–01:31. Lượt mới `d8c20de88c96-20261108T232419380003`, báo cáo `eval/so-sanh/lan-chay-d8c20de88c96-20261108T232419380003.md`.
+- Đúng theo Bộ chuẩn trên 4 Mục: 18/28 → 18/28 (+0); sai→đúng 5, đúng→sai 5 (ngưỡng ≤ 2).
+- Ca đánh dấu tay bắt được 2/5 (ngưỡng ≥ 3): 1.V1, 5.L1. Chưa bắt: 1.V3, 11.D2, 16.D5 (định lượng, hướng này không chạm tới).
+- Sai→đúng: 1.V1, 5.L1, 5.V1, 11.L3, 16.L1.
+- Đúng→sai: 11.D3, 11.L1, 11.V1, 11.V3, 16.V1.
+- Phân loại các ca sai còn lại:
+  - `tra_loi` ngược với `ly_do` (loại lỗi hướng này nhắm vào, vẫn còn): 1.V3 (lý do "không có trường hợp nào" nhưng `co`), 11.V3 (lý do "không gây bất lợi" nhưng `co`).
+  - Không theo quy tắc "Nếu …" (điều kiện không xảy ra thì `co`): 11.D3 (`khong_ro`), 11.L1 (`khong`). Cả hai là câu `# XEM KỸ` hoặc dạng "Nếu …".
+  - Đọc sai nội dung: 16.V1 (lý do tự nêu "chỉ phạt khi do lỗi Bên B" nhưng trả lời không có miễn phạt).
+  - Khác về nhận định thuế GTGT: 11.D2 và 11.V1 nhất quán với nhau (model cho rằng áp 10% cho thuê phần mềm là đúng); Bộ chuẩn 11.V1 tự ghi "Cần xác minh".
+- Theo Q157 không chạy bước 2. Hai llama-server đã tắt.
+
+**2026-11-09, đóng `wontfix` (Q166–Q168).** Bỏ hướng câu hỏi sự kiện: không đạt bước 1, mức +0 nằm trong dao động, và lỗi `tra_loi` ngược `ly_do` (loại lỗi nhắm vào) vẫn còn. Không viết lại câu "Nếu …" để chạy lại. Code và file câu hỏi đưa về như mốc `a60f599` (vẫn còn trong lịch sử ở commit `25b3553`). Không thêm "Câu hỏi sự kiện" vào GLOSSARY.

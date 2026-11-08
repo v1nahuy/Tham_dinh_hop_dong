@@ -1,7 +1,7 @@
 """Nạp và kiểm tra Phiên bản checklist từ file YAML."""
 
 import re
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -11,8 +11,6 @@ import yaml
 MUC_KET_QUA = ("dat", "luu_y", "vi_pham")
 LOAI_TIEU_CHI = ("dinh_tinh", "dinh_luong")
 PHEP_SO_SANH = ("<", "<=", ">", ">=", "==")
-TRA_LOI_SU_KIEN = ("co", "khong")
-THU_MUC_CAU_HOI_SU_KIEN = "cau-hoi-su-kien"
 GHI_CHU_CAN_THONG_TIN_NGOAI = "các tiêu chí này cần thông tin ngoài Hợp đồng"
 
 
@@ -40,10 +38,6 @@ class TieuChi:
     dieu_kien: DieuKien | None = None
     # Khi Kết quả là Vi phạm do tiêu chí này, kèm GHI_CHU_CAN_THONG_TIN_NGOAI.
     can_thong_tin_ngoai: bool = False
-    # Câu hỏi sự kiện (issue 19): model trả lời co/khong về Hợp đồng; trả lời bằng `thoa_khi` thì Tiêu chí thỏa.
-    # Chỉ Tiêu chí định tính có; nạp từ file cùng tên trong thư mục cau-hoi-su-kien cạnh file checklist.
-    cau_hoi: str | None = None
-    thoa_khi: str | None = None
 
 
 @dataclass(frozen=True)
@@ -92,7 +86,6 @@ def load_checklist(path: str | Path) -> PhienBanChecklist:
             raise ChecklistError(f"Mục {item.so}: số mục bị trùng")
         so_da_gap.add(item.so)
         muc.append(item)
-    muc = _gan_cau_hoi_su_kien(path, f"{data['ma']} {data['phien_ban']}", muc)
 
     return PhienBanChecklist(
         ma=data["ma"],
@@ -178,43 +171,6 @@ def _dieu_kien(d: dict[str, Any] | None, vi_tri: str) -> DieuKien | None:
             f"{vi_tri}: dieu_kien có phep_so_sanh '{d['phep_so_sanh']}' không hợp lệ, phải là một trong {PHEP_SO_SANH}"
         )
     return DieuKien(truong=d["truong"], phep_so_sanh=d["phep_so_sanh"], nguong=d["nguong"])
-
-
-def _gan_cau_hoi_su_kien(path: Path, ten_checklist: str, muc: list[MucChecklist]) -> list[MucChecklist]:
-    """Gắn câu hỏi sự kiện vào từng Tiêu chí định tính; file phải phủ đúng các Tiêu chí định tính, không thừa không thiếu."""
-    file = path.parent / THU_MUC_CAU_HOI_SU_KIEN / path.name
-    if not file.is_file():
-        raise ChecklistError(f"Câu hỏi sự kiện: không tìm thấy file {file}")
-    data = yaml.safe_load(file.read_text(encoding="utf-8")) or {}
-    if data.get("checklist") != ten_checklist:
-        raise ChecklistError(f"Câu hỏi sự kiện: file {file} soạn cho checklist '{data.get('checklist')}', không phải '{ten_checklist}'")
-    cau_hoi: dict[str, Any] = data.get("cau_hoi") or {}
-    loai = {tc.ma: (muc_kq, tc.loai) for m in muc for muc_kq, ds in m.tieu_chi.items() for tc in ds}
-    for ma in cau_hoi:
-        if ma not in loai:
-            raise ChecklistError(f"Câu hỏi sự kiện: {ma} không có trong checklist")
-    for ma, (muc_kq, loai_tc) in loai.items():
-        vi_tri = f"Câu hỏi sự kiện, tiêu chí {ma}"
-        if loai_tc == "dinh_luong":
-            if ma in cau_hoi:
-                raise ChecklistError(f"{vi_tri}: tiêu chí định lượng không có câu hỏi sự kiện (code so ngưỡng)")
-            continue
-        if ma not in cau_hoi:
-            raise ChecklistError(f"Câu hỏi sự kiện: thiếu câu hỏi cho tiêu chí {ma}")
-        c = cau_hoi[ma]
-        _bat_buoc(c, "cau_hoi", vi_tri)
-        if c.get("thoa_khi") not in TRA_LOI_SU_KIEN:
-            raise ChecklistError(f"{vi_tri}: thoa_khi '{c.get('thoa_khi')}' không hợp lệ, phải là một trong {TRA_LOI_SU_KIEN}")
-        # "Nếu …" được trả lời "co" khi điều kiện không xảy ra, lúc đó Tiêu chí Đạt thỏa, Tiêu chí rủi ro không thỏa
-        if c["cau_hoi"].startswith("Nếu") and c["thoa_khi"] != ("co" if muc_kq == "dat" else "khong"):
-            yeu_cau = "Đạt phải có thoa_khi: co" if muc_kq == "dat" else "Lưu ý/Vi phạm phải có thoa_khi: khong"
-            raise ChecklistError(f'{vi_tri}: câu hỏi "Nếu …" của tiêu chí {yeu_cau}')
-
-    def gan(tc: TieuChi) -> TieuChi:
-        c = cau_hoi.get(tc.ma)
-        return replace(tc, cau_hoi=c["cau_hoi"], thoa_khi=c["thoa_khi"]) if c else tc
-
-    return [replace(m, tieu_chi={k: [gan(tc) for tc in ds] for k, ds in m.tieu_chi.items()}) for m in muc]
 
 
 def _bat_buoc(data: dict[str, Any], truong: str, vi_tri: str) -> None:

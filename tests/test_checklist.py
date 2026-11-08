@@ -33,23 +33,11 @@ muc:
 """
 
 
-CAU_HOI = """
-checklist: "dau-ra 1.1"
-cau_hoi:
-  "7.L1": {cau_hoi: "Khách hàng có bị phạt vi phạm không?", thoa_khi: khong}
-  "7.V1": {cau_hoi: "Mức phạt có vượt 8% không?", thoa_khi: co}
-"""
-
-
-def viet_checklist(tmp_path, noi_dung, cau_hoi=CAU_HOI):
-    """File checklist trong `tmp_path`, kèm file câu hỏi sự kiện (`cau_hoi=None` thì không có)."""
+def viet_checklist(tmp_path, noi_dung):
     (tmp_path / "danh-muc").mkdir(exist_ok=True)
     (tmp_path / "danh-muc" / "nganh.yaml").write_text("trang_thai: da-soan\n", encoding="utf-8")
     path = tmp_path / "checklist.yaml"
     path.write_text(textwrap.dedent(noi_dung), encoding="utf-8")
-    if cau_hoi is not None:
-        (tmp_path / "cau-hoi-su-kien").mkdir(exist_ok=True)
-        (tmp_path / "cau-hoi-su-kien" / "checklist.yaml").write_text(textwrap.dedent(cau_hoi), encoding="utf-8")
     return path
 
 
@@ -184,41 +172,3 @@ def test_tim_file_checklist_theo_ma_va_phien_ban_luu_trong_luot():
     assert tim_checklist(thu_muc, "dau-ra 1.1").name == "dau-ra-v1.1.yaml"
     with pytest.raises(FileNotFoundError, match="dau-ra 9.9"):
         tim_checklist(thu_muc, "dau-ra 9.9")
-
-
-def test_tieu_chi_dinh_tinh_mang_cau_hoi_su_kien(tmp_path):
-    muc = load_checklist(viet_checklist(tmp_path, HOP_LE)).muc[0]
-
-    l1, v1, d1 = muc.tieu_chi["luu_y"][0], muc.tieu_chi["vi_pham"][0], muc.tieu_chi["dat"][0]
-    assert (l1.cau_hoi, l1.thoa_khi) == ("Khách hàng có bị phạt vi phạm không?", "khong")
-    assert (v1.cau_hoi, v1.thoa_khi) == ("Mức phạt có vượt 8% không?", "co")
-    assert (d1.cau_hoi, d1.thoa_khi) == (None, None)  # định lượng: code so ngưỡng, không hỏi
-
-
-@pytest.mark.parametrize(
-    "cu, moi, thong_bao",
-    [
-        ('  "7.V1": {cau_hoi: "Mức phạt có vượt 8% không?", thoa_khi: co}\n', "", "thiếu câu hỏi cho tiêu chí 7.V1"),
-        ("cau_hoi:\n", 'cau_hoi:\n  "7.X9": {cau_hoi: "Thừa?", thoa_khi: co}\n', "7.X9 không có trong checklist"),
-        ("cau_hoi:\n", 'cau_hoi:\n  "7.D1": {cau_hoi: "Mức phạt là bao nhiêu?", thoa_khi: co}\n',
-         "tiêu chí 7.D1: tiêu chí định lượng không có câu hỏi sự kiện"),
-        ("thoa_khi: co}", "thoa_khi: dung}", "tiêu chí 7.V1: thoa_khi 'dung' không hợp lệ"),
-        # "Nếu …" trả lời "co" khi điều kiện không xảy ra; với Tiêu chí rủi ro thì phải thoa_khi: khong
-        ('"Mức phạt có vượt 8% không?"', '"Nếu có phạt vi phạm, mức phạt có vượt 8% không?"',
-         "tiêu chí 7.V1: câu hỏi \"Nếu …\" của tiêu chí Lưu ý/Vi phạm phải có thoa_khi: khong"),
-        ('checklist: "dau-ra 1.1"', 'checklist: "dau-ra 1.0"', "soạn cho checklist 'dau-ra 1.0'"),
-    ],
-)
-def test_bao_loi_cau_hoi_su_kien_lech_checklist(tmp_path, cu, moi, thong_bao):
-    cau_hoi = textwrap.dedent(CAU_HOI)
-    assert cu in cau_hoi
-
-    with pytest.raises(ChecklistError) as loi:
-        load_checklist(viet_checklist(tmp_path, HOP_LE, cau_hoi.replace(cu, moi, 1)))
-
-    assert "Câu hỏi sự kiện" in str(loi.value) and thong_bao in str(loi.value)
-
-
-def test_bao_loi_khi_thieu_file_cau_hoi_su_kien(tmp_path):
-    with pytest.raises(ChecklistError, match="Câu hỏi sự kiện: không tìm thấy file"):
-        load_checklist(viet_checklist(tmp_path, HOP_LE, cau_hoi=None))
