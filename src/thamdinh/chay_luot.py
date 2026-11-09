@@ -70,6 +70,7 @@ def chay_luot(
     kq = tham_dinh(
         van_ban, load_checklist(checklist), llm, ngu_canh=settings.ngu_canh, model=settings.model,
         tien_trinh=tien_trinh, sau_moi_buoc=luu, luot_truoc=luot_truoc, chay_lai=chi_muc, truy_xuat=truy_xuat,
+        moi_tieu_chi_mot_lan=settings.moi_tieu_chi_mot_lan,
     )
     luu(kq)
     return kq
