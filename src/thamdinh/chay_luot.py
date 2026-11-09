@@ -45,7 +45,9 @@ def chay_luot(
         pdf, thu_muc_luu=settings.data_dir, bo_ocr=BoOCRMacDinh(settings.thu_muc_model_ocr, settings.ocr_model),
         tien_trinh=tien_trinh,
     )
-    llm = llm or LocalClient(settings.local_url, settings.model, suy_luan=settings.suy_luan)
+    llm = llm or LocalClient(
+        settings.local_url, settings.model, suy_luan=settings.suy_luan, toi_da_token=settings.toi_da_token
+    )
     truy_xuat = None
     if che_do == "truy_xuat":
         truy_xuat = chuan_bi_truy_xuat(

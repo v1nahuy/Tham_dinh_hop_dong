@@ -10,6 +10,7 @@ DEFAULT_LOCAL_URL = "http://127.0.0.1:8080/v1"
 DEFAULT_NGU_CANH = 65536
 DEFAULT_DATA_DIR = "data"
 DEFAULT_NGAN_SACH_TRUY_XUAT = 16000
+DEFAULT_TOI_DA_TOKEN = 4096
 DEFAULT_EMBEDDING_URL = "http://127.0.0.1:8081/v1"
 DEFAULT_EMBEDDING_MODEL = "bge-m3"
 DEFAULT_OCR_MODEL = "vgg_transformer"
@@ -24,6 +25,7 @@ class Settings:
     suy_luan: bool  # bật chế độ suy luận (thinking) của Qwen3.5
     data_dir: Path
     ngan_sach_truy_xuat: int = DEFAULT_NGAN_SACH_TRUY_XUAT  # token văn bản mỗi Mục ở chế độ truy xuất
+    toi_da_token: int = DEFAULT_TOI_DA_TOKEN  # token tối đa model viết mỗi lần gọi, tính cả phần suy luận
     embedding_url: str = DEFAULT_EMBEDDING_URL  # llama-server --embedding chạy bge-m3
     embedding_model: str = DEFAULT_EMBEDDING_MODEL
     ocr_model: str = DEFAULT_OCR_MODEL  # VietOCR: vgg_transformer (chính xác hơn) | vgg_seq2seq (nhanh hơn khoảng 4 lần)
@@ -43,6 +45,7 @@ def load_settings(env: Mapping[str, str] | None = None) -> Settings:
         suy_luan=(env.get("THAMDINH_SUY_LUAN") or "").strip().lower() in ("1", "true", "yes", "co"),
         data_dir=Path(env.get("THAMDINH_DATA_DIR") or DEFAULT_DATA_DIR),
         ngan_sach_truy_xuat=int(env.get("THAMDINH_NGAN_SACH_TRUY_XUAT") or DEFAULT_NGAN_SACH_TRUY_XUAT),
+        toi_da_token=int(env.get("THAMDINH_TOI_DA_TOKEN") or DEFAULT_TOI_DA_TOKEN),
         embedding_url=env.get("THAMDINH_EMBEDDING_URL") or DEFAULT_EMBEDDING_URL,
         embedding_model=env.get("THAMDINH_EMBEDDING_MODEL") or DEFAULT_EMBEDDING_MODEL,
         ocr_model=env.get("THAMDINH_OCR_MODEL") or DEFAULT_OCR_MODEL,

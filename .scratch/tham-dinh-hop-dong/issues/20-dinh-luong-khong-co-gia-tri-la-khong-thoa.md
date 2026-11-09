@@ -56,3 +56,10 @@ Cả ba chưa Lượt nào làm đúng. Tiêu chí định lượng sai 6/11 ở
 
 - Đạt quy tắc giữ (≥ 87/122, không đúng→sai): GIỮ. Kết quả Mục không đổi; Mục có các Tiêu chí này mất ghi chú "chưa xác định được" và được giải thích bằng "không thỏa".
 - Các Lượt đã lưu không ghi lại; Lượt mới dùng luật mới.
+
+**2026-11-09, Q175–Q177: chạy thử chế độ suy luận trên Mục 3 (không đạt).**
+- Q175: đã commit issue 20 (`f578205`).
+- Q176: thêm `THAMDINH_TOI_DA_TOKEN` (`settings.py`, mặc định 4096, truyền vào `LocalClient` trong `chay_luot.py`); test `tests/test_settings.py` đỏ rồi xanh. Chưa commit.
+- Q177, kiểm tra nhanh: với `response_format` JSON schema và `enable_thinking`, llama.cpp (build 11981) vẫn cho model suy luận (`reasoning_content` riêng) rồi trả JSON đúng. Một câu hỏi ngắn: 1.800 token, 320 giây (tắt suy luận: 71 token, 13 giây).
+- Chạy Mục 3 tiếp từ `…183634562376` (16k, suy luận bật, tối đa 16.384 token), 09:24–11:49, Lượt `d8c20de88c96-20261109T092625540161`. Sau 145 phút model vẫn chưa viết xong một câu trả lời (15.659/16.384 token, 2,4 token/giây). Đã dừng: vượt ngưỡng thời gian Q177 (≤ 130 phút), và nếu bị cắt thì code chia đôi Tiêu chí gọi lại hai lần, có thể thêm khoảng 4 giờ. Mục 3 không có kết quả nên không đo được độ chính xác. Đã tắt hai máy chủ.
+- Ước tính: bật suy luận cho cả Lượt mất trên 40 giờ trên máy này, vượt giới hạn 24 giờ (Q170).
