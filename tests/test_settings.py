@@ -13,7 +13,6 @@ def test_mac_dinh_khi_khong_co_bien_moi_truong():
     assert settings.data_dir == Path("data")
     assert settings.ngan_sach_truy_xuat == 16000
     assert settings.toi_da_token == 4096
-    assert settings.moi_tieu_chi_mot_lan is False
     assert settings.embedding_url == "http://127.0.0.1:8081/v1"
     assert settings.embedding_model == "bge-m3"
     assert settings.ocr_model == "vgg_transformer"
@@ -31,7 +30,6 @@ def test_bien_moi_truong_ghi_de_mac_dinh():
             "THAMDINH_DATA_DIR": "D:/thamdinh",
             "THAMDINH_NGAN_SACH_TRUY_XUAT": "24000",
             "THAMDINH_TOI_DA_TOKEN": "16384",
-            "THAMDINH_MOI_TIEU_CHI_MOT_LAN": "true",
             "THAMDINH_EMBEDDING_URL": "http://127.0.0.1:9001/v1",
             "THAMDINH_EMBEDDING_MODEL": "bge-m3-q8",
             "THAMDINH_OCR_MODEL": "vgg_seq2seq",
@@ -47,7 +45,6 @@ def test_bien_moi_truong_ghi_de_mac_dinh():
     assert settings.data_dir == Path("D:/thamdinh")
     assert settings.ngan_sach_truy_xuat == 24000
     assert settings.toi_da_token == 16384
-    assert settings.moi_tieu_chi_mot_lan is True
     assert settings.embedding_url == "http://127.0.0.1:9001/v1"
     assert settings.embedding_model == "bge-m3-q8"
     assert settings.ocr_model == "vgg_seq2seq"

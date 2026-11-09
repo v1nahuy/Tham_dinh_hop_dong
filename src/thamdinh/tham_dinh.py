@@ -327,7 +327,6 @@ def tham_dinh(
     luot_truoc: KetQuaLuot | None = None,
     chay_lai: Collection[int] = (),
     truy_xuat: NguonNguCanh | None = None,
-    moi_tieu_chi_mot_lan: bool = False,
 ) -> KetQuaLuot:
     """Một Lượt thẩm định: xác định các bên, rồi đánh giá từng Mục checklist.
 
@@ -336,8 +335,6 @@ def tham_dinh(
     `sau_moi_buoc` nhận kết quả tạm sau bước xác định các bên và sau mỗi Mục, để người gọi lưu ngay.
     `luot_truoc`: chạy tiếp một Lượt đã lưu; chỉ gọi model cho Mục chưa chạy, chưa đánh giá được, hoặc có trong
     `chay_lai`.
-    `moi_tieu_chi_mot_lan`: mỗi Tiêu chí một lần gọi model thay vì cả Mục một lần (phần đầu prompt của Mục giống
-    nhau nên vẫn dùng lại cache).
     """
     if luot_truoc and (luot_truoc.hash_pdf, luot_truoc.checklist) != (van_ban.hash_pdf, f"{checklist.ma} {checklist.phien_ban}"):
         raise ValueError(
@@ -406,11 +403,11 @@ def tham_dinh(
             continue
         tien_trinh(f"Mục {m.so}/{len(checklist.muc)}")
         if truy_xuat is None:
-            kq = _danh_gia_muc(m, checklist, van_ban, cac_ben, llm, moi_tieu_chi_mot_lan=moi_tieu_chi_mot_lan)
+            kq = _danh_gia_muc(m, checklist, van_ban, cac_ben, llm)
             ket_qua.append(replace(kq, dieu_khoan_dua_vao=tuple(d.so_hieu for d in van_ban.dieu_khoan)))
         else:
             nc = truy_xuat.ngu_canh(m)
-            kq = _danh_gia_muc(m, checklist, van_ban, cac_ben, llm, nc.van_ban, moi_tieu_chi_mot_lan)
+            kq = _danh_gia_muc(m, checklist, van_ban, cac_ben, llm, nc.van_ban)
             ket_qua.append(replace(kq, dieu_khoan_dua_vao=tuple(nc.dieu_khoan), canh_bao=tuple(nc.canh_bao)))
         sau_moi_buoc(luot(ket_qua))
     return luot(ket_qua)
@@ -474,19 +471,10 @@ def _danh_gia_muc(
     cac_ben: CacBen | None,
     llm: LLMClient,
     dieu_khoan_chon: str | None = None,
-    moi_tieu_chi_mot_lan: bool = False,
 ) -> KetQuaMucDeXuat:
     try:
-        if moi_tieu_chi_mot_lan:
-            tra_loi = {}
-            for ds in muc.tieu_chi.values():
-                for tc in ds:
-                    tra_loi |= _goi(llm, *xay_prompt_muc(muc, checklist, van_ban, cac_ben, [tc.ma], dieu_khoan_chon))
-        else:
-            tra_loi = _goi(llm, *xay_prompt_muc(muc, checklist, van_ban, cac_ben, dieu_khoan_chon=dieu_khoan_chon))
-    except LLMBiCatError as e:
-        if moi_tieu_chi_mot_lan:  # một Tiêu chí đã là phần nhỏ nhất, không chia tiếp
-            return KetQuaMucDeXuat(muc.so, muc.cau_hoi, None, (), f"chưa đánh giá được: {e}")
+        tra_loi = _goi(llm, *xay_prompt_muc(muc, checklist, van_ban, cac_ben, dieu_khoan_chon=dieu_khoan_chon))
+    except LLMBiCatError:
         # Gọi lại y nguyên thì model (nhiệt độ 0) lặp y như cũ: chia đôi Tiêu chí để mỗi câu trả lời ngắn lại
         ma = [tc.ma for ds in muc.tieu_chi.values() for tc in ds]
         nua = (len(ma) + 1) // 2

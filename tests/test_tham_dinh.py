@@ -170,33 +170,6 @@ def test_tra_loi_bi_cat_thi_chia_doi_tieu_chi_thay_vi_goi_lai_y_nguyen():
     assert m.loi is None and [t.ma for t in m.tieu_chi] == ma_tieu_chi(14)
 
 
-def test_moi_tieu_chi_mot_lan_goi_khi_bat():
-    # Model nhỏ chấm từng Tiêu chí riêng; phần đầu prompt của Mục giống nhau nên vẫn dùng lại cache
-    model = ModelGia(sua_muc={7: {"7.L1": {"danh_gia": "thoa", "ly_do": "Phạt một chiều", "trich_dan": [THAT]}}})
-
-    kq = tham_dinh(VAN_BAN, CHECKLIST, model, moi_tieu_chi_mot_lan=True)
-
-    lan_goi = [(p, s) for p, s in zip(model.prompt, model.schema) if "MỤC CHECKLIST 7:" in p]
-    assert [list(s["properties"]) for _, s in lan_goi] == [[ma] for ma in ma_tieu_chi(7)]
-    dau = [p.split("Các Tiêu chí cần đánh giá:")[0] for p, _ in lan_goi]
-    assert len(set(dau)) == 1
-    assert "7.V1" not in lan_goi[0][0].split("Các Tiêu chí cần đánh giá:")[1]
-    m = muc(kq, 7)
-    assert [t.ma for t in m.tieu_chi] == ma_tieu_chi(7)
-    assert m.ket_qua.ket_qua == "luu_y" and "7.L1" in m.ket_qua.tieu_chi_quyet_dinh
-
-
-def test_moi_tieu_chi_mot_lan_ma_van_bi_cat_thi_muc_chua_danh_gia_duoc():
-    # Một Tiêu chí đã là phần nhỏ nhất: không chia tiếp, không gọi lại
-    model = ModelGia(cat_muc={7: 1})
-
-    kq = tham_dinh(VAN_BAN, CHECKLIST, model, moi_tieu_chi_mot_lan=True)
-
-    assert muc(kq, 7).ket_qua is None and "bị cắt" in muc(kq, 7).loi
-    assert len([p for p in model.prompt if "MỤC CHECKLIST 7:" in p]) == 1
-    assert muc(kq, 8).ket_qua is not None
-
-
 def test_mot_nua_van_bi_cat_thi_muc_chua_danh_gia_duoc():
     kq = tham_dinh(VAN_BAN, CHECKLIST, ModelGia(cat_muc={14: 4}))
 

@@ -1,6 +1,6 @@
 # 21 - Mỗi Tiêu chí một lần gọi model
 
-Status: ready-for-agent
+Status: wontfix
 
 ## Vấn đề
 
@@ -29,3 +29,16 @@ Mỗi Mục hiện được chấm bằng một lần gọi model cho tất cả
 - `test_moi_tieu_chi_mot_lan_ma_van_bi_cat_thi_muc_chua_danh_gia_duoc`.
 - `tests/test_settings.py` thêm `THAMDINH_MOI_TIEU_CHI_MOT_LAN`; `chay_luot.py` truyền vào `tham_dinh`.
 - 366 test thường xanh.
+
+**2026-11-09, Q181–Q182: đã đo (không đạt quy tắc giữ).**
+- Q181: đã commit code (`1937d62`).
+- Chạy Mục 3, 4, 13 tiếp từ `…183634562376` (16k, không suy luận, mỗi Tiêu chí một lần gọi), 13:16–15:10, Lượt `d8c20de88c96-20261109T131811248689`. Báo cáo: `eval/so-sanh/lan-chay-d8c20de88c96-20261109T131811248689.md`.
+- Thời gian 114 phút (Mục 3: 55,8; Mục 4: 29,4; Mục 13: khoảng 27), trong ngưỡng 122 phút. Mỗi lần gọi đọc thêm khoảng 500 token đuôi prompt (khoảng 60 giây) và viết 200–370 token.
+- Tiêu chí: 11/22 → 11/22 (+0), đúng→sai 3. Không đạt (cần ≥ +3, đúng→sai ≤ 1): KHÔNG GIỮ.
+  - Sai→đúng: 3.D3, 4.D2, 4.L2 (bớt chấm dễ dãi ở Đạt).
+  - Đúng→sai: 3.D1 (đọc nhầm Bên: "không thuộc về Công ty (Bên B)"), 4.L1, 13.V2 (Bộ chuẩn `khong_ro`, model ra `khong_thoa`).
+  - Vẫn sai: 3.D2, 3.V1, 4.D4, 4.V1, 13.D2, 13.D3, 13.L1 (Bộ chuẩn `thoa` với 99%, xem issue 20), 13.V1.
+- Kết quả Mục: Mục 4 đúng (Lưu ý) như trước; Mục 3 Lưu ý (chuẩn Vi phạm) như trước; Mục 13 từ Lưu ý thành Đạt (chuẩn Vi phạm), tệ hơn.
+- Nhận xét: tách Tiêu chí làm model chặt hơn ở Đạt nhưng cũng nghiêng về `khong_thoa` ở Lưu ý/Vi phạm, nên lỗi đổi chỗ chứ không giảm. Với dao động ±6–7 trên 122 (issue 20), +0/22 không cho thấy tác dụng.
+- Đã tắt hai máy chủ.
+- Q183: đã gỡ code (revert `1937d62`), giống issue 19. Q184: dừng hướng đổi cách gọi model; mốc hiện tại là `…183634562376` với luật issue 20 (87/122).
