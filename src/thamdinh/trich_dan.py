@@ -16,6 +16,7 @@ NGOAC_KEP = re.compile(r"[“”„‟\"'‘’‚‛«»]")
 GACH_NGANG = re.compile(r"[‐‑‒–—―−]")
 LUOC = re.compile(r"…|\.\.\.")
 TIEN_TO_SO_HIEU = re.compile(r"^(#+\s*)?((khoản|điểm)\s+)?", re.IGNORECASE)
+CACH_SAT_DAU_CAU = re.compile(r" ?([^\w\s]) ?")
 
 
 @dataclass(frozen=True)
@@ -37,12 +38,17 @@ def chuan_hoa(van_ban: str) -> str:
     return re.sub(r"\s+", " ", van_ban).strip()
 
 
+def _chuan_hoa_noi_dung(van_ban: str) -> str:
+    """Như `chuan_hoa`, thêm bỏ dấu cách sát dấu câu: LLM hay chép "10. Đầu mối" khi Hợp đồng ghi "10.Đầu mối"."""
+    return CACH_SAT_DAU_CAU.sub(r"\1", chuan_hoa(van_ban))
+
+
 def _cac_doan(nguyen_van: str) -> list[str]:
     """Các đoạn cần tìm của câu trích: LLM có thể chép cả nhãn sửa đổi, hoặc gộp nhiều dòng nhãn thành một nhãn không đóng."""
     van_ban = NHAN_BAT_KY.sub(r"\1", unicodedata.normalize("NFC", nguyen_van))
     if NHAN_MO.search(van_ban):
         van_ban = NHAN_MO.sub("", van_ban).replace("]", "")
-    doan = [chuan_hoa(d) for d in LUOC.split(van_ban)]
+    doan = [_chuan_hoa_noi_dung(d) for d in LUOC.split(van_ban)]
     return [d for d in doan if d]
 
 
@@ -75,8 +81,8 @@ def _pham_vi(so_hieu: str, dieu_khoan: list[DieuKhoan]) -> list[DieuKhoan]:
 def _co_trong(doan: list[str], dieu_khoan: list[DieuKhoan]) -> bool:
     noi_dung = "\n".join(dk.noi_dung for dk in dieu_khoan)
     # LLM có thể trích bản còn chữ redline hoặc bản đã chấp nhận thay đổi
-    ban_giu_het = chuan_hoa(NHAN_BAT_KY.sub(r"\1", noi_dung))
-    ban_sach = chuan_hoa(NHAN_GIU.sub(r"\1", NHAN_XOA.sub("", noi_dung)))
+    ban_giu_het = _chuan_hoa_noi_dung(NHAN_BAT_KY.sub(r"\1", noi_dung))
+    ban_sach = _chuan_hoa_noi_dung(NHAN_GIU.sub(r"\1", NHAN_XOA.sub("", noi_dung)))
     return _theo_thu_tu(doan, ban_giu_het) or _theo_thu_tu(doan, ban_sach)
 
 

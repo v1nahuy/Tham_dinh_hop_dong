@@ -23,6 +23,8 @@ VAN_BAN = VanBanHieuLuc(
         DieuKhoan(4, "4.5", "khoan", None, None, 4, 4,
                   "[sửa: 4.5. Những nội dung thay đổi được gọi là “Yêu cầu ]\n[sửa: thay đổi (CR)”. Bên B thực hiện miễn phí ]\n"
                   "[sửa: các CR.]"),
+        DieuKhoan(5, "Mục B", "khoan", None, None, 5, 5,
+                  "10.Đầu mối tiếp nhận yêu cầu của Bên B: - Hotline: 0336501838 - Email: [thêm: qa@vtit.vn]"),
     ],
     canh_bao=[],
 )
@@ -57,6 +59,9 @@ VAN_BAN = VanBanHieuLuc(
         ("4.5", "[sửa: 4.5. Những nội dung thay đổi được gọi là “Yêu cầu thay đổi (CR)”.]"),
         # Như trên, nhưng bị lược nên nhãn không đóng
         ("4.5", "[sửa: 4.5. Những nội dung thay đổi được gọi là “Yêu cầu thay đổi (CR)”. Bên B … các CR."),
+        # Thêm hoặc bớt dấu cách sát dấu câu so với Hợp đồng
+        ("Mục B", "10. Đầu mối tiếp nhận yêu cầu của Bên B: - Hotline: 0336501838 - Email: [thêm: qa@vtit.vn]"),
+        ("4.3.1", "4.3.1.Thời hạn nộp bảo đảm thực hiện hợp đồng : Trong vòng 15 ngày"),
     ],
 )
 def test_trich_dan_khop(so_hieu, nguyen_van):
@@ -86,6 +91,8 @@ def test_khop_nhung_sai_so_hieu_thi_bao_so_hieu_dung():
         # Bịa, có nhãn cũng không được tính là khớp
         "[sửa: Trong vòng 30 ngày kể từ ngày ký kết hợp đồng",
         "Trong vòng [thêm: 30] ngày kể từ ngày ký kết hợp đồng",
+        # Chữ dính liền: chỉ bỏ qua dấu cách sát dấu câu, không bỏ dấu cách giữa hai chữ
+        "Trong vòng 15 ngày kể từ ngàyký kết hợp đồng",
         # Trích rỗng
         "",
     ],
