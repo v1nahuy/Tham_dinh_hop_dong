@@ -69,3 +69,5 @@ Gốc của lỗi: model phải tự kết hợp hai bước, "Hợp đồng có
 - Theo Q157 không chạy bước 2. Hai llama-server đã tắt.
 
 **2026-11-09, đóng `wontfix` (Q166–Q168).** Bỏ hướng câu hỏi sự kiện: không đạt bước 1, mức +0 nằm trong dao động, và lỗi `tra_loi` ngược `ly_do` (loại lỗi nhắm vào) vẫn còn. Không viết lại câu "Nếu …" để chạy lại. Code và file câu hỏi đưa về như mốc `a60f599` (vẫn còn trong lịch sử ở commit `25b3553`). Không thêm "Câu hỏi sự kiện" vào GLOSSARY.
+
+**2026-11-09, Q188: xóa Lượt chạy thử khỏi kho.** Lượt `d8c20de88c96-20261108T232419380003` lưu bằng code issue 19 (Tiêu chí có trường `cau_hoi`) nên code hiện tại không nạp được (`TypeError`), trang Kết quả lỗi khi chọn Lượt này. Theo Q188 đã xóa khỏi `data/tham-dinh.sqlite3` (1 dòng `luot`, 17 dòng `muc_de_xuat`; không có Kết quả đã duyệt, không Lượt nào tạo từ Lượt này), tạm gỡ trigger `khong_xoa_de_xuat` rồi dựng lại. Bản sao trước khi xóa: `data/tham-dinh.sqlite3.bak-20261109`. Giữ nhật ký `data/nhat-ky/chuoi-19a.log` và báo cáo `eval/so-sanh/lan-chay-d8c20de88c96-20261108T232419380003.md` làm bằng chứng số đo.

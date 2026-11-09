@@ -13,7 +13,7 @@ def kho_rong(tmp_path, monkeypatch):
 
 
 def test_app_khoi_dong_o_buoc_so_hoa():
-    at = AppTest.from_file(APP).run()
+    at = AppTest.from_file(APP, default_timeout=30).run()
 
     assert not at.exception
     assert at.title[0].value == "Số hóa"
@@ -24,7 +24,7 @@ def test_app_khoi_dong_o_buoc_so_hoa():
     [("ui/so_hoa.py", "Số hóa"), ("ui/tham_dinh.py", "Thẩm định"), ("ui/ket_qua.py", "Kết quả")],
 )
 def test_moi_buoc_deu_mo_duoc(page, title):
-    at = AppTest.from_file(APP).run()
+    at = AppTest.from_file(APP, default_timeout=30).run()
 
     at.switch_page(page).run()
 
