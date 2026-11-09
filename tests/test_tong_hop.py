@@ -115,6 +115,17 @@ def test_tieu_chi_dinh_luong_do_code_so_sanh(gia_tri, ket_qua):
     assert tong_hop_muc(MUC_PHAT, dg).ket_qua == ket_qua
 
 
+def test_tieu_chi_dinh_luong_hop_dong_khong_neu_gia_tri_thi_khong_thoa():
+    # Model ghi null khi Hợp đồng không nêu (ví dụ không có điều khoản chấm dứt thuận tiện):
+    # Đạt không được đáp ứng, rủi ro Vi phạm không xảy ra.
+    dg = [DanhGiaTieuChi("7.D1", gia_tri=None), DanhGiaTieuChi("7.V1", gia_tri=None)]
+
+    kq = tong_hop_muc(MUC_PHAT, dg)
+
+    assert kq.danh_gia == {"7.D1": "khong_thoa", "7.V1": "khong_thoa"}
+    assert kq.ghi_chu == ()
+
+
 # --- Tiêu chí có điều kiện (1.V2) -----------------------------------------------------------------
 
 TREN_2_TY = DieuKien("gia_tri_hop_dong_vnd", ">", 2_000_000_000)

@@ -104,6 +104,9 @@ def _danh_gia_cuoi(tc: TieuChi, muc_kq: str, dg: DanhGiaTieuChi | None) -> str:
             # Tiêu chí không áp dụng: Đạt coi là thỏa, Lưu ý / Vi phạm coi là không thỏa
             return THOA if muc_kq == "dat" else KHONG_THOA
     if tc.loai == "dinh_luong":
+        if dg.gia_tri is None:
+            # Hợp đồng không nêu giá trị: Đạt không được đáp ứng, rủi ro Lưu ý / Vi phạm không xảy ra
+            return KHONG_THOA
         return so_sanh(dg.gia_tri, tc.phep_so_sanh, tc.nguong)
     if dg.danh_gia is None:
         return KHONG_RO
