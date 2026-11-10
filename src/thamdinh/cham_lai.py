@@ -12,6 +12,7 @@ from thamdinh.bo_chuan import BoChuan
 from thamdinh.checklist import PhienBanChecklist
 from thamdinh.kho_luot import KhoLuot
 from thamdinh.so_hoa.van_ban import nap_van_ban
+from thamdinh.tham_dinh import KetQuaLuot
 from thamdinh.tong_hop import DanhGiaTieuChi, tong_hop_muc
 from thamdinh.trich_dan import TrichDan, kiem_tra_trich_dan
 
@@ -20,7 +21,8 @@ from thamdinh.trich_dan import TrichDan, kiem_tra_trich_dan
 class ChamLuot:
     danh_gia: dict[str, str]  # mã Tiêu chí → Đánh giá tiêu chí sau khi tổng hợp lại
     ket_qua_muc: dict[int, str | None]  # None: Mục chưa đánh giá được
-    trich_dan: dict[str, tuple[str, ...]]  # mã Tiêu chí → trạng thái từng Trích dẫn; rỗng khi thiếu Văn bản hiệu lực
+    trich_dan: dict[str, tuple[str, ...]] | None  # mã Tiêu chí → trạng thái từng Trích dẫn; None: thiếu Văn bản hiệu lực
+    hash_pdf: str = ""  # để chỉ so với Bộ chuẩn của đúng Hợp đồng
 
 
 @dataclass(frozen=True)
@@ -30,38 +32,44 @@ class ChamKho:
 
 
 def cham_lai(kho: KhoLuot, checklist: PhienBanChecklist, thu_muc: str | Path) -> ChamKho:
-    theo_so = {m.so: m for m in checklist.muc}
+    """Chấm lại mọi Lượt trong kho. Lượt không chấm được (code khác đã lưu, Phiên bản checklist khác…) ghi vào `loi`."""
     luot, loi = {}, {}
     for tom_tat in kho.danh_sach():
         try:
-            l = kho.nap(tom_tat.ma)
-        except Exception as e:  # Lượt lưu bằng code khác (đã revert): ghi lại, chấm tiếp các Lượt khác
+            luot[tom_tat.ma] = _cham_luot(kho.nap(tom_tat.ma), checklist, thu_muc)
+        except Exception as e:  # ghi lại, chấm tiếp các Lượt khác
             loi[tom_tat.ma] = f"{type(e).__name__}: {e}"
-            continue
-        danh_gia: dict[str, str] = {}
-        ket_qua_muc: dict[int, str | None] = {}
-        van_ban = nap_van_ban(l.hash_pdf, thu_muc, l.hash_van_ban)
-        trich_dan = {} if van_ban is None else {
-            t.ma: tuple(kiem_tra_trich_dan(TrichDan(td.so_hieu, td.nguyen_van), van_ban).trang_thai for td in t.trich_dan)
-            for m in l.muc for t in m.tieu_chi
-        }
-        for m in l.muc:
-            if m.ket_qua is None:
-                ket_qua_muc[m.so] = None
-                continue
-            kq = tong_hop_muc(theo_so[m.so], [
-                DanhGiaTieuChi(t.ma, t.danh_gia_llm, t.gia_tri, t.gia_tri_dieu_kien, t.ly_do) for t in m.tieu_chi
-            ])
-            danh_gia |= kq.danh_gia
-            ket_qua_muc[m.so] = kq.ket_qua
-        luot[tom_tat.ma] = ChamLuot(danh_gia, ket_qua_muc, trich_dan)
     return ChamKho(luot, loi)
 
+
+def _cham_luot(l: KetQuaLuot, checklist: PhienBanChecklist, thu_muc: str | Path) -> ChamLuot:
+    ma_checklist = f"{checklist.ma} {checklist.phien_ban}"
+    if l.checklist != ma_checklist:
+        raise ValueError(f"Lượt dùng checklist {l.checklist}, đang chấm bằng {ma_checklist}")
+    theo_so = {m.so: m for m in checklist.muc}
+    danh_gia: dict[str, str] = {}
+    ket_qua_muc: dict[int, str | None] = {}
+    van_ban = nap_van_ban(l.hash_pdf, thu_muc, l.hash_van_ban)
+    trich_dan = None if van_ban is None else {
+        t.ma: tuple(kiem_tra_trich_dan(TrichDan(td.so_hieu, td.nguyen_van), van_ban).trang_thai for td in t.trich_dan)
+        for m in l.muc for t in m.tieu_chi
+    }
+    for m in l.muc:
+        if m.ket_qua is None:
+            ket_qua_muc[m.so] = None
+            continue
+        kq = tong_hop_muc(theo_so[m.so], [
+            DanhGiaTieuChi(t.ma, t.danh_gia_llm, t.gia_tri, t.gia_tri_dieu_kien, t.ly_do) for t in m.tieu_chi
+        ])
+        danh_gia |= kq.danh_gia
+        ket_qua_muc[m.so] = kq.ket_qua
+    return ChamLuot(danh_gia, ket_qua_muc, trich_dan, l.hash_pdf)
 
 def den_json(kq: ChamKho) -> dict:
     return {
         "luot": {ma: {"danh_gia": l.danh_gia, "ket_qua_muc": {str(so): k for so, k in l.ket_qua_muc.items()},
-                      "trich_dan": {tc: list(td) for tc, td in l.trich_dan.items()}} for ma, l in kq.luot.items()},
+                      "trich_dan": None if l.trich_dan is None else {tc: list(td) for tc, td in l.trich_dan.items()},
+                      "hash_pdf": l.hash_pdf} for ma, l in kq.luot.items()},
         "loi": kq.loi,
     }
 
@@ -69,7 +77,8 @@ def den_json(kq: ChamKho) -> dict:
 def tu_json(d: dict) -> ChamKho:
     return ChamKho(
         {ma: ChamLuot(l["danh_gia"], {int(so): k for so, k in l["ket_qua_muc"].items()},
-                      {tc: tuple(td) for tc, td in l["trich_dan"].items()}) for ma, l in d["luot"].items()},
+                      None if l["trich_dan"] is None else {tc: tuple(td) for tc, td in l["trich_dan"].items()},
+                      l["hash_pdf"]) for ma, l in d["luot"].items()},
         d["loi"],
     )
 
@@ -107,6 +116,8 @@ def so_cham(truoc: ChamKho, sau: ChamKho, bo_chuan: BoChuan) -> SoCham:
             sum(a.ket_qua_muc.get(so) == kq for so, kq in chuan_muc.items()),
             sum(b.ket_qua_muc.get(so) == kq for so, kq in chuan_muc.items()),
         )
+        if a.trich_dan is None or b.trich_dan is None:
+            continue
         for tc in a.trich_dan.keys() & b.trich_dan.keys():
             trich_dan.update(zip(a.trich_dan[tc], b.trich_dan[tc]))
     return SoCham(ket_qua, dict(trich_dan))

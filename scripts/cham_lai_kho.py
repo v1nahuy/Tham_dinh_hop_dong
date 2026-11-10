@@ -5,7 +5,9 @@ Chạy: .venv/Scripts/python scripts/cham_lai_kho.py [--so-voi <commit>] [--luot
 
 - Không có `--so-voi`: in số Tiêu chí và Kết quả Mục khớp Bộ chuẩn của từng Lượt, và trạng thái Trích dẫn.
 - `--so-voi <commit>`: chấm thêm bằng code ở commit đó (git worktree tạm) rồi in chuyển trạng thái cũ → mới.
-So với Bộ chuẩn chỉ tính các Lượt của đúng Hợp đồng trong Bộ chuẩn (mã Lượt bắt đầu bằng 12 ký tự đầu hash PDF).
+So với Bộ chuẩn chỉ tính các Lượt của đúng Hợp đồng trong Bộ chuẩn (cùng hash PDF).
+`--so-voi` chấm bằng các module `thamdinh` ở commit đó nhưng `cham_lai.py` của bản này, nên không đo thay đổi trong
+chính `cham_lai.py`.
 """
 
 import argparse
@@ -38,6 +40,9 @@ def _cham(checklist: Path, data: Path):
 
 
 def _cham_o_commit(commit: str, checklist: Path, data: Path):
+    if subprocess.run(["git", "rev-parse", "--verify", "--quiet", f"{commit}^{{commit}}"], cwd=GOC,
+                      capture_output=True).returncode:
+        sys.exit(f"Không có commit {commit}")
     with tempfile.TemporaryDirectory() as tam:
         wt, ra = Path(tam) / "wt", Path(tam) / "cham.json"
         subprocess.run(["git", "worktree", "add", "--detach", str(wt), commit], cwd=GOC, check=True,
@@ -47,16 +52,19 @@ def _cham_o_commit(commit: str, checklist: Path, data: Path):
             subprocess.run([sys.executable, __file__, "--chi-ghi-json", str(ra), "--checklist", str(checklist),
                             "--data", str(data)], cwd=GOC, env=env, check=True)
             return json.loads(ra.read_text(encoding="utf-8"))
-        finally:
-            subprocess.run(["git", "worktree", "remove", "--force", str(wt)], cwd=GOC, check=True)
+        finally:  # không check: lỗi dọn worktree không được che lỗi chấm
+            subprocess.run(["git", "worktree", "remove", "--force", str(wt)], cwd=GOC, capture_output=True)
+            subprocess.run(["git", "worktree", "prune"], cwd=GOC, capture_output=True)
 
 
-def _loc(kq, chi: set[str] | None):
-    return type(kq)({ma: l for ma, l in kq.luot.items() if chi is None or ma in chi}, kq.loi)
+def _loc(cl, kq, chi: set[str] | None):
+    giu = (lambda ma: True) if chi is None else chi.__contains__
+    return cl.ChamKho({ma: l for ma, l in kq.luot.items() if giu(ma)}, {ma: e for ma, e in kq.loi.items() if giu(ma)})
 
 
 if __name__ == "__main__":
     sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     ap = argparse.ArgumentParser()
     ap.add_argument("--so-voi", help="commit để so (ví dụ HEAD)")
     ap.add_argument("--luot", help="chỉ chấm các Lượt này, cách nhau bằng dấu phẩy")
@@ -84,17 +92,21 @@ if __name__ == "__main__":
     bc = nap_bo_chuan(a.bo_chuan, load_checklist(checklist))
     chi = set(a.luot.split(",")) if a.luot else None
     cl, moi = _cham(checklist, data)
-    moi = _loc(moi, chi)
-    cu = _loc(cl.tu_json(_cham_o_commit(a.so_voi, checklist, data)), chi) if a.so_voi else moi
-    for ma, loi in moi.loi.items():
-        print(f"Không nạp được {ma}: {loi}")
+    moi = _loc(cl, moi, chi)
+    cu = _loc(cl, cl.tu_json(_cham_o_commit(a.so_voi, checklist, data)), chi) if a.so_voi else moi
+    for ten, kq in (("code cũ", cu), ("code hiện tại", moi)) if a.so_voi else (("", moi),):
+        for ma, loi in kq.loi.items():
+            print(f"Không chấm được {ma}" + (f" bằng {ten}" if ten else "") + f": {loi}")
+    for ma, l in moi.luot.items():
+        if l.trich_dan is None:
+            print(f"{ma}: thiếu Văn bản hiệu lực, không kiểm lại Trích dẫn")
 
     sc = cl.so_cham(cu, moi, bc)
     so_tc, so_muc = len(bc.danh_gia), sum(1 for k in bc.ket_qua_muc.values() if k)
     print(f"Bộ chuẩn: {a.bo_chuan.name}, {so_tc} Tiêu chí, {so_muc} Kết quả Mục")
     for ma in sorted(sc.luot):
         l = sc.luot[ma]
-        if not ma.startswith(bc.hash_pdf[:12]):
+        if moi.luot[ma].hash_pdf != bc.hash_pdf:
             print(f"- {ma}: Lượt của Hợp đồng khác, không so Bộ chuẩn")
             continue
         if not a.so_voi:
@@ -112,6 +124,6 @@ if __name__ == "__main__":
         for (t, s), n in sorted(sc.trich_dan.items()):
             print(f"  {t} → {s}: {n}")
     else:
-        dem = Counter(tt for l in moi.luot.values() for td in l.trich_dan.values() for tt in td)
+        dem = Counter(tt for l in moi.luot.values() for td in (l.trich_dan or {}).values() for tt in td)
         for tt, n in sorted(dem.items()):
             print(f"  {tt}: {n}")

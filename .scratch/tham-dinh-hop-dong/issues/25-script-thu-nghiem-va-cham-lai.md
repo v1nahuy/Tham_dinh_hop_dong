@@ -23,3 +23,17 @@ Retro chuỗi issue 17–22 (Q195): mỗi lần thử nghiệm agent viết lạ
 ## Tiêu chí hoàn thành
 
 - Test xanh; lần chạy thật trên khớp số đo issue 22; tài liệu và `CLAUDE.md` commit cùng (Q199); `/code-review` (Q197).
+
+## Comments
+
+**2026-11-10, đã làm (commit `68e2053`).**
+- TDD qua `cham_lai()`/`so_cham()`: tổng hợp lại theo luật hiện tại (7.D1 định lượng không giá trị → `khong_thoa`), kiểm lại Trích dẫn, Lượt không nạp được ghi vào lỗi, `so_cham` đếm chuyển trạng thái, JSON giữ nguyên kết quả.
+- Chạy thật `cham_lai_kho.py --so-voi f6997a6` (trước issue 22): 37 Trích dẫn `khong_xac_minh_duoc → khop`, 180 / 1480 / 444 không đổi, khớp số đo issue 22. `--so-voi f578205~1` (trước issue 20): Lượt `…183634562376` 84→87 (8.D2, 16.D4, 17.D7), Lượt toàn văn `…20261104T134515961445` 82→83 (17.D7), khớp bảng issue 20. Worktree tạm được dọn.
+- `do_thu_nghiem.py` thử khi máy chủ tắt: báo lỗi rồi in "Xong chuỗi", không chạy model.
+
+**2026-11-10, review (Q197) và sửa (Q203–Q206).**
+- Q203: phiên Claude Code chính được đọc nội dung lấy từ Hợp đồng để phát triển; subagent và API ngoài khác thì không. Giữ lý do của model trong nhật ký chuỗi; tài liệu ghi lại quy tắc này.
+- Q204 (TDD): mọi lỗi khi chấm một Lượt ghi vào `loi`, kể cả Lượt dùng Phiên bản checklist khác; `ChamLuot` mang `hash_pdf` (script so Bộ chuẩn theo hash, không theo tiền tố mã Lượt); Lượt thiếu Văn bản hiệu lực có `trich_dan = None` và script báo ra; thêm test Mục chưa đánh giá được (xanh ngay, chốt hành vi có sẵn). `cham_lai_kho.py` in lỗi của cả code cũ và code hiện tại, `_loc` lọc cả `loi`, kiểm commit trước khi tạo worktree, dọn worktree không che lỗi gốc và chạy `git worktree prune`.
+- Q205: `do_thu_nghiem.py` bắt buộc `--tang-toi-thieu`/`--dung-thanh-sai-toi-da`; báo lỗi khi thiếu PDF; khi lỗi hoặc bị ngắt thì dừng Lượt chạy nền và ghi traceback vào nhật ký; kiểm mã thoát `so_sanh_lan_chay.py`; lệnh mẫu có `2>&1`.
+- Q206: tài liệu ghi rõ `--so-voi` dùng `cham_lai.py` của bản đang sửa; "Người thẩm định điền tay". Bỏ qua các nhận định về đặt tên, `main()`, `_kiem_tra` của `tham_dinh` (kết quả hiện tương đương vì câu trích trong kho đã cắt sẵn).
+- Chạy lại `--so-voi f6997a6` sau khi sửa: vẫn 37.
