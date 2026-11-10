@@ -1,3 +1,9 @@
+## Quy trình
+
+- Chạy model thật hoặc chấm lại Lượt đã lưu: làm theo `docs/agents/thu-nghiem-model.md`.
+- Mỗi việc còn mở, kể cả việc nhỏ hay việc người dùng làm tay, có một file issue ngay khi phát sinh.
+- Trước khi đóng một issue có sửa code: chạy `/code-review`.
+
 ## Agent skills
 
 ### Issue tracker
