@@ -4,17 +4,22 @@ Dùng khi thay đổi nằm ở code sau model (tổng hợp, kiểm tra Trích 
 model đã lưu. Xem `docs/agents/thu-nghiem-model.md`.
 """
 
+from __future__ import annotations
+
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from thamdinh.bo_chuan import BoChuan
 from thamdinh.checklist import PhienBanChecklist
 from thamdinh.kho_luot import KhoLuot
 from thamdinh.so_hoa.van_ban import nap_van_ban
-from thamdinh.tham_dinh import KetQuaLuot
 from thamdinh.tong_hop import DanhGiaTieuChi, tong_hop_muc
 from thamdinh.trich_dan import TrichDan, kiem_tra_trich_dan
+
+if TYPE_CHECKING:  # chỉ để chú thích kiểu: chấm ở commit cũ (--so-voi) không phụ thuộc tên này
+    from thamdinh.tham_dinh import KetQuaLuot
 
 
 @dataclass(frozen=True)
@@ -64,6 +69,7 @@ def _cham_luot(l: KetQuaLuot, checklist: PhienBanChecklist, thu_muc: str | Path)
         danh_gia |= kq.danh_gia
         ket_qua_muc[m.so] = kq.ket_qua
     return ChamLuot(danh_gia, ket_qua_muc, trich_dan, l.hash_pdf)
+
 
 def den_json(kq: ChamKho) -> dict:
     return {

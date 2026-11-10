@@ -1,6 +1,6 @@
 # 25 - Script chạy thử model và chấm lại kho
 
-Status: ready-for-agent
+Status: done
 
 ## Vấn đề
 
@@ -37,3 +37,10 @@ Retro chuỗi issue 17–22 (Q195): mỗi lần thử nghiệm agent viết lạ
 - Q205: `do_thu_nghiem.py` bắt buộc `--tang-toi-thieu`/`--dung-thanh-sai-toi-da`; báo lỗi khi thiếu PDF; khi lỗi hoặc bị ngắt thì dừng Lượt chạy nền và ghi traceback vào nhật ký; kiểm mã thoát `so_sanh_lan_chay.py`; lệnh mẫu có `2>&1`.
 - Q206: tài liệu ghi rõ `--so-voi` dùng `cham_lai.py` của bản đang sửa; "Người thẩm định điền tay". Bỏ qua các nhận định về đặt tên, `main()`, `_kiem_tra` của `tham_dinh` (kết quả hiện tương đương vì câu trích trong kho đã cắt sẵn).
 - Chạy lại `--so-voi f6997a6` sau khi sửa: vẫn 37.
+
+**2026-11-10, review lại (Q206) và đóng.** Hai review lại xác nhận các mục Q204–Q206 đã làm; sửa thêm các lỗi do chính bản sửa tạo ra:
+- `do_thu_nghiem.py`: "Xong chuỗi" luôn là dòng cuối, kể cả khi thiếu tham số hoặc lỗi (ghi traceback trước, không `raise` lại; thoát mã 1, thiếu tham số thoát mã 2).
+- `cham_lai.py`: `KetQuaLuot` chỉ import khi kiểm kiểu (`TYPE_CHECKING`), để chấm ở commit cũ không phụ thuộc tên này; `cham_lai_kho.py` đăng ký module nạp theo đường dẫn vào `sys.modules` (dataclass cần khi chú thích kiểu là chuỗi); thư mục tạm bỏ qua lỗi dọn (`ignore_cleanup_errors`), không đè lỗi chấm.
+- Test `so_cham` với Lượt thiếu Văn bản hiệu lực: vẫn đếm Tiêu chí, bỏ phần Trích dẫn. 9 test `test_cham_lai.py` xanh.
+- Chạy lại `--so-voi f6997a6`: vẫn 37; worktree được dọn.
+- Không làm: chuyển lọc theo `hash_pdf` vào `so_cham`, gom tham số `_cho_va_so_sanh`, mã thoát khi `main()` trả về sớm. Sửa đổi ADR 0001 theo Q203: hỏi người dùng (Q207).

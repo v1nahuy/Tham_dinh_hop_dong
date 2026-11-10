@@ -129,3 +129,13 @@ def test_ket_qua_cham_qua_json_van_nhu_cu(tmp_path):
     kq = cham_lai(KhoCoLuotHong(tmp_path), CHECKLIST, tmp_path)
 
     assert tu_json(json.loads(json.dumps(den_json(kq)))) == kq
+
+
+def test_so_cham_bo_qua_trich_dan_cua_luot_thieu_van_ban_nhung_van_dem_tieu_chi():
+    truoc = ChamKho({"l": ChamLuot({"1.D1": "khong_thoa"}, {1: "luu_y"}, None)}, {})
+    sau = ChamKho({"l": ChamLuot({"1.D1": "thoa"}, {1: "dat"}, None)}, {})
+
+    kq = so_cham(truoc, sau, chuan({"1.D1": "thoa"}, ket_qua={1: "dat"}))
+
+    assert kq.luot["l"].sai_thanh_dung == ("1.D1",)
+    assert kq.trich_dan == {}

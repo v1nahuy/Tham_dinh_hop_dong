@@ -115,11 +115,14 @@ if __name__ == "__main__":
     ap.add_argument("--pdf", type=Path)
     ap.add_argument("--bo-chuan", type=Path, default=GOC / "eval" / "chuan" / "toss.yaml")
     ap.add_argument("--checklist", type=Path, default=GOC / "checklists" / "dau-ra-v1.1.yaml")
-    a = ap.parse_args()
+    ma_thoat = 0
     try:
-        main(a)
-    except BaseException:  # ghi lỗi vào nhật ký (stdout), để người kiểm tra mỗi giờ thấy
+        main(ap.parse_args())
+    except SystemExit as e:  # argparse báo thiếu tham số (đã in ra stderr)
+        ma_thoat = e.code
+    except BaseException:  # ghi lỗi vào nhật ký trước "Xong chuỗi", để người kiểm tra mỗi giờ thấy
         ghi("LỖI: " + traceback.format_exc())
-        raise
+        ma_thoat = 1
     finally:
         ghi("Xong chuỗi")
+    sys.exit(ma_thoat)

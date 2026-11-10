@@ -27,6 +27,7 @@ def _nap_cham_lai():
     """Nạp `cham_lai.py` của bản code này theo đường dẫn: trong worktree cũ, các module `thamdinh` khác là bản cũ."""
     spec = importlib.util.spec_from_file_location("cham_lai_ban_nay", GOC / "src" / "thamdinh" / "cham_lai.py")
     mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod  # dataclass cần tìm được module khi chú thích kiểu là chuỗi
     spec.loader.exec_module(mod)
     return mod
 
@@ -43,7 +44,7 @@ def _cham_o_commit(commit: str, checklist: Path, data: Path):
     if subprocess.run(["git", "rev-parse", "--verify", "--quiet", f"{commit}^{{commit}}"], cwd=GOC,
                       capture_output=True).returncode:
         sys.exit(f"Không có commit {commit}")
-    with tempfile.TemporaryDirectory() as tam:
+    with tempfile.TemporaryDirectory(ignore_cleanup_errors=True) as tam:
         wt, ra = Path(tam) / "wt", Path(tam) / "cham.json"
         subprocess.run(["git", "worktree", "add", "--detach", str(wt), commit], cwd=GOC, check=True,
                        capture_output=True)
@@ -58,8 +59,8 @@ def _cham_o_commit(commit: str, checklist: Path, data: Path):
 
 
 def _loc(cl, kq, chi: set[str] | None):
-    giu = (lambda ma: True) if chi is None else chi.__contains__
-    return cl.ChamKho({ma: l for ma, l in kq.luot.items() if giu(ma)}, {ma: e for ma, e in kq.loi.items() if giu(ma)})
+    return cl.ChamKho({ma: l for ma, l in kq.luot.items() if chi is None or ma in chi},
+                      {ma: e for ma, e in kq.loi.items() if chi is None or ma in chi})
 
 
 if __name__ == "__main__":
