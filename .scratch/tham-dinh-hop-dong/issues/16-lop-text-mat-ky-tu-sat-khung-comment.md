@@ -35,3 +35,8 @@ Blocked by: 04
 - Toàn văn `d8c20de88c96-20261104T134515961445`: 17/17 Mục, 5 giờ 50 phút. Truy xuất `d8c20de88c96-20261104T203037846149`: 17/17 Mục, gắn lại Chủ đề 52 phút rồi khoảng 7 giờ 20 phút. Cả hai Lượt có 7.V2, 16.V2 là `khong_thoa`.
 - Hai tiêu chí hoàn thành đều đạt: 210/210 Trích dẫn Bộ chuẩn tìm thấy trong Văn bản hiệu lực; `test_bo_khung_comment` xanh.
 - Ảnh hưởng tới độ chính xác chưa đo được: xem issue 15 (2026-11-05).
+
+**2026-11-09, Q191: đo đường OCR trên TOSS (không chạy model OCR).** Dựng ảnh từng trang có khung comment ở 300 DPI, chỉnh nghiêng, cắt bằng `cat_khung_comment`, so chỗ cắt với hộp ký tự lớp text (đã sửa theo issue này).
+- Trang 16–40: ảnh cắt ở x = 430,6 (khung lớp text 414,9), nên chữ thân bài tràn qua mép vẫn giữ. Lớp text trước khi sửa mất 132 ký tự ở vùng này.
+- Cả file: trang 49 mất 1 ký tự thân bài ("g") và 1 ký tự bị cắt dở; trang 51 lọt 4 ký tự comment ("CoBB").
+- Giới hạn: ảnh dựng từ PDF gốc, không phải bản scan thật. Không sửa code; cần bản scan thật có khung comment nếu muốn kiểm tiếp.
