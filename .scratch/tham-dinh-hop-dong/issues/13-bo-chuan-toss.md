@@ -1,6 +1,6 @@
 # 13 - Bộ chuẩn TOSS (làm tay)
 
-Status: ready-for-human
+Status: done
 Blocked by: 02
 
 ## Việc cần làm
@@ -21,3 +21,5 @@ Blocked by: 02
 - `src/thamdinh/bo_chuan.py`: `nap_bo_chuan(file, checklist, pdf=None)` (seam S18) báo mọi lỗi kèm vị trí.
 - Người dùng tự kiểm tra tiến độ bằng: `.venv/Scripts/python scripts/kiem_tra_bo_chuan.py eval/chuan/toss.yaml checklists/dau-ra-v1.1.yaml "Sample/HĐ TOSS v 12.5.2026.pdf"`.
 - Tiêu chí hoàn thành đạt khi lệnh trên in "Hoàn thành: 122/122".
+
+**2026-11-10, Q201: đóng.** Người dùng đã điền đủ `eval/chuan/toss.yaml`; Bộ chuẩn được dùng từ issue 15 đến 22. Q111: coi bản điền tay là chuẩn đúng. Chỗ nghi sai (13.L1) ghi ở issue 20. `eval/` không nằm trong git: người dùng tự sao lưu (Q202).

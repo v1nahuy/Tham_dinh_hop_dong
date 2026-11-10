@@ -1,6 +1,6 @@
 # 15 - So sánh ba nguồn và danh sách gửi pháp chế
 
-Status: ready-for-agent
+Status: done
 Blocked by: 09, 13
 
 ## Việc cần làm
@@ -127,3 +127,5 @@ Blocked by: 09, 13
 - Sai ổn định ở cả hai Lượt: 9.D1, 9.L1 (Mục 9 đọc sai 15.2); 17.D6 mâu thuẫn với 17.V1.
 - Theo Bộ chuẩn, 4.L1 là `thoa`, trong khi ngày 03/11 đếm tay đã xếp 4.L1 vào nhóm "hiểu ngược". Đếm tay theo lý do không đáng tin; từ nay dùng Bộ chuẩn.
 - Tiêu chí hoàn thành của issue này đã đạt. Còn lại từ issue 11: thử nút Dừng, "Chạy lại phần lỗi", duyệt trên trình duyệt.
+
+**2026-11-10, Q201: đóng.** Tiêu chí hoàn thành đã đạt. Phần thử tay còn lại (nút Dừng, "Chạy lại phần lỗi", duyệt trên trình duyệt, mở .docx bằng Word) chuyển sang issue 23.
