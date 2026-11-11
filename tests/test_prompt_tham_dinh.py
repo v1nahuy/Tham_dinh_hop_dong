@@ -160,3 +160,22 @@ def test_schema_gioi_han_trich_dan(trich_dan):
 
     with pytest.raises(jsonschema.ValidationError):
         jsonschema.validate(tl, schema(7))
+
+
+TOI_DA_KY_TU_DUOI_MUC_1 = 1600  # 1.567 ký tự = 500 token đo bằng tokenizer Qwen3.5 (issue 17); giới hạn thật là 516 token
+
+
+@pytest.mark.parametrize("duong_dan", sorted((Path(__file__).parent.parent / "checklists").glob("*.yaml")), ids=lambda p: p.name)
+def test_duoi_prompt_muc_1_du_ngan_de_dung_lai_cache(duong_dan):
+    checklist = load_checklist(duong_dan)
+    muc_1 = checklist.muc[0]
+    prompt, _ = xay_prompt_muc(muc_1, checklist, VAN_BAN, cac_ben=None)
+
+    moc = f"\nMỤC CHECKLIST {muc_1.so}: {muc_1.cau_hoi}"  # đuôi bắt đầu ở tiêu đề Mục, sau toàn văn và mô tả các bên
+    assert moc in prompt, "Không tìm thấy tiêu đề Mục trong prompt: sửa mốc cắt đuôi của test này theo xay_prompt_muc"
+    duoi = prompt[prompt.rindex(moc):]
+    assert len(duoi) <= TOI_DA_KY_TU_DUOI_MUC_1, (
+        f"Đuôi prompt Mục 1 dài {len(duoi)} ký tự. Qwen3.5 chỉ dùng lại được phần đầu prompt khi đuôi dưới 516 token: "
+        "dài hơn thì chế độ toàn văn đọc lại cả Hợp đồng ở mọi Mục, cả Lượt khoảng 23 giờ thay vì 6 giờ (issue 15). "
+        "Rút gọn NHAC_LAI_QUY_UOC hoặc chữ Mục 1, hoặc đo lại bằng LocalClient.dem_token rồi chỉnh ngưỡng này."
+    )
