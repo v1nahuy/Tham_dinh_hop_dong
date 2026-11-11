@@ -294,3 +294,22 @@ def test_chay_tiep_khac_che_do_thi_bao_loi():
     with pytest.raises(ValueError, match="chế độ"):
         tham_dinh(VAN_BAN, CHECKLIST, ModelGia(), luot_truoc=truoc, truy_xuat=TruyXuatGia())
 
+
+
+# ---- Giới hạn đuôi prompt Mục 1 (issue 28) ----
+from thamdinh.tham_dinh import xay_prompt_muc  # noqa: E402
+
+TOI_DA_KY_TU_DUOI_MUC_1 = 1600  # 1.567 ký tự = 500 token đo bằng tokenizer Qwen3.5 (issue 17); giới hạn thật là 516 token
+
+
+@pytest.mark.parametrize("duong_dan", sorted((Path(__file__).parent.parent / "checklists").glob("*.yaml")), ids=lambda p: p.name)
+def test_duoi_prompt_muc_1_du_ngan_de_dung_lai_cache(duong_dan):
+    checklist = load_checklist(duong_dan)
+    prompt, _ = xay_prompt_muc(checklist.muc[0], checklist, VAN_BAN, None)
+
+    duoi = prompt[prompt.index("\nMỤC CHECKLIST"):]
+    assert len(duoi) <= TOI_DA_KY_TU_DUOI_MUC_1, (
+        f"Đuôi prompt Mục 1 dài {len(duoi)} ký tự. Qwen3.5 chỉ dùng lại được phần đầu prompt khi đuôi dưới 516 token: "
+        "dài hơn thì chế độ toàn văn đọc lại cả Hợp đồng ở mọi Mục, cả Lượt khoảng 23 giờ thay vì 6 giờ (issue 15). "
+        "Rút gọn NHAC_LAI_QUY_UOC hoặc chữ Mục 1, hoặc đo lại bằng LocalClient.dem_token rồi chỉnh ngưỡng này."
+    )

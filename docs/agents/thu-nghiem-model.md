@@ -22,4 +22,4 @@ Model thẩm định chỉ là máy chủ ở `127.0.0.1` (ADR 0001). Phiên Cla
 
 - Sau khi cài hoặc đổi file model Qwen, chạy lại `pytest -m llm`.
 - Bộ chuẩn `eval/chuan/toss.yaml` là chuẩn đúng (Người thẩm định điền tay). Thấy chỗ nghi sai thì ghi vào issue, không sửa file.
-- Máy chỉ có CPU: viết khoảng 2,5 token/giây, đọc prompt khoảng 8–13 token/giây. Phần đuôi prompt sau đoạn dùng chung phải dưới khoảng 516 token thì mới dùng lại được cache.
+- Máy chỉ có CPU: viết khoảng 2,5 token/giây, đọc prompt khoảng 8–13 token/giây. Ở chế độ toàn văn, đuôi prompt của Mục 1 (từ "MỤC CHECKLIST" trở đi) phải dưới 516 token thì các Mục sau mới dùng lại được cache; test `test_duoi_prompt_muc_1_du_ngan_de_dung_lai_cache` kiểm giới hạn này theo số ký tự.

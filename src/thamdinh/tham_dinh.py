@@ -75,6 +75,7 @@ thì để trich_dan rỗng và ly_do là "Không tìm thấy điều khoản v�
 # trích dẫn. Giới hạn đó nằm trong SCHEMA_TRICH_DAN, llama-server ép theo.
 # Giữ phần đuôi prompt của Mục 1 (từ "MỤC CHECKLIST" trở đi) dưới 516 token: Qwen3.5 chỉ dùng lại được phần đầu từ điểm lưu
 # trạng thái, cách cuối prompt 516 token. Đuôi dài hơn thì chế độ toàn văn đọc lại cả Hợp đồng ở mọi Mục (80 phút thay vì 15 phút).
+# Test: test_duoi_prompt_muc_1_du_ngan_de_dung_lai_cache (issue 28).
 
 DANH_GIA = ["thoa", "khong_thoa", "khong_ro"]
 # Giới hạn số lượng và độ dài trích dẫn: llama-server ép theo schema, chặn model chép lặp không dừng
