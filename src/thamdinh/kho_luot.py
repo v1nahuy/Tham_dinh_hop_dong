@@ -15,7 +15,7 @@ from pathlib import Path
 
 from thamdinh.so_hoa import VanBanHieuLuc, hash_noi_dung
 from thamdinh.tham_dinh import KetQuaLuot, luot_tu_dict
-from thamdinh.trich_dan import TrichDan, TrichDanDaKiemTra, kiem_tra
+from thamdinh.trich_dan import TrichDan, TrichDanDaKiemTra, kiem_tra_va_ghi
 
 TEN_FILE = "tham-dinh.sqlite3"
 KET_QUA = ("dat", "luu_y", "vi_pham")
@@ -176,7 +176,7 @@ class KhoLuot:
             raise ValueError("Chưa ghi người duyệt")
         if (van_ban.hash_pdf, hash_noi_dung(van_ban)) != (luot.hash_pdf, luot.hash_van_ban):
             raise ValueError("Văn bản hiệu lực khác bản mà Lượt đã dùng (đã sửa tay sau khi chạy?)")
-        da_kiem_tra = [kiem_tra(td, van_ban) for td in trich_dan]
+        da_kiem_tra = [kiem_tra_va_ghi(td, van_ban) for td in trich_dan]
         with self._ket_noi() as db:
             (phien_ban,) = db.execute(
                 "SELECT COUNT(*) + 1 FROM duyet WHERE luot = ? AND so_muc = ?", (ma_luot, so_muc)

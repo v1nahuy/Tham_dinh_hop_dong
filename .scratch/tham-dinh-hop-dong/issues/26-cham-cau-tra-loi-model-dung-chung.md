@@ -1,6 +1,6 @@
 # 26 - Một bước chấm câu trả lời model dùng chung
 
-Status: ready-for-agent
+Status: done
 
 ## Vấn đề
 
@@ -28,3 +28,5 @@ Bước từ câu trả lời model ra Đánh giá tiêu chí, Kết quả Mục
 - `ket_qua_de_xuat.py`: `ket_qua_de_xuat_muc` (từ `tham_dinh._danh_gia_muc`), `tra_loi_da_luu` (dựng lại câu trả lời từ Mục đã lưu), `DanhGiaDeXuat`, `KetQuaMucDeXuat`, `TOI_DA_KY_TU_TRICH_DAN`; `trich_dan.py`: `TrichDanDaKiemTra`, `kiem_tra`. `tham_dinh` import lại các tên cũ; `_danh_gia_muc` chỉ còn gọi model; `luu_duyet` và `cham_lai` dùng chung.
 - Test qua `ket_qua_de_xuat_muc`: test mới đỏ rồi xanh (module chưa có; `tra_loi_da_luu` chưa có). Ba test cắt 300 ký tự, câu rỗng, định lượng xanh ngay vì chốt hành vi chuyển từ `tham_dinh`. Lần đầu mình kỳ vọng sai Mục 1 ra Đạt: 1.V2 có điều kiện giá trị Hợp đồng > 2 tỷ, không có giá trị điều kiện thì ra Lưu ý (đúng luật); đã sửa test.
 - Hồi quy: `cham_lai_kho.py` trên 15 Lượt trước và sau refactor giống hệt (`diff` rỗng). 370 test thường xanh; một lần chạy có 1 test hỏng không lặp lại được (chạy lại 6 lần xanh, chưa biết test nào).
+
+**2026-11-11, review (Q197) và đóng (Q214).** Hai review không thấy lỗi; `ket_qua_de_xuat_muc` giữ nguyên văn hành vi cũ, cắt 300 ký tự chỉ cho câu trả lời model, `cham_lai` cho cùng kết quả. Đã sửa: đổi `trich_dan.kiem_tra` thành `kiem_tra_va_ghi` (dễ nhầm với `kiem_tra_trich_dan`); docstring `tra_loi_da_luu` ghi rõ `dieu_khoan_dua_vao`/`canh_bao` do người gọi giữ; docstring `cham_lai_kho.py` ghi giới hạn `--so-voi`. Để issue 29: `ket_qua_de_xuat_muc` nhận `van_ban=None` thay vì Văn bản hiệu lực rỗng trong `cham_lai`; khi trả Lượt đầy đủ thì giữ `dieu_khoan_dua_vao`/`canh_bao`; `tra_loi[tc.ma]` báo KeyError nếu Mục đã lưu thiếu Tiêu chí (hiện đã chặn bằng kiểm tra Phiên bản checklist). Để issue 27: các module khác import kiểu qua `tham_dinh`.

@@ -39,7 +39,7 @@ class TrichDanDaKiemTra:
     so_hieu_dung: str | None
 
 
-def kiem_tra(trich_dan: TrichDan, van_ban: VanBanHieuLuc) -> TrichDanDaKiemTra:
+def kiem_tra_va_ghi(trich_dan: TrichDan, van_ban: VanBanHieuLuc) -> TrichDanDaKiemTra:
     """Trích dẫn kèm trạng thái kiểm tra, dạng lưu trong Kết quả đề xuất và Kết quả đã duyệt."""
     kq = kiem_tra_trich_dan(trich_dan, van_ban)
     return TrichDanDaKiemTra(trich_dan.so_hieu, trich_dan.nguyen_van, kq.trang_thai, kq.so_hieu_dung)

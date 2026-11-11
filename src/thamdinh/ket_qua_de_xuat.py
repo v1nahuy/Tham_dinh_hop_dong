@@ -9,7 +9,7 @@ from typing import Any
 from thamdinh.checklist import MucChecklist
 from thamdinh.so_hoa import VanBanHieuLuc
 from thamdinh.tong_hop import DanhGiaTieuChi, KetQuaMuc, tong_hop_muc
-from thamdinh.trich_dan import TrichDan, TrichDanDaKiemTra, kiem_tra
+from thamdinh.trich_dan import TrichDan, TrichDanDaKiemTra, kiem_tra_va_ghi
 
 # Độ dài tối đa một câu trích model được viết (schema ép `maxLength`); câu dài đúng bằng ngưỡng là đã bị cắt
 TOI_DA_KY_TU_TRICH_DAN = 300
@@ -69,13 +69,14 @@ def _kiem_tra_cau_model(trich_dan: TrichDan, van_ban: VanBanHieuLuc) -> TrichDan
     if len(trich_dan.nguyen_van) >= TOI_DA_KY_TU_TRICH_DAN:
         # Bị llama-server cắt ở maxLength: từ cuối dở dang, ký tự cuối thường là rác
         trich_dan = TrichDan(trich_dan.so_hieu, trich_dan.nguyen_van.rsplit(" ", 1)[0] + " …")
-    return kiem_tra(trich_dan, van_ban)
+    return kiem_tra_va_ghi(trich_dan, van_ban)
 
 
 def tra_loi_da_luu(muc: KetQuaMucDeXuat) -> dict[str, dict[str, Any]]:
     """Dựng lại câu trả lời model từ Kết quả đề xuất đã lưu, để chấm lại bằng luật hiện tại (`cham_lai`).
 
-    Câu trích rỗng đã bị bỏ và câu bị cắt đã được rút gọn lúc lưu; chấm lại cho cùng kết quả.
+    Câu trích rỗng đã bị bỏ và câu bị cắt đã được rút gọn lúc lưu, nên chấm lại cho cùng Đánh giá, Kết quả và Trích dẫn.
+    `dieu_khoan_dua_vao` và `canh_bao` không thuộc câu trả lời: người gọi giữ lại từ Mục đã lưu nếu cần.
     """
     return {
         t.ma: {"danh_gia": t.danh_gia_llm, "ly_do": t.ly_do, "gia_tri": t.gia_tri,

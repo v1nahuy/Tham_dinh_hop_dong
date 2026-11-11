@@ -7,7 +7,7 @@ Chạy: .venv/Scripts/python scripts/cham_lai_kho.py [--so-voi <commit>] [--luot
 - `--so-voi <commit>`: chấm thêm bằng code ở commit đó (git worktree tạm) rồi in chuyển trạng thái cũ → mới.
 So với Bộ chuẩn chỉ tính các Lượt của đúng Hợp đồng trong Bộ chuẩn (cùng hash PDF).
 `--so-voi` chấm bằng các module `thamdinh` ở commit đó nhưng `cham_lai.py` của bản này, nên không đo thay đổi trong
-chính `cham_lai.py`.
+chính `cham_lai.py`; chỉ so được với commit từ issue 26 trở đi (`cham_lai.py` dùng `ket_qua_de_xuat.py`).
 """
 
 import argparse
