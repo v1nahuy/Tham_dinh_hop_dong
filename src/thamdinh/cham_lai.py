@@ -14,9 +14,9 @@ from typing import TYPE_CHECKING
 from thamdinh.bo_chuan import BoChuan
 from thamdinh.checklist import PhienBanChecklist
 from thamdinh.kho_luot import KhoLuot
+from thamdinh.ket_qua_de_xuat import ket_qua_de_xuat_muc, tra_loi_da_luu
+from thamdinh.so_hoa import VanBanHieuLuc
 from thamdinh.so_hoa.van_ban import nap_van_ban
-from thamdinh.tong_hop import DanhGiaTieuChi, tong_hop_muc
-from thamdinh.trich_dan import TrichDan, kiem_tra_trich_dan
 
 if TYPE_CHECKING:  # chỉ để chú thích kiểu: chấm ở commit cũ (--so-voi) không phụ thuộc tên này
     from thamdinh.tham_dinh import KetQuaLuot
@@ -52,22 +52,22 @@ def _cham_luot(l: KetQuaLuot, checklist: PhienBanChecklist, thu_muc: str | Path)
     if l.checklist != ma_checklist:
         raise ValueError(f"Lượt dùng checklist {l.checklist}, đang chấm bằng {ma_checklist}")
     theo_so = {m.so: m for m in checklist.muc}
+    van_ban = nap_van_ban(l.hash_pdf, thu_muc, l.hash_van_ban)
+    # Thiếu Văn bản hiệu lực: vẫn chấm lại Đánh giá (không phụ thuộc Trích dẫn), bỏ phần Trích dẫn
+    van_ban_cham = van_ban or VanBanHieuLuc(l.hash_pdf, l.ten_file, [], [], [])
     danh_gia: dict[str, str] = {}
     ket_qua_muc: dict[int, str | None] = {}
-    van_ban = nap_van_ban(l.hash_pdf, thu_muc, l.hash_van_ban)
-    trich_dan = None if van_ban is None else {
-        t.ma: tuple(kiem_tra_trich_dan(TrichDan(td.so_hieu, td.nguyen_van), van_ban).trang_thai for td in t.trich_dan)
-        for m in l.muc for t in m.tieu_chi
-    }
+    trich_dan: dict[str, tuple[str, ...]] = {}
     for m in l.muc:
         if m.ket_qua is None:
             ket_qua_muc[m.so] = None
             continue
-        kq = tong_hop_muc(theo_so[m.so], [
-            DanhGiaTieuChi(t.ma, t.danh_gia_llm, t.gia_tri, t.gia_tri_dieu_kien, t.ly_do) for t in m.tieu_chi
-        ])
-        danh_gia |= kq.danh_gia
-        ket_qua_muc[m.so] = kq.ket_qua
+        kq = ket_qua_de_xuat_muc(theo_so[m.so], tra_loi_da_luu(m), van_ban_cham)
+        danh_gia |= kq.ket_qua.danh_gia
+        ket_qua_muc[m.so] = kq.ket_qua.ket_qua
+        trich_dan |= {t.ma: tuple(td.trang_thai for td in t.trich_dan) for t in kq.tieu_chi}
+    if van_ban is None:
+        trich_dan = None
     return ChamLuot(danh_gia, ket_qua_muc, trich_dan, l.hash_pdf)
 
 

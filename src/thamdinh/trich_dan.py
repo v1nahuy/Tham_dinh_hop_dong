@@ -31,6 +31,20 @@ class KetQuaTrichDan:
     so_hieu_dung: str | None = None
 
 
+@dataclass(frozen=True)
+class TrichDanDaKiemTra:
+    so_hieu: str
+    nguyen_van: str
+    trang_thai: str  # khop | khop_sai_so_hieu | khong_xac_minh_duoc
+    so_hieu_dung: str | None
+
+
+def kiem_tra(trich_dan: TrichDan, van_ban: VanBanHieuLuc) -> TrichDanDaKiemTra:
+    """Trích dẫn kèm trạng thái kiểm tra, dạng lưu trong Kết quả đề xuất và Kết quả đã duyệt."""
+    kq = kiem_tra_trich_dan(trich_dan, van_ban)
+    return TrichDanDaKiemTra(trich_dan.so_hieu, trich_dan.nguyen_van, kq.trang_thai, kq.so_hieu_dung)
+
+
 def chuan_hoa(van_ban: str) -> str:
     van_ban = unicodedata.normalize("NFC", van_ban)
     van_ban = NGOAC_KEP.sub('"', van_ban)

@@ -17,8 +17,9 @@ import yaml
 from thamdinh.checklist import MucChecklist, PhienBanChecklist, TieuChi
 from thamdinh.llm import LLMBiCatError, LLMClient, LLMResponseError
 from thamdinh.so_hoa import VanBanHieuLuc, hash_noi_dung
-from thamdinh.tong_hop import DanhGiaTieuChi, KetQuaMuc, tong_hop_muc
-from thamdinh.trich_dan import TrichDan, kiem_tra_trich_dan
+from thamdinh.ket_qua_de_xuat import TOI_DA_KY_TU_TRICH_DAN, DanhGiaDeXuat, KetQuaMucDeXuat, ket_qua_de_xuat_muc
+from thamdinh.tong_hop import KetQuaMuc
+from thamdinh.trich_dan import TrichDan, TrichDanDaKiemTra
 
 TEN_MUC_KET_QUA = {"dat": "Đạt", "luu_y": "Lưu ý", "vi_pham": "Vi phạm"}
 
@@ -79,7 +80,6 @@ thì để trich_dan rỗng và ly_do là "Không tìm thấy điều khoản v�
 
 DANH_GIA = ["thoa", "khong_thoa", "khong_ro"]
 # Giới hạn số lượng và độ dài trích dẫn: llama-server ép theo schema, chặn model chép lặp không dừng
-TOI_DA_KY_TU_TRICH_DAN = 300
 SCHEMA_TRICH_DAN = {
     "type": "array",
     "maxItems": 3,
@@ -249,39 +249,6 @@ DU_PHONG_DAU_RA = 4096  # token dành cho câu trả lời của model
 
 class VanBanQuaDaiError(Exception):
     """Prompt chế độ toàn văn vượt ngữ cảnh của model."""
-
-
-@dataclass(frozen=True)
-class TrichDanDaKiemTra:
-    so_hieu: str
-    nguyen_van: str
-    trang_thai: str  # khop | khop_sai_so_hieu | khong_xac_minh_duoc
-    so_hieu_dung: str | None
-
-
-@dataclass(frozen=True)
-class DanhGiaDeXuat:
-    ma: str
-    muc_ket_qua: str  # dat | luu_y | vi_pham
-    mo_ta: str
-    danh_gia: str  # sau khi code so sánh định lượng / điều kiện
-    danh_gia_llm: str
-    gia_tri: float | None
-    gia_tri_dieu_kien: float | None
-    ly_do: str
-    trich_dan: tuple[TrichDanDaKiemTra, ...]
-    khong_tim_thay_dieu_khoan: bool
-
-
-@dataclass(frozen=True)
-class KetQuaMucDeXuat:
-    so: int
-    cau_hoi: str
-    ket_qua: KetQuaMuc | None  # None khi chưa đánh giá được
-    tieu_chi: tuple[DanhGiaDeXuat, ...]
-    loi: str | None
-    dieu_khoan_dua_vao: tuple[str, ...] = ()  # số hiệu các Điều khoản model được đọc
-    canh_bao: tuple[str, ...] = ()  # chế độ truy xuất: Điều khoản bị bỏ vì vượt ngân sách…
 
 
 @dataclass(frozen=True)
@@ -487,43 +454,4 @@ def _danh_gia_muc(
     except LLMResponseError as e:
         return KetQuaMucDeXuat(muc.so, muc.cau_hoi, None, (), f"chưa đánh giá được: {e}")
 
-    danh_gia = [
-        DanhGiaTieuChi(
-            ma, t["danh_gia"], gia_tri=t.get("gia_tri"), gia_tri_dieu_kien=t.get("gia_tri_dieu_kien"), ly_do=t["ly_do"]
-        )
-        for ma, t in tra_loi.items()
-    ]
-    tong_hop = tong_hop_muc(muc, danh_gia)
-
-    tieu_chi = []
-    for muc_kq, ds in muc.tieu_chi.items():
-        for tc in ds:
-            t = tra_loi[tc.ma]
-            trich_dan = tuple(
-                _kiem_tra(TrichDan(td["so_hieu"], td["nguyen_van"]), van_ban)
-                for td in t["trich_dan"]
-                if td["nguyen_van"].strip()
-            )
-            tieu_chi.append(
-                DanhGiaDeXuat(
-                    ma=tc.ma,
-                    muc_ket_qua=muc_kq,
-                    mo_ta=tc.mo_ta,
-                    danh_gia=tong_hop.danh_gia[tc.ma],
-                    danh_gia_llm=t["danh_gia"],
-                    gia_tri=t.get("gia_tri"),
-                    gia_tri_dieu_kien=t.get("gia_tri_dieu_kien"),
-                    ly_do=t["ly_do"],
-                    trich_dan=trich_dan,
-                    khong_tim_thay_dieu_khoan=not trich_dan,
-                )
-            )
-    return KetQuaMucDeXuat(muc.so, muc.cau_hoi, tong_hop, tuple(tieu_chi), None)
-
-
-def _kiem_tra(trich_dan: TrichDan, van_ban: VanBanHieuLuc) -> TrichDanDaKiemTra:
-    if len(trich_dan.nguyen_van) >= TOI_DA_KY_TU_TRICH_DAN:
-        # Bị llama-server cắt ở maxLength: từ cuối dở dang, ký tự cuối thường là rác
-        trich_dan = TrichDan(trich_dan.so_hieu, trich_dan.nguyen_van.rsplit(" ", 1)[0] + " …")
-    kq = kiem_tra_trich_dan(trich_dan, van_ban)
-    return TrichDanDaKiemTra(trich_dan.so_hieu, trich_dan.nguyen_van, kq.trang_thai, kq.so_hieu_dung)
+    return ket_qua_de_xuat_muc(muc, tra_loi, van_ban)
