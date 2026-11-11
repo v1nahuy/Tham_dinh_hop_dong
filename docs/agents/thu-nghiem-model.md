@@ -6,7 +6,7 @@ Model thẩm định chỉ là máy chủ ở `127.0.0.1` (ADR 0001). Phiên Cla
 
 ## Các bước
 
-1. **Đo offline trước.** Nếu thay đổi chỉ nằm ở code sau model (tổng hợp, Trích dẫn, luật chấm), chấm lại các Lượt đã lưu bằng code mới, không gọi model: `scripts/cham_lai_kho.py --so-voi HEAD` (so code đang sửa với commit gần nhất; dùng `cham_lai.py` của bản đang sửa cho cả hai bên, nên không đo thay đổi trong chính file đó). Đủ số đo thì bỏ qua các bước chạy model.
+1. **Đo offline trước.** Nếu thay đổi chỉ nằm ở code sau model (tổng hợp, Trích dẫn, luật chấm), chấm lại các Lượt đã lưu bằng code mới, không gọi model: `scripts/cham_lai_kho.py --so-voi HEAD` (so code đang sửa với commit gần nhất; dùng `cham_lai.py` của bản đang sửa cho cả hai bên, nên không đo thay đổi trong chính file đó; chỉ so được với commit từ issue 26 trở đi vì `cham_lai.py` dùng `ket_qua_de_xuat.py`). Đủ số đo thì bỏ qua các bước chạy model.
    Xong khi: có bảng chuyển trạng thái (đúng→sai, sai→đúng) trên mọi Lượt nạp được.
 2. **Ghi quy tắc giữ vào issue trước khi chạy:** Lượt gốc để so, các Mục chạy lại, ngưỡng tăng tối thiểu, số đúng→sai tối đa, thời gian tối đa (mốc ở Lượt gốc).
    Xong khi: người dùng đã đồng ý quy tắc và đồng ý riêng cho lần chạy này. Mỗi lần chạy model cần một lần đồng ý.
