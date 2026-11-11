@@ -4,6 +4,8 @@ Hợp đồng chứa thông tin mật (giá, bảo lãnh, khách hàng), nên �
 
 **Sửa đổi 2026-10-29:** ban đầu bản demo được phép dùng Claude API. Nay bản demo cũng chạy local: Qwen3.5 (Apache 2.0) qua llama.cpp `llama-server`, chỉ nghe trên `127.0.0.1`. Lý do: Claude API tính phí theo lượt, và chạy local ngay từ demo đúng với hướng triển khai on-prem. `ClaudeClient` đã bị gỡ.
 
+**Sửa đổi 2026-11-10 (Q203):** phiên Claude Code dùng để phát triển và chẩn đoán được đọc nội dung lấy từ Hợp đồng trong nhật ký, báo cáo so sánh và Trích dẫn (Người thẩm định quyết định, vì cần cho việc phát triển). Model thẩm định vẫn chỉ chạy on-prem. Subagent (review, tìm kiếm) và API ngoài khác không nhận nội dung Hợp đồng khi chưa có phê duyệt của công ty. Cách làm cụ thể: `docs/agents/thu-nghiem-model.md`.
+
 ## Consequences
 
 - Không dựa vào tính năng chỉ một nhà cung cấp mô hình mới có (ví dụ gửi thẳng PDF vào API) như một phần cốt lõi của luồng xử lý.
