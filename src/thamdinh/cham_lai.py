@@ -19,7 +19,7 @@ from thamdinh.so_hoa import VanBanHieuLuc
 from thamdinh.so_hoa.van_ban import nap_van_ban
 
 if TYPE_CHECKING:  # chỉ để chú thích kiểu: chấm ở commit cũ (--so-voi) không phụ thuộc tên này
-    from thamdinh.tham_dinh import KetQuaLuot
+    from thamdinh.luot import KetQuaLuot
 
 
 @dataclass(frozen=True)

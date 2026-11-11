@@ -18,11 +18,12 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 
-from thamdinh.bang_ket_qua import TEN_KET_QUA
 from thamdinh.checklist import PhienBanChecklist, mo_ta_de_doc
 from thamdinh.kho_luot import KetQuaDuyet
 from thamdinh.so_hoa import VanBanHieuLuc
-from thamdinh.tham_dinh import KetQuaLuot, KetQuaMucDeXuat
+from thamdinh.ket_qua_de_xuat import KetQuaMucDeXuat
+from thamdinh.luot import KetQuaLuot
+from thamdinh.tong_hop import TEN_KET_QUA
 from thamdinh.trich_dan import KHONG_XAC_MINH_DUOC, dieu_khoan_chua_trich_dan
 
 FONT = "Times New Roman"

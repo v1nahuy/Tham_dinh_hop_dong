@@ -5,11 +5,9 @@ Hợp đồng) để máy chủ model dùng lại phần đã đọc giữa các
 (`truy_xuat.py`): thay toàn văn bằng các Điều khoản được chọn cho từng Mục.
 """
 
-import json
 from collections.abc import Callable, Collection
-from dataclasses import asdict, dataclass, replace
+from dataclasses import replace
 from datetime import datetime
-from pathlib import Path
 from typing import Any, Protocol
 
 import yaml
@@ -17,11 +15,11 @@ import yaml
 from thamdinh.checklist import MucChecklist, PhienBanChecklist, TieuChi
 from thamdinh.llm import LLMBiCatError, LLMClient, LLMResponseError
 from thamdinh.so_hoa import VanBanHieuLuc, hash_noi_dung
-from thamdinh.ket_qua_de_xuat import TOI_DA_KY_TU_TRICH_DAN, DanhGiaDeXuat, KetQuaMucDeXuat, ket_qua_de_xuat_muc
-from thamdinh.tong_hop import KetQuaMuc
-from thamdinh.trich_dan import TrichDan, TrichDanDaKiemTra
+from thamdinh.luot import CacBen, KetQuaLuot
+from thamdinh.ket_qua_de_xuat import TOI_DA_KY_TU_TRICH_DAN, KetQuaMucDeXuat, ket_qua_de_xuat_muc
+from thamdinh.tong_hop import TEN_KET_QUA
+from thamdinh.trich_dan import TrichDan
 
-TEN_MUC_KET_QUA = {"dat": "Đạt", "luu_y": "Lưu ý", "vi_pham": "Vi phạm"}
 
 HUONG_DAN_CHUNG = """\
 Bạn là chuyên viên pháp chế của Công ty (VTIT), thẩm định Dự thảo Hợp đồng đầu ra dưới đây để bảo vệ quyền lợi của Công ty.
@@ -92,14 +90,6 @@ SCHEMA_TRICH_DAN = {
 }
 
 
-@dataclass(frozen=True)
-class CacBen:
-    cong_ty: str  # Bên A | Bên B | không rõ
-    ten_cong_ty: str
-    ten_khach_hang: str
-    trich_dan: tuple[TrichDan, ...]
-
-
 def toan_van(van_ban: VanBanHieuLuc) -> str:
     return "\n\n".join(f"### {dk.so_hieu}\n{dk.noi_dung}" for dk in van_ban.dieu_khoan)
 
@@ -164,7 +154,7 @@ def xay_prompt_muc(
     for muc_kq, ds in muc.tieu_chi.items():
         for tc in ds:
             if tc in tieu_chi:
-                phan.append(f"- {tc.ma} [{TEN_MUC_KET_QUA[muc_kq]}]: {tc.mo_ta}{_huong_dan_gia_tri(tc)}")
+                phan.append(f"- {tc.ma} [{TEN_KET_QUA[muc_kq]}]: {tc.mo_ta}{_huong_dan_gia_tri(tc)}")
     phan.append("\n" + NHAC_LAI_QUY_UOC.rstrip())
     phan.append(
         "\nTrả lời bằng JSON: với mỗi mã Tiêu chí ở trên, ghi danh_gia, ly_do, trich_dan "
@@ -249,24 +239,6 @@ DU_PHONG_DAU_RA = 4096  # token dành cho câu trả lời của model
 
 class VanBanQuaDaiError(Exception):
     """Prompt chế độ toàn văn vượt ngữ cảnh của model."""
-
-
-@dataclass(frozen=True)
-class KetQuaLuot:
-    hash_pdf: str
-    ten_file: str
-    checklist: str
-    model: str
-    che_do: str
-    bat_dau: str
-    ket_thuc: str
-    cac_ben: CacBen | None
-    loi_cac_ben: str | None
-    muc: tuple[KetQuaMucDeXuat, ...]
-    canh_bao: tuple[str, ...] = ()  # cảnh báo chung của Lượt (gắn Chủ đề lỗi, chỉ dùng BM25…)
-    ma: str = ""  # mã Lượt, duy nhất
-    luot_goc: str | None = None  # Lượt mà Lượt này được tạo từ đó (chạy lại Mục đã có Kết quả đề xuất)
-    hash_van_ban: str = ""  # hash nội dung Văn bản hiệu lực đã dùng (bản sửa tay sau đó không ảnh hưởng)
 
 
 class NguCanh(Protocol):
@@ -378,42 +350,6 @@ def tham_dinh(
             ket_qua.append(replace(kq, dieu_khoan_dua_vao=tuple(nc.dieu_khoan), canh_bao=tuple(nc.canh_bao)))
         sau_moi_buoc(luot(ket_qua))
     return luot(ket_qua)
-
-
-def luu_luot(ket_qua: KetQuaLuot, thu_muc: str | Path) -> Path:
-    """Ghi Lượt thẩm định ra JSON trong `<thu_muc>/luot/` (lưu trữ đầy đủ ở issue 10)."""
-    ten = ket_qua.ma or f"{ket_qua.hash_pdf[:12]}-{ket_qua.bat_dau.replace(':', '').replace('-', '')}"
-    file = Path(thu_muc) / "luot" / f"{ten}.json"
-    file.parent.mkdir(parents=True, exist_ok=True)
-    file.write_text(json.dumps(asdict(ket_qua), ensure_ascii=False, indent=1), encoding="utf-8")
-    return file
-
-
-def nap_luot(file: str | Path) -> KetQuaLuot:
-    """Đọc lại Lượt đã xuất bằng `luu_luot`."""
-    return luot_tu_dict(json.loads(Path(file).read_text(encoding="utf-8")))
-
-
-def luot_tu_dict(d: dict[str, Any]) -> KetQuaLuot:
-    """Dựng lại Lượt từ `asdict(KetQuaLuot)` (file JSON, cơ sở dữ liệu `kho_luot`)."""
-    cb = d["cac_ben"]
-    cac_ben = cb and CacBen(cb["cong_ty"], cb["ten_cong_ty"], cb["ten_khach_hang"],
-                            tuple(TrichDan(**t) for t in cb["trich_dan"]))
-    return KetQuaLuot(**{**d, "cac_ben": cac_ben, "muc": tuple(muc_tu_dict(m) for m in d["muc"]),
-                         "canh_bao": tuple(d.get("canh_bao", ()))})
-
-
-def muc_tu_dict(m: dict[str, Any]) -> KetQuaMucDeXuat:
-    kq = m["ket_qua"]
-    if kq:
-        kq = KetQuaMuc(kq["so"], kq["ket_qua"], kq["danh_gia"], tuple(kq["tieu_chi_quyet_dinh"]),
-                       kq["giai_thich"], tuple(kq["ghi_chu"]))
-    tieu_chi = tuple(
-        DanhGiaDeXuat(**{**t, "trich_dan": tuple(TrichDanDaKiemTra(**td) for td in t["trich_dan"])})
-        for t in m["tieu_chi"]
-    )
-    return KetQuaMucDeXuat(m["so"], m["cau_hoi"], kq, tieu_chi, m["loi"],
-                           tuple(m.get("dieu_khoan_dua_vao", ())), tuple(m.get("canh_bao", ())))
 
 
 def _goi(llm: LLMClient, prompt: str, schema: dict[str, Any]) -> dict[str, Any]:

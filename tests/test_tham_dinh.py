@@ -8,7 +8,7 @@ from thamdinh.checklist import load_checklist
 from thamdinh.llm import LLMBiCatError, LLMResponseError
 from thamdinh.so_hoa import TrangSoHoa, VanBanHieuLuc, hash_noi_dung
 from thamdinh.so_hoa.cau_truc import DieuKhoan
-from thamdinh.tham_dinh import VanBanQuaDaiError, luu_luot, nap_luot, tham_dinh
+from thamdinh.tham_dinh import VanBanQuaDaiError, tham_dinh
 
 CHECKLIST = load_checklist(Path(__file__).parent.parent / "checklists" / "dau-ra-v1.1.yaml")
 
@@ -186,17 +186,6 @@ def test_van_ban_qua_dai_bao_loi_truoc_khi_goi_model():
     assert model.prompt == []
 
 
-def test_luu_luot_ra_file_json(tmp_path):
-    kq = tham_dinh(VAN_BAN, CHECKLIST, ModelGia(), model="qwen3.5")
-
-    file = luu_luot(kq, tmp_path)
-
-    d = json.loads(file.read_text(encoding="utf-8"))
-    assert file.parent == tmp_path / "luot"
-    assert d["hash_pdf"] == "abc123" and d["model"] == "qwen3.5"
-    assert len(d["muc"]) == 17
-
-
 def test_bao_ket_qua_tam_sau_moi_buoc_de_luu_ngay():
     # Một Lượt trên CPU mất nhiều giờ: tắt máy giữa chừng không được mất các Mục đã xong
     tam = []
@@ -206,12 +195,6 @@ def test_bao_ket_qua_tam_sau_moi_buoc_de_luu_ngay():
     assert [len(t.muc) for t in tam] == list(range(0, 18))
     assert tam[0].cac_ben is not None
     assert tam[-1].muc == kq.muc
-
-
-def test_nap_lai_luot_da_luu(tmp_path):
-    kq = tham_dinh(VAN_BAN, CHECKLIST, ModelGia(loi_muc={7: 2}))
-
-    assert nap_luot(luu_luot(kq, tmp_path)) == kq
 
 
 def test_chay_tiep_chi_goi_model_cho_muc_loi_hoac_chua_chay():
@@ -303,12 +286,6 @@ def test_che_do_toan_van_ghi_toan_van_vao_luot():
     m = muc(tham_dinh(VAN_BAN, CHECKLIST, ModelGia()), 7)
 
     assert m.dieu_khoan_dua_vao == ("Phần mở đầu", "Điều 10") and m.canh_bao == ()
-
-
-def test_nap_lai_luot_truy_xuat(tmp_path):
-    kq = tham_dinh(VAN_BAN, CHECKLIST, ModelGia(), truy_xuat=TruyXuatGia())
-
-    assert nap_luot(luu_luot(kq, tmp_path)) == kq
 
 
 def test_chay_tiep_khac_che_do_thi_bao_loi():

@@ -21,8 +21,8 @@ from pathlib import Path
 from thamdinh.chay_luot import chay_luot
 from thamdinh.kho_luot import KhoLuot
 from thamdinh.settings import load_settings
+from thamdinh.tong_hop import TEN_KET_QUA
 
-TEN = {"dat": "Đạt", "luu_y": "Lưu ý", "vi_pham": "Vi phạm"}
 
 if __name__ == "__main__":
     sys.stdout.reconfigure(encoding="utf-8")
@@ -62,7 +62,7 @@ if __name__ == "__main__":
             print(f"Mục {m.so:>2}: CHƯA ĐÁNH GIÁ ĐƯỢC - {m.loi}")
             continue
         trich_dan = Counter(td.trang_thai for t in m.tieu_chi for td in t.trich_dan)
-        print(f"Mục {m.so:>2}: {TEN[m.ket_qua.ket_qua]:<8} {m.ket_qua.giai_thich}  trích dẫn: {dict(trich_dan)}")
+        print(f"Mục {m.so:>2}: {TEN_KET_QUA[m.ket_qua.ket_qua]:<8} {m.ket_qua.giai_thich}  trích dẫn: {dict(trich_dan)}")
         if kq.che_do == "truy_xuat":
             print(f"         đọc {len(m.dieu_khoan_dua_vao)} Điều khoản" + "".join(f"; {c}" for c in m.canh_bao))
     goc = f", tạo từ Lượt {kq.luot_goc}" if kq.luot_goc else ""

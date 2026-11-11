@@ -14,11 +14,13 @@ from datetime import datetime
 from pathlib import Path
 
 from thamdinh.so_hoa import VanBanHieuLuc, hash_noi_dung
-from thamdinh.tham_dinh import KetQuaLuot, luot_tu_dict
+from thamdinh.luot import KetQuaLuot, luot_den_dict, luot_tu_dict
 from thamdinh.trich_dan import TrichDan, TrichDanDaKiemTra, kiem_tra_va_ghi
 
 TEN_FILE = "tham-dinh.sqlite3"
 KET_QUA = ("dat", "luu_y", "vi_pham")
+# Cột chỉ mục của bảng `luot`, đúng thứ tự trong SCHEMA; các trường khác của Lượt lưu trong cột `chung` (JSON)
+COT_LUOT = ("ma", "hash_pdf", "ten_file", "checklist", "model", "che_do", "bat_dau", "ket_thuc", "hash_van_ban", "luot_goc")
 
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS luot (
@@ -103,8 +105,9 @@ class KhoLuot:
 
     def luu(self, kq: KetQuaLuot) -> None:
         """Lưu (hoặc cập nhật khi đang chạy / chạy lại phần lỗi) một Lượt; không bao giờ ghi đè Mục đã có Kết quả."""
-        d = asdict(kq)
-        chung = json.dumps({k: d[k] for k in ("cac_ben", "loi_cac_ben", "canh_bao")}, ensure_ascii=False)
+        d = luot_den_dict(kq)
+        # Mọi trường không phải cột chỉ mục nằm trong `chung`: thêm trường cấp Lượt không cần sửa ở đây
+        chung = json.dumps({k: v for k, v in d.items() if k not in COT_LUOT and k != "muc"}, ensure_ascii=False)
         with self._ket_noi() as db:
             cu = db.execute("SELECT chung FROM luot WHERE ma = ?", (kq.ma,)).fetchone()
             if cu and json.loads(cu[0])["cac_ben"] not in (None, json.loads(chung)["cac_ben"]):
@@ -112,8 +115,7 @@ class KhoLuot:
             db.execute(
                 """INSERT INTO luot VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                    ON CONFLICT(ma) DO UPDATE SET ket_thuc = excluded.ket_thuc, chung = excluded.chung""",
-                (kq.ma, kq.hash_pdf, kq.ten_file, kq.checklist, kq.model, kq.che_do, kq.bat_dau, kq.ket_thuc,
-                 kq.hash_van_ban, kq.luot_goc, chung),
+                (*(d[c] for c in COT_LUOT), chung),
             )
             for m, dm in zip(kq.muc, d["muc"]):
                 du_lieu = json.dumps(dm, ensure_ascii=False)
@@ -133,16 +135,11 @@ class KhoLuot:
 
     def nap(self, ma: str) -> KetQuaLuot:
         with self._ket_noi() as db:
-            dong = db.execute(
-                "SELECT hash_pdf, ten_file, checklist, model, che_do, bat_dau, ket_thuc, hash_van_ban, luot_goc, chung "
-                "FROM luot WHERE ma = ?",
-                (ma,),
-            ).fetchone()
+            dong = db.execute(f"SELECT {', '.join(COT_LUOT)}, chung FROM luot WHERE ma = ?", (ma,)).fetchone()
             if dong is None:
                 raise KeyError(f"Không có Lượt {ma}")
             muc = [json.loads(r[0]) for r in db.execute("SELECT du_lieu FROM muc_de_xuat WHERE luot = ? ORDER BY so", (ma,))]
-        ten = ("hash_pdf", "ten_file", "checklist", "model", "che_do", "bat_dau", "ket_thuc", "hash_van_ban", "luot_goc")
-        return luot_tu_dict({**dict(zip(ten, dong[:9])), **json.loads(dong[9]), "ma": ma, "muc": muc})
+        return luot_tu_dict({**dict(zip(COT_LUOT, dong)), **json.loads(dong[-1]), "muc": muc})
 
     def danh_sach(self) -> list[TomTatLuot]:
         """Các Lượt đã lưu, mới nhất trước."""

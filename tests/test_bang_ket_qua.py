@@ -4,7 +4,8 @@ from test_tham_dinh import CHECKLIST, VAN_BAN, ModelGia
 
 from thamdinh.bang_ket_qua import bang_ket_qua
 from thamdinh.kho_luot import KetQuaDuyet
-from thamdinh.tham_dinh import TrichDanDaKiemTra, tham_dinh
+from thamdinh.trich_dan import TrichDanDaKiemTra
+from thamdinh.tham_dinh import tham_dinh
 
 BIA = {"so_hieu": "Điều 1", "nguyen_van": "Câu này không có trong hợp đồng"}
 LUOT = tham_dinh(

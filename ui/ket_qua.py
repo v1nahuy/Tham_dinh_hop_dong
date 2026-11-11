@@ -6,11 +6,12 @@ import streamlit as st
 from pathlib import Path
 
 from thamdinh.anh_trang import anh_trang
-from thamdinh.bang_ket_qua import TEN_KET_QUA, bang_ket_qua
+from thamdinh.bang_ket_qua import bang_ket_qua
 from thamdinh.bao_cao import so_hop_dong, tao_bao_cao, ten_file_bao_cao
 from thamdinh.checklist import load_checklist, mo_ta_de_doc, tim_checklist
 from thamdinh.kho_luot import KhoLuot
 from thamdinh.settings import load_settings
+from thamdinh.tong_hop import TEN_KET_QUA
 from thamdinh.so_hoa.van_ban import duong_dan_pdf, nap_van_ban
 from thamdinh.trich_dan import KHONG_XAC_MINH_DUOC, KHOP_SAI_SO_HIEU, TrichDan, vung_trich_dan
 

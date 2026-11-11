@@ -10,7 +10,8 @@ from thamdinh.llm import LLMClient, LocalClient
 from thamdinh.settings import Settings
 from thamdinh.so_hoa import so_hoa
 from thamdinh.so_hoa.ocr import BoOCRMacDinh
-from thamdinh.tham_dinh import KetQuaLuot, tham_dinh
+from thamdinh.luot import KetQuaLuot
+from thamdinh.tham_dinh import tham_dinh
 from thamdinh.truy_xuat import BoNhung, LocalEmbeddingClient, chuan_bi_truy_xuat
 
 

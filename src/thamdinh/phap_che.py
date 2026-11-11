@@ -13,7 +13,7 @@ from thamdinh.bo_chuan import DanhGiaChuan
 from thamdinh.checklist import PhienBanChecklist, mo_ta_de_doc
 from thamdinh.so_hoa import VanBanHieuLuc
 from thamdinh.so_sanh import SoSanhNguon
-from thamdinh.tham_dinh import DanhGiaDeXuat
+from thamdinh.ket_qua_de_xuat import DanhGiaDeXuat
 from thamdinh.tong_hop import TEN_DANH_GIA
 
 CO_CHU = 10

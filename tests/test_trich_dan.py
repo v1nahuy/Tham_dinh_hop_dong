@@ -105,7 +105,7 @@ def test_trich_dan_khong_xac_minh_duoc(nguyen_van):
 
 
 # ---- Vị trí Trích dẫn trên trang (issue 11): tô vùng Điều khoản chứa câu trích ----
-from thamdinh.tham_dinh import TrichDanDaKiemTra  # noqa: E402
+from thamdinh.trich_dan import TrichDanDaKiemTra  # noqa: E402
 from thamdinh.trich_dan import vung_trich_dan  # noqa: E402
 
 CO_TOA_DO = VanBanHieuLuc(

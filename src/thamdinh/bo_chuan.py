@@ -8,9 +8,9 @@ from pathlib import Path
 import yaml
 
 from thamdinh.checklist import PhienBanChecklist, load_checklist
+from thamdinh.tong_hop import TEN_KET_QUA
 from thamdinh.so_hoa import hash_pdf
 
-TEN_MUC = {"dat": "Đạt", "luu_y": "Lưu ý", "vi_pham": "Vi phạm"}
 
 HUONG_DAN = """\
 # BỘ CHUẨN THẨM ĐỊNH (điền tay)
@@ -58,7 +58,7 @@ def tao_mau_bo_chuan(duong_dan_checklist: Path, duong_dan_pdf: Path) -> str:
         for muc_kq, ds in muc.tieu_chi.items():
             for tc in ds:
                 dong += [
-                    f"      # [{TEN_MUC[muc_kq]}] {tc.mo_ta}",
+                    f"      # [{TEN_KET_QUA[muc_kq]}] {tc.mo_ta}",
                     f'      - ma: "{tc.ma}"',
                     '        danh_gia: ""',
                 ]

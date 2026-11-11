@@ -12,7 +12,8 @@ from test_ui_ket_qua import BIA, VB
 from thamdinh.bao_cao import so_hop_dong, tao_bao_cao, ten_file_bao_cao
 from thamdinh.kho_luot import KetQuaDuyet
 from thamdinh.so_hoa.cau_truc import DieuKhoan
-from thamdinh.tham_dinh import TrichDanDaKiemTra, tham_dinh
+from thamdinh.trich_dan import TrichDanDaKiemTra
+from thamdinh.tham_dinh import tham_dinh
 
 # ---- S24: số hợp đồng ----
 

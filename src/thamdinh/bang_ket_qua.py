@@ -3,10 +3,9 @@
 from dataclasses import dataclass
 
 from thamdinh.kho_luot import KetQuaDuyet
-from thamdinh.tham_dinh import KetQuaLuot
+from thamdinh.luot import KetQuaLuot
 from thamdinh.trich_dan import KHONG_XAC_MINH_DUOC
 
-TEN_KET_QUA = {"dat": "Đạt", "luu_y": "Lưu ý", "vi_pham": "Vi phạm"}
 
 
 @dataclass(frozen=True)

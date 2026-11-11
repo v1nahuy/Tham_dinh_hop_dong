@@ -7,7 +7,8 @@ import pytest
 from thamdinh.checklist import load_checklist
 from thamdinh.so_hoa import TrangSoHoa, VanBanHieuLuc
 from thamdinh.so_hoa.cau_truc import DieuKhoan
-from thamdinh.tham_dinh import CacBen, xay_prompt_cac_ben, xay_prompt_muc
+from thamdinh.luot import CacBen
+from thamdinh.tham_dinh import xay_prompt_cac_ben, xay_prompt_muc
 
 CHECKLIST = load_checklist(Path(__file__).parent.parent / "checklists" / "dau-ra-v1.1.yaml")
 MUC = {m.so: m for m in CHECKLIST.muc}

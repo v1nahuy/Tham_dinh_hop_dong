@@ -9,7 +9,8 @@ from test_tham_dinh import BIA, CHECKLIST, THAT, VAN_BAN, ModelGia
 from thamdinh.cham_lai import ChamKho, ChamLuot, cham_lai, den_json, so_cham, tu_json
 from thamdinh.kho_luot import KhoLuot
 from thamdinh.so_hoa.van_ban import luu_van_ban
-from thamdinh.tham_dinh import TrichDanDaKiemTra, tham_dinh
+from thamdinh.trich_dan import TrichDanDaKiemTra
+from thamdinh.tham_dinh import tham_dinh
 
 
 def luu_luot(tmp_path, ma="luot-1", sua_muc=None, sua_tieu_chi=None, loi_muc=None, **sua_luot):
