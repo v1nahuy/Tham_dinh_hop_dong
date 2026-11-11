@@ -8,8 +8,8 @@ from pathlib import Path
 import yaml
 
 from thamdinh.checklist import PhienBanChecklist, load_checklist
-from thamdinh.tong_hop import TEN_KET_QUA
 from thamdinh.so_hoa import hash_pdf
+from thamdinh.tong_hop import TEN_KET_QUA
 
 
 HUONG_DAN = """\

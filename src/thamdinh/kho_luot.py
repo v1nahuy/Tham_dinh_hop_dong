@@ -13,13 +13,14 @@ from dataclasses import asdict, dataclass
 from datetime import datetime
 from pathlib import Path
 
-from thamdinh.so_hoa import VanBanHieuLuc, hash_noi_dung
 from thamdinh.luot import KetQuaLuot, luot_den_dict, luot_tu_dict
+from thamdinh.so_hoa import VanBanHieuLuc, hash_noi_dung
+from thamdinh.tong_hop import TEN_KET_QUA
 from thamdinh.trich_dan import TrichDan, TrichDanDaKiemTra, kiem_tra_va_ghi
 
 TEN_FILE = "tham-dinh.sqlite3"
-KET_QUA = ("dat", "luu_y", "vi_pham")
-# Cột chỉ mục của bảng `luot`, đúng thứ tự trong SCHEMA; các trường khác của Lượt lưu trong cột `chung` (JSON)
+KET_QUA = tuple(TEN_KET_QUA)  # dat | luu_y | vi_pham
+# Cột chỉ mục của bảng `luot`; các trường khác của Lượt lưu trong cột `chung` (JSON)
 COT_LUOT = ("ma", "hash_pdf", "ten_file", "checklist", "model", "che_do", "bat_dau", "ket_thuc", "hash_van_ban", "luot_goc")
 
 SCHEMA = """
@@ -34,7 +35,7 @@ CREATE TABLE IF NOT EXISTS luot (
     ket_thuc TEXT NOT NULL,
     hash_van_ban TEXT NOT NULL,
     luot_goc TEXT REFERENCES luot(ma),
-    chung TEXT NOT NULL  -- JSON: cac_ben, loi_cac_ben, canh_bao
+    chung TEXT NOT NULL  -- JSON: mọi trường khác của Lượt (cac_ben, loi_cac_ben, canh_bao…), trừ muc
 );
 CREATE TABLE IF NOT EXISTS muc_de_xuat (
     luot TEXT NOT NULL REFERENCES luot(ma),
@@ -113,7 +114,7 @@ class KhoLuot:
             if cu and json.loads(cu[0])["cac_ben"] not in (None, json.loads(chung)["cac_ben"]):
                 raise GhiDeError(f"Lượt {kq.ma}: kết quả xác định các bên đã có, không được ghi đè")
             db.execute(
-                """INSERT INTO luot VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                f"""INSERT INTO luot ({", ".join(COT_LUOT)}, chung) VALUES ({", ".join("?" * (len(COT_LUOT) + 1))})
                    ON CONFLICT(ma) DO UPDATE SET ket_thuc = excluded.ket_thuc, chung = excluded.chung""",
                 (*(d[c] for c in COT_LUOT), chung),
             )

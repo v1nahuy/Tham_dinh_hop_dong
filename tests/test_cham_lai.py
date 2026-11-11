@@ -5,6 +5,7 @@ from dataclasses import replace
 
 from test_so_sanh import chuan
 from test_tham_dinh import BIA, CHECKLIST, THAT, VAN_BAN, ModelGia
+from test_ui_ket_qua import lam_hong_luot
 
 from thamdinh.cham_lai import ChamKho, ChamLuot, cham_lai, den_json, so_cham, tu_json
 from thamdinh.kho_luot import KhoLuot
@@ -54,23 +55,15 @@ def test_kiem_lai_trich_dan_voi_van_ban_luot_da_dung(tmp_path):
     assert kq.luot["luot-1"].trich_dan["1.D1"] == ("khop", "khong_xac_minh_duoc")
 
 
-class KhoCoLuotHong(KhoLuot):
-    """Như kho thật, nhưng một Lượt lưu bằng code đã revert nên không nạp được (issue 19)."""
-
-    def nap(self, ma):
-        if ma == "luot-hong":
-            raise TypeError("DanhGiaDeXuat.__init__() got an unexpected keyword argument 'cau_hoi'")
-        return super().nap(ma)
-
-
 def test_luot_khong_nap_duoc_ghi_vao_loi_va_cham_tiep(tmp_path):
     luu_luot(tmp_path, ma="luot-hong")
-    luu_luot(tmp_path, ma="luot-tot")
+    kho = luu_luot(tmp_path, ma="luot-tot")
+    lam_hong_luot(tmp_path, "luot-hong")  # như Lượt lưu bằng code thử nghiệm đã revert (issue 19)
 
-    kq = cham_lai(KhoCoLuotHong(tmp_path), CHECKLIST, tmp_path)
+    kq = cham_lai(kho, CHECKLIST, tmp_path)
 
     assert list(kq.luot) == ["luot-tot"]
-    assert "cau_hoi" in kq.loi["luot-hong"]
+    assert "DinhDangLuotError" in kq.loi["luot-hong"] and "suy_luan" in kq.loi["luot-hong"]
 
 
 def test_luot_cua_phien_ban_checklist_khac_ghi_vao_loi(tmp_path):
@@ -126,8 +119,9 @@ def test_ket_qua_cham_qua_json_van_nhu_cu(tmp_path):
     # Lần chấm bằng code cũ chạy trong worktree khác, gửi kết quả về qua JSON
     luu_luot(tmp_path, ma="luot-tot")
     luu_luot(tmp_path, ma="luot-hong")
-    luu_luot(tmp_path, ma="thieu-van-ban", hash_pdf="hd-khac")
-    kq = cham_lai(KhoCoLuotHong(tmp_path), CHECKLIST, tmp_path)
+    kho = luu_luot(tmp_path, ma="thieu-van-ban", hash_pdf="hd-khac")
+    lam_hong_luot(tmp_path, "luot-hong")
+    kq = cham_lai(kho, CHECKLIST, tmp_path)
 
     assert tu_json(json.loads(json.dumps(den_json(kq)))) == kq
 

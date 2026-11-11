@@ -5,11 +5,14 @@ khác (ví dụ một thử nghiệm đã revert thêm trường) báo `DinhDang
 """
 
 from dataclasses import MISSING, asdict, dataclass, fields
-from typing import Any
+from typing import Any, TypeVar
 
 from thamdinh.ket_qua_de_xuat import DanhGiaDeXuat, KetQuaMucDeXuat
 from thamdinh.tong_hop import KetQuaMuc
 from thamdinh.trich_dan import TrichDan, TrichDanDaKiemTra
+
+
+T = TypeVar("T")
 
 
 class DinhDangLuotError(ValueError):
@@ -49,10 +52,14 @@ def luot_den_dict(luot: KetQuaLuot) -> dict[str, Any]:
 def luot_tu_dict(d: dict[str, Any]) -> KetQuaLuot:
     """Dựng lại Lượt từ `luot_den_dict` (đã qua JSON). Trường lạ hoặc thiếu trường bắt buộc: `DinhDangLuotError`."""
     ma = d.get("ma", "?")
-    con = _con(d, cac_ben=lambda cb: cb and _dung(CacBen, cb, ma, "các bên", **_con(
-                   cb, trich_dan=lambda ds: tuple(_dung(TrichDan, t, ma, "Trích dẫn các bên") for t in ds))),
-               muc=lambda ds: tuple(_muc(m, ma) for m in ds), canh_bao=tuple)
+    con = _con(d, cac_ben=lambda cb: cb and _cac_ben(cb, ma), muc=lambda ds: tuple(_muc(m, ma) for m in ds),
+               canh_bao=tuple)
     return _dung(KetQuaLuot, d, ma, "Lượt", **con)
+
+
+def _cac_ben(cb: dict[str, Any], ma: str) -> CacBen:
+    trich_dan = _con(cb, trich_dan=lambda ds: tuple(_dung(TrichDan, t, ma, "Trích dẫn các bên") for t in ds))
+    return _dung(CacBen, cb, ma, "các bên", **trich_dan)
 
 
 def _muc(m: dict[str, Any], ma: str) -> KetQuaMucDeXuat:
@@ -74,12 +81,12 @@ def _con(d: dict[str, Any], **dung) -> dict[str, Any]:
     return {k: f(d[k]) for k, f in dung.items() if k in d}
 
 
-def _dung(kieu, d: dict[str, Any], ma: str, cho: str, **da_dung):
-    """`kieu(**d)` với các trường con đã dựng; trường thiếu mà có mặc định thì lấy mặc định."""
+def _dung(kieu: type[T], d: dict[str, Any], ma: str, cho: str, **da_dung: Any) -> T:
+    """`kieu(**d)`, thay các trường con bằng bản đã dựng (`da_dung`); trường thiếu mà có mặc định thì lấy mặc định."""
     ten = {f.name for f in fields(kieu)}
     if la := sorted(d.keys() - ten):
         raise DinhDangLuotError(f"Lượt {ma}: trường lạ {', '.join(la)} ở {cho} (lưu bằng code khác?)")
     bat_buoc = {f.name for f in fields(kieu) if f.default is MISSING and f.default_factory is MISSING}
-    if thieu := sorted(bat_buoc - d.keys() - da_dung.keys()):
+    if thieu := sorted(bat_buoc - d.keys()):
         raise DinhDangLuotError(f"Lượt {ma}: thiếu trường {', '.join(thieu)} ở {cho}")
     return kieu(**{**d, **da_dung})

@@ -7,7 +7,6 @@ from thamdinh.luot import KetQuaLuot
 from thamdinh.trich_dan import KHONG_XAC_MINH_DUOC
 
 
-
 @dataclass(frozen=True)
 class DongBang:
     so: int

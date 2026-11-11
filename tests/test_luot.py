@@ -60,10 +60,18 @@ def test_dinh_dang_cu_thieu_truong_tuy_chon_thi_nhan_mac_dinh():
     assert [m.tieu_chi for m in cu.muc] == [m.tieu_chi for m in kq.muc]
 
 
-@pytest.mark.parametrize("bo", ["model", "muc"])
-def test_thieu_truong_bat_buoc_bao_loi(bo):
+@pytest.mark.parametrize("cho, bo", [
+    ((), "model"), ((), "muc"),
+    (("muc", 2), "tieu_chi"),  # Mục 3
+    (("muc", 2, "tieu_chi", 0), "trich_dan"),  # Tiêu chí 3.D1
+    (("cac_ben",), "ten_cong_ty"),
+])
+def test_thieu_truong_bat_buoc_o_moi_cap_bao_loi(cho, bo):
     d = qua_json(luot_den_dict(luot_day_du()))
-    del d[bo]
+    o = d
+    for k in cho:
+        o = o[k]
+    del o[bo]
 
     with pytest.raises(DinhDangLuotError, match=f"thiếu trường {bo}"):
         luot_tu_dict(d)

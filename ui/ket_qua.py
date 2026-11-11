@@ -10,9 +10,10 @@ from thamdinh.bang_ket_qua import bang_ket_qua
 from thamdinh.bao_cao import so_hop_dong, tao_bao_cao, ten_file_bao_cao
 from thamdinh.checklist import load_checklist, mo_ta_de_doc, tim_checklist
 from thamdinh.kho_luot import KhoLuot
+from thamdinh.luot import DinhDangLuotError
 from thamdinh.settings import load_settings
-from thamdinh.tong_hop import TEN_KET_QUA
 from thamdinh.so_hoa.van_ban import duong_dan_pdf, nap_van_ban
+from thamdinh.tong_hop import TEN_KET_QUA
 from thamdinh.trich_dan import KHONG_XAC_MINH_DUOC, KHOP_SAI_SO_HIEU, TrichDan, vung_trich_dan
 
 MAU = {"dat": "green", "luu_y": "orange", "vi_pham": "red"}
@@ -77,7 +78,11 @@ ma = st.selectbox(
     key="luot",
 )
 st.session_state["luot_dang_mo"] = ma
-luot = kho.nap(ma)
+try:
+    luot = kho.nap(ma)
+except DinhDangLuotError as e:  # Lượt lưu bằng code khác (thử nghiệm đã revert)
+    st.error(f"Không mở được Lượt: {e}")
+    st.stop()
 duyet = kho.nap_duyet(ma)
 van_ban = nap_van_ban(luot.hash_pdf, settings.data_dir, luot.hash_van_ban)
 pdf = duong_dan_pdf(luot.hash_pdf, settings.data_dir)

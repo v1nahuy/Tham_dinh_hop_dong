@@ -138,3 +138,23 @@ def test_tai_bao_cao_docx(du_lieu, monkeypatch):
     assert nut["file_name"].startswith("Bao-cao-tham-dinh_HD-TOSS_") and nut["file_name"].endswith(".docx")
     bang_dau = Document(io.BytesIO(nut["data"])).tables[0]
     assert bang_dau.cell(0, 0).text == "Số hợp đồng"
+
+
+def lam_hong_luot(thu_muc, ma: str) -> None:
+    """Như Lượt lưu bằng code thử nghiệm đã revert: thêm một trường cấp Lượt mà code hiện tại không biết."""
+    import json
+    import sqlite3
+
+    with sqlite3.connect(KhoLuot(thu_muc).duong_dan) as db:
+        (chung,) = db.execute("SELECT chung FROM luot WHERE ma = ?", (ma,)).fetchone()
+        db.execute("UPDATE luot SET chung = ? WHERE ma = ?", (json.dumps({**json.loads(chung), "suy_luan": True}), ma))
+
+
+def test_luot_sai_dinh_dang_thi_bao_loi_ro_rang_khong_vo_trang(du_lieu):
+    thu_muc, ma = du_lieu
+    lam_hong_luot(thu_muc, ma)
+
+    at = mo()
+
+    assert not at.exception
+    assert any("suy_luan" in e.value and ma in e.value for e in at.error)

@@ -19,10 +19,10 @@ from docx.oxml.ns import qn
 from docx.shared import Cm, Pt, RGBColor
 
 from thamdinh.checklist import PhienBanChecklist, mo_ta_de_doc
-from thamdinh.kho_luot import KetQuaDuyet
-from thamdinh.so_hoa import VanBanHieuLuc
 from thamdinh.ket_qua_de_xuat import KetQuaMucDeXuat
+from thamdinh.kho_luot import KetQuaDuyet
 from thamdinh.luot import KetQuaLuot
+from thamdinh.so_hoa import VanBanHieuLuc
 from thamdinh.tong_hop import TEN_KET_QUA
 from thamdinh.trich_dan import KHONG_XAC_MINH_DUOC, dieu_khoan_chua_trich_dan
 
@@ -153,7 +153,7 @@ def _bang_muc(
     _chu(dau.paragraphs[0], f"{m.so}. {m.cau_hoi}", dam=True)
     _nen(dau, NEN_CAU_HOI)
 
-    for ma, nhan in (("dat", "Đạt"), ("luu_y", "Lưu ý"), ("vi_pham", "Vi phạm")):
+    for ma, nhan in TEN_KET_QUA.items():
         o = bang.add_row().cells
         _chu(o[0].paragraphs[0], nhan, dam=True)
         _nen(o[0], NEN_KET_QUA[ma])

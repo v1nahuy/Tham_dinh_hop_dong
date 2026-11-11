@@ -9,12 +9,11 @@ from dataclasses import dataclass
 
 from thamdinh.bo_chuan import BoChuan, DanhGiaChuan
 from thamdinh.checklist import PhienBanChecklist, TieuChi
-from thamdinh.so_hoa import VanBanHieuLuc
 from thamdinh.ket_qua_de_xuat import DanhGiaDeXuat
 from thamdinh.luot import KetQuaLuot
-from thamdinh.trich_dan import TrichDanDaKiemTra
+from thamdinh.so_hoa import VanBanHieuLuc
 from thamdinh.tong_hop import TEN_DANH_GIA, TEN_KET_QUA
-from thamdinh.trich_dan import KHONG_XAC_MINH_DUOC
+from thamdinh.trich_dan import KHONG_XAC_MINH_DUOC, TrichDanDaKiemTra
 from thamdinh.truy_xuat import DoPhu, NguCanhMuc, do_phu_ngu_canh
 
 TEN_CHE_DO = {"toan_van": "toàn văn", "truy_xuat": "truy xuất"}

@@ -11,6 +11,7 @@ from thamdinh import chay_nen
 from thamdinh.checklist import load_checklist, tim_checklist
 from thamdinh.kho_luot import KhoLuot
 from thamdinh.llm import LocalClient
+from thamdinh.luot import DinhDangLuotError
 from thamdinh.settings import load_settings
 from thamdinh.so_hoa.van_ban import danh_sach_van_ban, duong_dan_pdf
 from thamdinh.truy_xuat import LocalEmbeddingClient
@@ -150,7 +151,11 @@ else:
         key="luot_chay_lai",
     )
     st.session_state["luot_dang_mo"] = ma
-    luot = kho.nap(ma)
+    try:
+        luot = kho.nap(ma)
+    except DinhDangLuotError as e:  # Lượt lưu bằng code khác (thử nghiệm đã revert)
+        st.error(f"Không mở được Lượt: {e}")
+        st.stop()
     loi = [m for m in luot.muc if m.ket_qua is None]
     chua_chay = so_muc_checklist(luot.checklist) - len(luot.muc)
     if luot.cac_ben is None and luot.loi_cac_ben:
