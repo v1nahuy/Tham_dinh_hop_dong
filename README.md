@@ -18,9 +18,10 @@ Hệ thống gồm:
 5. [Dùng bằng dòng lệnh](#5-dùng-bằng-dòng-lệnh)
 6. [Dữ liệu được lưu ở đâu](#6-dữ-liệu-được-lưu-ở-đâu)
 7. [Kiểm thử](#7-kiểm-thử)
-8. [Cấu trúc thư mục](#8-cấu-trúc-thư-mục)
-9. [Sự cố thường gặp](#9-sự-cố-thường-gặp)
-10. [Tài liệu thêm](#10-tài-liệu-thêm)
+8. [Kiến trúc](#8-kiến-trúc)
+9. [Cấu trúc thư mục](#9-cấu-trúc-thư-mục)
+10. [Sự cố thường gặp](#10-sự-cố-thường-gặp)
+11. [Tài liệu thêm](#11-tài-liệu-thêm)
 
 ---
 
@@ -269,7 +270,73 @@ Chạy lại `pytest -m llm` mỗi khi cài hoặc đổi file model Qwen.
 
 ---
 
-## 8. Cấu trúc thư mục
+## 8. Kiến trúc
+
+### 8.1. Các tiến trình khi chạy
+
+```
+Trình duyệt ──HTTP──▶ Streamlit (app.py, ui/)
+                        │  trang Số hóa: gọi so_hoa() ngay trong tiến trình này
+                        │  trang Kết quả: đọc kho, duyệt, xuất .docx
+                        │
+                        │  trang Thẩm định: chay_nen.khoi_chay()
+                        ▼
+                  Tiến trình nền: scripts/chay_tham_dinh.py → chay_luot()
+                        │  trạng thái: data/dang-chay.json; nhật ký: data/nhat-ky/
+                        │  in "Mã Lượt: …" để giao diện theo dõi tiến độ trong kho
+                        │
+                        ├──HTTP 127.0.0.1:8080──▶ llama-server Qwen3.5  (/v1/chat/completions, /tokenize, /health)
+                        ├──HTTP 127.0.0.1:8081──▶ llama-server bge-m3   (/v1/embeddings, chỉ chế độ truy xuất)
+                        └──▶ data/: tham-dinh.sqlite3, van-ban-hieu-luc/, chu-de/
+```
+
+- Lượt chạy ở tiến trình riêng, nên đóng trình duyệt hay tắt Streamlit thì Lượt vẫn chạy tiếp. Mỗi lúc chỉ chạy một Lượt, vì máy chủ Qwen chạy `-np 1`.
+- Mọi kết nối đều tới `127.0.0.1`. Không có dịch vụ nào ra ngoài máy.
+
+### 8.2. Phụ thuộc giữa các module
+
+Mũi tên nghĩa là "gọi" hoặc "dùng". `checklist.py` (Phiên bản checklist) và `settings.py` (cấu hình `.env`) được nhiều module dùng nên không vẽ.
+
+```
+ui/so_hoa.py ─────────────▶ so_hoa/  (lop_text, ocr + anh, cau_truc, van_ban)
+ui/tham_dinh.py ──────────▶ chay_nen ──(tiến trình nền)──▶ chay_luot
+ui/ket_qua.py ────────────▶ kho_luot, bang_ket_qua, bao_cao, anh_trang, trich_dan
+
+chay_luot ─┬─▶ so_hoa/          Văn bản hiệu lực (dùng lại bản đã lưu theo hash PDF)
+           ├─▶ truy_xuat         chỉ chế độ truy xuất: gắn Chủ đề (gọi llm), BM25, bge-m3
+           ├─▶ tham_dinh ─┬─▶ llm               gọi Qwen, ép JSON schema
+           │              └─▶ ket_qua_de_xuat ─┬─▶ trich_dan   kiểm Trích dẫn
+           │                                   └─▶ tong_hop    Đánh giá tiêu chí → Kết quả Mục
+           └─▶ kho_luot          lưu sau mỗi Mục
+
+Đo chất lượng (scripts/):  bo_chuan, so_sanh, cham_lai (gọi lại ket_qua_de_xuat), phap_che
+```
+
+Ba chỗ nối có thể thay bằng bản giả trong test: `LLMClient` (model), `BoNhung` (embedding) và `BoOCR` (OCR). Nên gần như toàn bộ test chạy được khi không có model.
+
+### 8.3. Dữ liệu đi qua các bước
+
+| Kiểu | Module | Nội dung |
+|---|---|---|
+| `PhienBanChecklist`, `MucChecklist`, `TieuChi` | `checklist.py` | Checklist đọc từ YAML: Mục, Tiêu chí Đạt/Lưu ý/Vi phạm, ngưỡng định lượng, Danh mục tham chiếu |
+| `VanBanHieuLuc`, `DieuKhoan` | `so_hoa/` | Kết quả Số hóa: các trang và Điều khoản có số hiệu, trang, tọa độ, nhãn redline |
+| `CacBen` | `luot.py` | Bên nào là Công ty, bên nào là Khách hàng |
+| `KetQuaMucDeXuat`, `DanhGiaDeXuat`, `TrichDanDaKiemTra` | `ket_qua_de_xuat.py`, `trich_dan.py` | Kết quả đề xuất của một Mục: Đánh giá từng Tiêu chí, lý do, Trích dẫn đã kiểm |
+| `KetQuaLuot` | `luot.py` | Một Lượt: chế độ, model, các bên, 17 Kết quả Mục đề xuất, Lượt gốc, hash Văn bản hiệu lực đã dùng |
+| `KetQuaDuyet` | `kho_luot.py` | Một phiên bản duyệt của một Mục: Kết quả, giải thích, Trích dẫn, người duyệt, thời điểm |
+
+Kho SQLite có ba bảng: `luot`, `muc_de_xuat` và `duyet`.
+
+### 8.4. Các nguyên tắc thiết kế
+
+- Dữ liệu Hợp đồng chỉ ở trên máy: model, OCR và embedding đều chạy trên máy; `data/`, `eval/`, `sample/`, `models/` không vào git.
+- Truy xuất theo cấu trúc Hợp đồng: Hợp đồng được chia theo Điều/Khoản/Phụ lục, mỗi Mục lấy các Điều khoản mang Chủ đề của Mục; BM25 và embedding chỉ là lưới an toàn. Cách này giúp kiểm được cả các Tiêu chí về việc thiếu một điều khoản, điều mà tìm theo độ tương đồng không chứng minh được.
+- Model đọc và trích, code quyết định: model chỉ trả Đánh giá từng Tiêu chí, lý do, Trích dẫn và con số. So con số với ngưỡng, kiểm Trích dẫn và tổng hợp Kết quả Mục đều do code làm, nên có test và chấm lại được các Lượt đã lưu (`cham_lai.py`) mà không gọi model.
+- Kết quả đề xuất không bị ghi đè: chạy lại Mục đã có kết quả thì tạo Lượt mới; mỗi lần duyệt tạo một phiên bản `KetQuaDuyet` mới.
+
+---
+
+## 9. Cấu trúc thư mục
 
 ```
 app.py                  Điểm vào giao diện Streamlit (3 trang)
@@ -290,13 +357,13 @@ src/thamdinh/
 checklists/             Phiên bản checklist (YAML) và Danh mục tham chiếu
 scripts/                Script dòng lệnh (mục 5)
 tests/                  Test (pytest)
-docs/                   Tài liệu cài đặt, ADR, quy trình
+docs/                   Tài liệu cài đặt, quy trình
 models/, data/, eval/, sample/   Không có trong git (model, dữ liệu Hợp đồng)
 ```
 
 ---
 
-## 9. Sự cố thường gặp
+## 10. Sự cố thường gặp
 
 | Hiện tượng | Cách xử lý |
 |---|---|
@@ -310,7 +377,7 @@ models/, data/, eval/, sample/   Không có trong git (model, dữ liệu Hợp 
 
 ---
 
-## 10. Tài liệu thêm
+## 11. Tài liệu thêm
 
 - [GLOSSARY.md](GLOSSARY.md): thuật ngữ nghiệp vụ.
 - [docs/chay-model-local.md](docs/chay-model-local.md): chạy model, số đo tốc độ và RAM.
