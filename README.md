@@ -1,17 +1,12 @@
 # Thẩm định hợp đồng đầu ra
 
-Công cụ hỗ trợ Người thẩm định của VTIT rà Dự thảo Hợp đồng đầu ra theo Checklist thẩm định. Với mỗi Mục checklist, công cụ đưa ra **Kết quả đề xuất** (Đạt, Lưu ý hoặc Vi phạm) kèm **Trích dẫn** nguyên văn từ Hợp đồng. Người thẩm định duyệt từng Mục rồi xuất báo cáo Word.
+Công cụ hỗ trợ Người thẩm định rà Dự thảo Hợp đồng đầu ra theo Checklist thẩm định. Với mỗi Mục checklist, công cụ đưa ra Kết quả đề xuất (Đạt, Lưu ý hoặc Vi phạm) kèm Trích dẫn nguyên văn từ Hợp đồng. Người thẩm định duyệt từng Mục rồi xuất báo cáo Word.Toàn bộ dữ liệu Hợp đồng ở lại trên máy. 
 
-**Toàn bộ dữ liệu Hợp đồng ở lại trên máy.** Hệ thống gồm:
+Hệ thống gồm:
 
 - Model ngôn ngữ Qwen3.5-9B, chạy bằng llama.cpp và chỉ nghe ở `127.0.0.1`.
 - OCR chạy trên máy.
 - Kho kết quả là một file SQLite.
-
-Không có lời gọi nào ra Internet ([ADR 0001](docs/adr/0001-on-premise-cho-du-lieu-hop-dong.md)).
-
-Thuật ngữ (Lượt thẩm định, Văn bản hiệu lực, Tiêu chí, Bộ chuẩn…) được định nghĩa trong [GLOSSARY.md](GLOSSARY.md).
-
 ---
 
 ## Mục lục
@@ -160,62 +155,62 @@ Lượt thẩm định: Kết quả đề xuất cho 17 Mục, Đánh giá từn
 Kết quả đã duyệt và báo cáo .docx
 ```
 
-### Bước 1: Số hóa (trang **Số hóa**)
+### Bước 1: Số hóa (trang Số hóa)
 
-Mục đích: biến file PDF Dự thảo thành **Văn bản hiệu lực**, tức là văn bản dùng để thẩm định, chia thành các Điều khoản có số hiệu.
+Mục đích: biến file PDF Dự thảo thành Văn bản hiệu lực, tức là văn bản dùng để thẩm định, chia thành các Điều khoản có số hiệu.
 
-1. **Tải PDF lên** và bấm **Số hóa**.
-2. **Đọc từng trang.** Với mỗi trang, hệ thống thử đọc lớp text của PDF trước, vì cách này nhanh và chính xác. Nếu lớp text kém (bản scan, lỗi bảng mã), trang được **OCR trên máy** bằng RapidOCR để tìm dòng chữ và VietOCR để nhận dạng tiếng Việt. Trước khi OCR, ảnh trang được chỉnh nghiêng, cắt bỏ khung bình luận bên lề và khử nền màu.
-3. **Giữ lại thay đổi theo dõi (redline) dưới dạng nhãn**: `[xóa: …]`, `[thêm: …]`, `[sửa: …]`. Khung bình luận bên lề bị loại bỏ. Model thẩm định được dặn bỏ qua chữ trong `[xóa: …]` và coi chữ trong `[thêm: …]` và `[sửa: …]` là có hiệu lực.
-4. **Dựng cấu trúc:** nhận ra Điều, Khoản, Phụ lục và phần mở đầu, kèm số hiệu, trang bắt đầu và kết thúc, và tọa độ trên trang (để sau này tô vị trí Trích dẫn).
-5. **Kiểm tra bằng mắt.** Trang hiện song song ảnh trang và các Điều khoản đọc được. Tick **Chỉ trang tin cậy thấp** để chỉ xem những trang OCR có redline, có khung bình luận hoặc độ tin cậy dưới 85%. Điều khoản đọc sai thì **sửa tay** và bấm **Lưu**.
+1. Tải PDF lên và bấm Số hóa.
+2. Đọc từng trang: Với mỗi trang, hệ thống thử đọc lớp text của PDF trước, vì cách này nhanh và chính xác. Nếu lớp text kém (bản scan, lỗi bảng mã), trang được OCR trên máy bằng RapidOCR để tìm dòng chữ và VietOCR để nhận dạng tiếng Việt. Trước khi OCR, ảnh trang được chỉnh nghiêng, cắt bỏ khung bình luận bên lề và khử nền màu.
+3. Giữ lại thay đổi theo dõi (redline) dưới dạng nhãn: `[xóa: …]`, `[thêm: …]`, `[sửa: …]`. Khung bình luận bên lề bị loại bỏ. Model thẩm định được dặn bỏ qua chữ trong `[xóa: …]` và coi chữ trong `[thêm: …]` và `[sửa: …]` là có hiệu lực.
+4. Dựng cấu trúc: nhận ra Điều, Khoản, Phụ lục và phần mở đầu, kèm số hiệu, trang bắt đầu và kết thúc, và tọa độ trên trang (để sau này tô vị trí Trích dẫn).
+5. Kiểm tra bằng mắt: Trang hiện song song ảnh trang và các Điều khoản đọc được. Tick Chỉ trang tin cậy thấp để chỉ xem những trang OCR có redline, có khung bình luận hoặc độ tin cậy dưới 85%. Điều khoản đọc sai thì sửa tay và bấm Lưu.
 
 Văn bản hiệu lực được lưu theo mã hash của file PDF, nên mỗi file chỉ phải số hóa một lần. Mỗi lần sửa tay tạo một bản mới; Lượt đã chạy trước đó vẫn mở lại được đúng văn bản lúc chạy.
 
-### Bước 2: Thẩm định (trang **Thẩm định**)
+### Bước 2: Thẩm định (trang Thẩm định)
 
-Mục đích: đối chiếu Văn bản hiệu lực với từng Mục checklist để tạo **Kết quả đề xuất**.
+Mục đích: đối chiếu Văn bản hiệu lực với từng Mục checklist để tạo Kết quả đề xuất.
 
-**Cách khởi chạy:**
+Cách khởi chạy:
 
-1. Chọn **Văn bản hiệu lực**, **Phiên bản checklist** (hiện có `dau-ra-v1.1`) và **chế độ**:
-   - **Toàn văn:** mỗi Mục đọc cả Hợp đồng. Nhanh hơn nhờ dùng lại phần đầu prompt.
-   - **Truy xuất:** mỗi Mục chỉ đọc các Điều khoản liên quan. Dùng khi Hợp đồng quá dài so với ngữ cảnh của model ([ADR 0002](docs/adr/0002-truy-xuat-theo-cau-truc-thay-vi-rag-thuan.md)).
-2. Bấm **Chạy Thẩm định**. Giao diện kiểm máy chủ model trước; nếu máy chủ chưa chạy thì hiện lệnh khởi động. Lượt chạy ở tiến trình nền; trang tự làm mới 10 giây một lần, hiện số Mục đã xong và nhật ký.
+1. Chọn Văn bản hiệu lực, Phiên bản checklist (hiện có `dau-ra-v1.1`) và chế độ:
+   - Toàn văn: mỗi Mục đọc cả Hợp đồng. Nhanh hơn nhờ dùng lại phần đầu prompt.
+   - Truy xuất: mỗi Mục chỉ đọc các Điều khoản liên quan. Dùng khi Hợp đồng quá dài so với ngữ cảnh của model.
+2. Bấm Chạy Thẩm định. Giao diện kiểm máy chủ model trước; nếu máy chủ chưa chạy thì hiện lệnh khởi động. Lượt chạy ở tiến trình nền; trang tự làm mới 10 giây một lần, hiện số Mục đã xong và nhật ký.
 
-**Bên trong một Lượt:**
+Bên trong một Lượt:
 
-1. **Xác định các bên.** Model đọc phần mở đầu Hợp đồng để biết bên nào là **Công ty** (VTIT) và bên nào là **Khách hàng**, bất kể văn bản gọi là Bên A hay Bên B.
-2. **Chọn ngữ cảnh cho từng Mục:**
+1. Xác định các bên. Model đọc phần mở đầu Hợp đồng để biết bên nào là "Công ty" và bên nào là "Khách hàng", bất kể văn bản gọi là Bên A hay Bên B.
+2. Chọn ngữ cảnh cho từng Mục:
    - Chế độ toàn văn dùng cả Hợp đồng. Nếu Hợp đồng quá dài so với `THAMDINH_NGU_CANH`, hệ thống báo lỗi ngay, trước khi gọi model.
-   - Chế độ truy xuất: lần đầu với mỗi Hợp đồng, hệ thống gắn **Chủ đề** cho từng Điều khoản (khoảng 40 phút, sau đó dùng lại). Mỗi Mục lấy các Điều khoản mang Chủ đề của Mục, cộng 5 Điều khoản khớp nhất theo từ khóa (BM25) và 5 theo nghĩa (bge-m3), trong ngân sách `THAMDINH_NGAN_SACH_TRUY_XUAT` token.
-3. **Gọi model một lần cho mỗi Mục.** Prompt gồm hướng dẫn chung, Hợp đồng, các Tiêu chí của Mục và quy ước đánh giá. Câu trả lời bị máy chủ ép theo một **JSON schema**: với mỗi Tiêu chí, model ghi `danh_gia` (thỏa / không thỏa / không rõ), lý do, tối đa 3 Trích dẫn, và giá trị số khi Tiêu chí cần. Hệ thống tự xử lý hai trường hợp lỗi:
+   - Chế độ truy xuất: lần đầu với mỗi Hợp đồng, hệ thống gắn "Chủ đề" cho từng Điều khoản (khoảng 40 phút, sau đó dùng lại). Mỗi Mục lấy các Điều khoản mang Chủ đề của Mục, cộng 5 Điều khoản khớp nhất theo từ khóa (BM25) và 5 theo nghĩa (bge-m3), trong ngân sách `THAMDINH_NGAN_SACH_TRUY_XUAT` token.
+3. Gọi model một lần cho mỗi Mục. Prompt gồm hướng dẫn chung, Hợp đồng, các Tiêu chí của Mục và quy ước đánh giá. Câu trả lời bị máy chủ ép theo một JSON schema: với mỗi Tiêu chí, model ghi `danh_gia` (thỏa / không thỏa / không rõ), lý do, tối đa 3 Trích dẫn, và giá trị số khi Tiêu chí cần. Hệ thống tự xử lý hai trường hợp lỗi:
    - JSON sai: gọi lại một lần, kèm thông báo lỗi.
    - Câu trả lời bị cắt vì quá dài: chia đôi danh sách Tiêu chí rồi gọi lại.
 
    Nếu vẫn không được, Mục ghi "chưa đánh giá được" và các Mục khác chạy tiếp.
-4. **Code quyết phần còn lại, không để model quyết:**
-   - **Tiêu chí định lượng** (ví dụ mức phạt so với 8%): model chỉ trích con số; code so với ngưỡng trong checklist.
-   - **Kiểm Trích dẫn:** mỗi câu trích được tìm lại trong Văn bản hiệu lực. Việc so khớp bỏ qua khác biệt Unicode, kiểu ngoặc kép, dấu cách và nhãn redline. Kết quả là một trong ba trạng thái: *khớp*, *khớp nhưng sai số hiệu* (kèm số hiệu đúng) hoặc *không xác minh được*.
-   - **Tổng hợp Kết quả Mục** theo quy tắc mức xấu nhất thắng:
-     - Có Tiêu chí Vi phạm nào thỏa thì Mục là **Vi phạm**.
-     - Nếu không, khi có Tiêu chí Lưu ý thỏa, hoặc thiếu Tiêu chí Đạt, hoặc chưa loại trừ được một Tiêu chí, thì Mục là **Lưu ý**.
-     - Chỉ khi đủ mọi Tiêu chí Đạt thì Mục mới là **Đạt**.
-5. **Lưu ngay sau mỗi Mục** vào `data/tham-dinh.sqlite3`. Tắt máy giữa chừng không mất các Mục đã xong.
+4. Code quyết phần còn lại, không để model quyết:
+   - Tiêu chí định lượng (ví dụ mức phạt so với 8%): model chỉ trích con số; code so với ngưỡng trong checklist.
+   - Kiểm Trích dẫn: mỗi câu trích được tìm lại trong Văn bản hiệu lực. Việc so khớp bỏ qua khác biệt Unicode, kiểu ngoặc kép, dấu cách và nhãn redline. Kết quả là một trong ba trạng thái: *khớp*, *khớp nhưng sai số hiệu* (kèm số hiệu đúng) hoặc *không xác minh được*.
+   - Tổng hợp Kết quả Mục theo quy tắc mức xấu nhất thắng:
+     - Có Tiêu chí Vi phạm nào thỏa thì Mục là "Vi phạm".
+     - Nếu không, khi có Tiêu chí Lưu ý thỏa, hoặc thiếu Tiêu chí Đạt, hoặc chưa loại trừ được một Tiêu chí, thì Mục là "Lưu ý".
+     - Chỉ khi đủ mọi Tiêu chí Đạt thì Mục mới là "Đạt".
+5. Lưu ngay sau mỗi Mục vào `data/tham-dinh.sqlite3`. Tắt máy giữa chừng không mất các Mục đã xong.
 
-**Dừng và chạy lại:**
+Dừng và chạy lại:
 
-- **Dừng:** nút **Dừng** giữ lại các Mục đã xong.
-- **Chạy lại phần lỗi:** chỉ chạy các Mục lỗi hoặc chưa chạy, trên cùng Lượt.
-- **Chạy lại cả Mục đã có kết quả:** chọn thêm các Mục đó. Hệ thống tạo **Lượt mới** có ghi Lượt gốc; Lượt cũ và các Kết quả đã duyệt của nó giữ nguyên.
+- Dừng: nút "Dừng" giữ lại các Mục đã xong.
+- Chạy lại phần lỗi: chỉ chạy các Mục lỗi hoặc chưa chạy, trên cùng Lượt.
+- Chạy lại cả Mục đã có kết quả: chọn thêm các Mục đó. Hệ thống tạo Lượt mới có ghi Lượt gốc; Lượt cũ và các Kết quả đã duyệt của nó giữ nguyên.
 
-### Bước 3: Duyệt và báo cáo (trang **Kết quả**)
+### Bước 3: Duyệt và báo cáo (trang "Kết quả")
 
-1. **Chọn Lượt thẩm định.** Trang hiện bảng 17 Mục, tô màu theo Kết quả.
-2. **Xem chi tiết từng Mục:** Đánh giá từng Tiêu chí kèm lý do của model, Trích dẫn kèm trạng thái xác minh, các Điều khoản model đã đọc, và cảnh báo nếu có.
-3. **Xem trang:** nút này mở ảnh trang PDF và tô vùng Điều khoản chứa câu trích, để đối chiếu với bản gốc.
-4. **Duyệt:** giữ hoặc sửa Kết quả, ghi giải thích, sửa Trích dẫn. Mỗi lần lưu tạo một phiên bản mới trong **Lịch sử duyệt**. Kết quả đề xuất ban đầu không bao giờ bị ghi đè.
-5. **Tải báo cáo (.docx):** báo cáo theo bố cục checklist.
+1. Chọn Lượt thẩm định. Trang hiện bảng 17 Mục, tô màu theo Kết quả.
+2. Xem chi tiết từng Mục: Đánh giá từng Tiêu chí kèm lý do của model, Trích dẫn kèm trạng thái xác minh, các Điều khoản model đã đọc, và cảnh báo nếu có.
+3. Xem trang: nút này mở ảnh trang PDF và tô vùng Điều khoản chứa câu trích, để đối chiếu với bản gốc.
+4. Duyệt: giữ hoặc sửa Kết quả, ghi giải thích, sửa Trích dẫn. Mỗi lần lưu tạo một phiên bản mới trong "Lịch sử duyệt". Kết quả đề xuất ban đầu không bao giờ bị ghi đè.
+5. Tải báo cáo (.docx): báo cáo theo bố cục checklist.
    - Mục đã duyệt ghi Kết quả đã duyệt; Mục chưa duyệt ghi Kết quả đề xuất kèm "(đề xuất, chưa duyệt)".
    - Phụ lục liệt kê các Mục mà Người thẩm định đã đổi mức Kết quả.
    - Số hợp đồng được dò sẵn và sửa được trước khi tải.
@@ -235,7 +230,7 @@ Mọi việc trên giao diện đều làm được bằng script trong `scripts
 | Chạy tiếp Mục lỗi hoặc chưa chạy | `... chay_tham_dinh.py <hop-dong.pdf> --tiep-tuc <mã Lượt>` |
 | Chạy lại vài Mục đã có kết quả (tạo Lượt mới) | `... chay_tham_dinh.py <hop-dong.pdf> --tiep-tuc <mã Lượt> --chi-muc 3,14` |
 
-**Đo chất lượng bằng Bộ chuẩn.** Bộ chuẩn là kết quả thẩm định do Người thẩm định điền tay cho một Hợp đồng, được coi là đúng.
+Đo chất lượng bằng Bộ chuẩn. Bộ chuẩn là kết quả thẩm định do Người thẩm định điền tay cho một Hợp đồng, được coi là đúng.
 
 | Việc | Lệnh |
 |---|---|
@@ -244,14 +239,11 @@ Mọi việc trên giao diện đều làm được bằng script trong `scripts
 | So hai chế độ với Bộ chuẩn, tạo danh sách gửi pháp chế | `scripts\so_sanh_ba_nguon.py <hop-dong.pdf>` |
 | So hai lần chạy (trước và sau một thay đổi) | `scripts\so_sanh_lan_chay.py <hop-dong.pdf> --truoc <mã> --sau <mã> --muc 3,4` |
 | Chấm lại mọi Lượt đã lưu bằng code hiện tại, không gọi model | `scripts\cham_lai_kho.py [--so-voi <commit>]` |
-
-Quy trình thử nghiệm với model (đổi prompt, đo, quyết giữ hay bỏ): [docs/agents/thu-nghiem-model.md](docs/agents/thu-nghiem-model.md).
-
 ---
 
 ## 6. Dữ liệu được lưu ở đâu
 
-Tất cả nằm trong `data/` (đổi được bằng `THAMDINH_DATA_DIR`). Thư mục này **không được đưa vào git**.
+Tất cả nằm trong `data/` (đổi được bằng `THAMDINH_DATA_DIR`). Thư mục này không được đưa vào git.
 
 | Đường dẫn | Nội dung |
 |---|---|

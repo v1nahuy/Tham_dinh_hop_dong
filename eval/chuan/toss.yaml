@@ -1,0 +1,1059 @@
+# BỘ CHUẨN THẨM ĐỊNH 
+#
+#
+# Với mỗi Tiêu chí:
+#   danh_gia:  thoa | khong_thoa | khong_ro      (bắt buộc)
+#              - "Nếu ..." thì coi là thoa khi điều kiện không xảy ra.
+#              - khong_ro khi Hợp đồng không đủ thông tin để kết luận (ví dụ cần giấy ủy quyền, năng lực thực tế).
+#              - Tiêu chí định lượng: vẫn điền danh_gia theo ý bạn, và điền gia_tri là con số đọc được trong Hợp đồng.
+#   gia_tri:   chỉ với Tiêu chí có dòng "# gia_tri:"; ghi số (không ghi đơn vị), để trống nếu Hợp đồng không ghi.
+#   trich_dan: câu trích NGUYÊN VĂN từ Hợp đồng làm căn cứ (chép đúng chữ, có thể nhiều câu bằng danh sách).
+#   vi_tri:    số hiệu Điều khoản và trang, ví dụ "4.3.2, trang 3" hoặc "Phụ lục 01, Mục B, trang 14".
+#   ghi_chu:   tùy chọn.
+# Với mỗi Mục: ket_qua (dat | luu_y | vi_pham) là nhận định chung của bạn, điền SAU khi xong các Tiêu chí.
+#
+# Kiểm tra file đã điền đủ chưa: .venv/Scripts/python scripts/kiem_tra_bo_chuan.py <file này>
+#
+# - Quy ước: "Công ty" = Bên B (VTIT), "Khách hàng" = Bên A (VNA). Với tiêu chí [Lưu ý]/[Vi phạm],
+#   thoa = tình huống bất lợi CÓ xảy ra.
+# - Mục 2, 6, 11 đã đối chiếu các Danh mục nganh-nghe-dang-ky, nganh-nghe-co-dieu-kien, dau-hieu-ear, thue-gtgt
+
+
+hop_dong: "HĐ TOSS v 12.5.2026.pdf"
+hash_pdf: d8c20de88c96f593abc96b94dad4c369d12b5a483e87a698ab28c0c51aea18f2
+checklist: "dau-ra 1.1"
+nguoi_dien: ""
+ngay_dien: ""
+
+muc:
+  - so: 1
+    cau_hoi: "Người đại diện ký hợp đồng đã xác định đúng theo phân cấp, ủy quyền ký kết chưa?"
+    ket_qua: "dat"
+    tieu_chi:
+      # [Đạt] Người ký phía Công ty là Giám đốc/Tổng Giám đốc, hoặc ký theo giấy ủy quyền hợp lệ (đúng phạm vi, còn hiệu lực tại ngày ký)
+      - ma: "1.D1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Đại diện: Ông Bùi Trình"
+          - "Chức vụ: Giám đốc"
+          - "ĐẠI DIỆN CÔNG TY TNHH MTV ĐẦU TƯ CÔNG NGHỆ VIETTEL"
+          - "Bùi Trình GIÁM ĐỐC"
+        vi_tri: "Phần thông tin Bên B, trang 1; phần ký, trang 12"
+        ghi_chu: ""
+      # [Vi phạm] Người ký phía Công ty không có thẩm quyền và không có ủy quyền
+      - ma: "1.V1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Đại diện: Ông Bùi Trình"
+          - "Chức vụ: Giám đốc"
+        vi_tri: "Phần thông tin Bên B, trang 1; phần ký, trang 12"
+        ghi_chu: ""
+      # [Vi phạm] Hợp đồng có giá trị trên 2 tỷ đồng nhưng người ký phía Công ty không phải Giám đốc/Tổng Giám đốc (kể cả khi ký theo ủy quyền)
+      - ma: "1.V2"
+        danh_gia: "khong_thoa"
+        # gia_tri: gia_tri_hop_dong_vnd
+        gia_tri: 39820000000
+        trich_dan:
+          - "Giá trị Hợp đồng dự kiến 37.090.909.091 2.729.090.909 39.820.000.000"
+          - "Chức vụ: Giám đốc"
+        vi_tri: "Phụ lục 01, Mục A, trang 13; phần thông tin Bên B, trang 1"
+        ghi_chu: ""
+      # [Vi phạm] Ngày của giấy ủy quyền sau ngày ký hợp đồng
+      - ma: "1.V3"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Đại diện: Ông Bùi Trình"
+          - "Chức vụ: Giám đốc"
+        vi_tri: "Phần thông tin Bên B, trang 1"
+        ghi_chu: "HĐ không ký theo giấy ủy quyền nên không có ngày ủy quyền để so; tình huống không xảy ra."
+
+  - so: 2
+    cau_hoi: "Công ty có được thực hiện các công việc, dịch vụ hoặc bán các hàng hóa theo hợp đồng không?"
+    ket_qua: "luu_y"
+    tieu_chi:
+      # [Đạt] Mọi hàng hóa/dịch vụ Công ty cung cấp theo Hợp đồng đều thuộc ngành nghề đã đăng ký (Danh mục nganh-nghe-dang-ky)
+      - ma: "2.D1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Bên A thuê Dịch vụ “Hệ thống Tối ưu Điều hành khai thác - Transformative Operations Support System (TOSS) giai đoạn T8/2026-T8/2031” của Bên B với các nội dung và phạm vi công việc chi tiết nêu tại Phụ lục 02: Yêu cầu kỹ thuật."
+          - "DV thuê phần mềm"
+          - "Nhà cung cấp xây dựng và triển khai phần mềm hệ thống trên hạ tầng Cloud của VNA cung cấp"
+        vi_tri: "1.1, trang 2; Phụ lục 01, Mục A, trang 13; Phụ lục 02, TOSS-046, trang 21"
+        ghi_chu: "Dịch vụ gồm: triển khai + cho thuê phần mềm, tích hợp dữ liệu, vận hành/hỗ trợ 24/7, đào tạo, tư vấn kiến trúc (TOSS-030). Khớp mã 6219 (chính), 6220, 6290, 6310, 5829, 8559. Không bán hàng hóa/thiết bị (chạy trên Cloud của VNA)."
+      # [Lưu ý] Hàng hóa/dịch vụ theo Hợp đồng thuộc ngành nghề kinh doanh có điều kiện (Danh mục nganh-nghe-co-dieu-kien)
+      - ma: "2.L1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Bên Giao đồng ý cho phép Bên Nhận thu thập, lưu trữ, xử lý Dữ liệu cá nhân"
+          - "Danh sách tổ bay: họ và tên, chức vụ, thông tin liên lạc, năm sinh, số hộ chiếu, mã số tổ bay"
+          - "Hệ thống cần đáp ứng quản trị dữ liệu với quy mô lớn"
+        vi_tri: "Phụ lục 03, Điều 3.2.a, trang 44; Phụ lục 02, TOSS-195, trang 32; TOSS-116, trang 26"
+        ghi_chu: "Khớp gần nhất: STT 198 'Dịch vụ xử lý dữ liệu cá nhân' (Bên B xử lý DLCN tổ bay, hành khách thay cho VNA; mã đã đăng ký liên quan 6310, 6290). Khớp yếu hơn: STT 195 'phân tích, tổng hợp dữ liệu' (hệ thống quản trị, báo cáo dữ liệu, nhưng là phần mềm để VNA tự khai thác dữ liệu của mình). Đã loại: 111, 113 (chỉ là tính năng bảo mật trong phần mềm, không kinh doanh sản phẩm an ninh mạng/mật mã); 99, 110 (SSO nội bộ, không phải dịch vụ xác thực điện tử); 54 (đào tạo người dùng sản phẩm). Cần xác minh: 'dịch vụ xử lý DLCN' có bao gồm việc xử lý thay bên kiểm soát trong hợp đồng thuê phần mềm không."
+      # [Vi phạm] Có hàng hóa/dịch vụ theo Hợp đồng không thuộc ngành nghề Công ty đã đăng ký
+      - ma: "2.V1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Bên A thuê Dịch vụ “Hệ thống Tối ưu Điều hành khai thác - Transformative Operations Support System (TOSS) giai đoạn T8/2026-T8/2031” của Bên B với các nội dung và phạm vi công việc chi tiết nêu tại Phụ lục 02: Yêu cầu kỹ thuật."
+        vi_tri: "1.1, trang 2"
+        ghi_chu: ""
+      # [Vi phạm] Hàng hóa/dịch vụ thuộc ngành nghề có điều kiện mà Công ty chưa có giấy phép
+      - ma: "2.V2"
+        danh_gia: "khong_ro"
+        trich_dan:
+          - "Bên Giao đồng ý cho phép Bên Nhận thu thập, lưu trữ, xử lý Dữ liệu cá nhân"
+        vi_tri: "Phụ lục 03, Điều 3.2.a, trang 44"
+        ghi_chu: "Phụ thuộc 2.L1. HĐ không có thông tin Công ty đã đáp ứng điều kiện/giấy phép cho STT 198; cần thông tin ngoài HĐ."
+
+  - so: 3
+    cau_hoi: "Điều khoản bản quyền, sở hữu trí tuệ đã đầy đủ chưa? Xác định đúng đối tượng chưa?"
+    ket_qua: "vi_pham"
+    tieu_chi:
+      # [Đạt] Xác định rõ chủ sở hữu quyền tác giả đối với sản phẩm tạo ra theo Hợp đồng là Công ty
+      - ma: "3.D1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Trừ trường hợp các bên có thỏa thuận khác, quyền sở hữu trí tuệ đối với các phần mềm, ứng dụng, chương trình máy tính,… liên quan đến việc cung cấp dịch vụ theo Hợp đồng này thuộc về Bên B."
+          - "Cam kết dữ liệu, đặc tả yêu cầu, thiết kế chi tiết, mã nguồn và đặc tả mã nguồn hệ thống thuộc quyền sở hữu của Vietnam Airlines"
+          - "Các tài liệu bàn giao thuộc quyền sở hữu của bên A và phải được bảo mật theo các điều khoản bảo mật của hợp đồng."
+        vi_tri: "5.2, trang 4; Phụ lục 02, TOSS-052, trang 21; Phụ lục 02, Mục B.4, trang 41"
+        ghi_chu: ""
+      # [Đạt] Xác định rõ phạm vi quyền Công ty được giữ lại (sản phẩm, công cụ, thư viện, tài sản trí tuệ có sẵn)
+      - ma: "3.D2"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Quyền sử dụng phần mềm và quyền sở hữu dữ liệu hệ thống thuộc về Bên A, ngoại trừ mã nguồn mở; tài liệu, thư viện, công cụ mà bên B mua lại, sử dụng của bên thứ ba."
+        vi_tri: "5.1, trang 4"
+        ghi_chu: "Chỉ loại trừ mã nguồn mở và tài sản của bên thứ ba; không có điều khoản giữ lại công cụ, thư viện, nền tảng, tài sản trí tuệ có sẵn của công ty."
+      # [Đạt] Xác định rõ phạm vi license cấp cho Khách hàng (độc quyền/không độc quyền, thời hạn, lãnh thổ)
+      - ma: "3.D3"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Bên B cấp cho Bên A và các Bên theo quy định tại Khoản 7.9 Điều 7 quyền sử dụng phần mềm không độc quyền, không hủy ngang, không giới hạn thời gian, phục vụ hoạt động nội bộ của Bên A."
+        vi_tri: "5.5, trang 5"
+        ghi_chu: "Có độc quyền/không độc quyền và thời hạn (vĩnh viễn, không hủy ngang) nhưng thiếu lãnh thổ. License mở rộng cho các công ty VNA sở hữu từ 51% và các hãng thuộc VNA Group (7.9). Không rõ license áp dụng trong thời gian thuê hay chỉ sau khi kết thúc."
+      # [Đạt] Có điều khoản về mã nguồn (source code)
+      - ma: "3.D4"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Sau khi kết thúc thời gian thuê dịch vụ, Bên B có trách nhiệm bàn giao miễn phí cơ sở dữ liệu của Bên A, bản sao mã nguồn phiên bản đang vận hành và tài liệu kỹ thuật cần thiết."
+          - "Cung cấp mã nguồn phần mềm hoặc dịch vụ ứng dụng do Bên B xây dựng, phát triển để phục vụ đánh giá ANTT theo yêu cầu của Bên A."
+          - "Bàn giao source code (mã nguồn) cho TCTHK sau khi hết thời gian thuê dịch vụ phần mềm"
+        vi_tri: "5.5, trang 5; 7.5, trang 6; Phụ lục 02, TOSS-055, trang 21"
+        ghi_chu: "Có điều khoản, nhưng nội dung bất lợi cho Công ty: bàn giao mã nguồn miễn phí, không gắn điều kiện thanh toán."
+      # [Đạt] Có cam kết bảo đảm không vi phạm quyền sở hữu trí tuệ của bên thứ ba
+      - ma: "3.D5"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Bên B cam kết phần mềm và việc sở hữu, sử dụng phần mềm cung cấp theo hợp đồng này không vi phạm bất cứ quy định pháp luật nào, bao gồm nhưng không giới hạn pháp luật về quyền sở hữu trí tuệ (nhãn hiệu hàng hóa, bản quyền tác giả, quyền sở hữu công nghiệp, bí mật kinh doanh, giải pháp hữu ích…) của Việt Nam và các quy định trong các Điều ước quốc tế mà Việt Nam là thành viên hoặc tham gia ký kết hoặc công nhận."
+        vi_tri: "5.3, trang 4"
+        ghi_chu: "Kèm nghĩa vụ bồi thường không giới hạn tại 5.4."
+      # [Đạt] Quyền sở hữu chỉ được chuyển giao cho Khách hàng khi Khách hàng đã thanh toán 100% giá trị Hợp đồng
+      - ma: "3.D6"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Sau khi kết thúc thời gian thuê dịch vụ, Bên B có trách nhiệm bàn giao miễn phí cơ sở dữ liệu của Bên A, bản sao mã nguồn phiên bản đang vận hành và tài liệu kỹ thuật cần thiết."
+          - "Cam kết dữ liệu, đặc tả yêu cầu, thiết kế chi tiết, mã nguồn và đặc tả mã nguồn hệ thống thuộc quyền sở hữu của Vietnam Airlines"
+        vi_tri: "5.5, trang 5; Phụ lục 02, TOSS-052, trang 21"
+        ghi_chu: "Không có điều kiện thanh toán 100% trước khi chuyển giao quyền/mã nguồn."
+      # [Lưu ý] Chỉ quy định chung "quyền sở hữu trí tuệ thuộc một bên" mà không liệt kê rõ đối tượng (phần mềm, tài liệu, dữ liệu...)
+      - ma: "3.L1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Trừ trường hợp các bên có thỏa thuận khác, quyền sở hữu trí tuệ đối với các phần mềm, ứng dụng, chương trình máy tính,… liên quan đến việc cung cấp dịch vụ theo Hợp đồng này thuộc về Bên B."
+          - "Cam kết dữ liệu, đặc tả yêu cầu, thiết kế chi tiết, mã nguồn và đặc tả mã nguồn hệ thống thuộc quyền sở hữu của Vietnam Airlines"
+        vi_tri: "5.2, trang 4; Phụ lục 02, TOSS-052, trang 21"
+        ghi_chu: "Có liệt kê đối tượng (phần mềm, ứng dụng, chương trình; dữ liệu, mã nguồn, thiết kế), dù danh sách 5.2 để mở bằng '…'. Vấn đề chính là mâu thuẫn chủ sở hữu (xem 3.D1), không phải thiếu liệt kê."
+      # [Vi phạm] Không thỏa thuận hoặc thỏa thuận không đầy đủ ít nhất một nội dung: phạm vi Công ty được giữ lại; phạm vi license cấp cho Khách hàng; mã nguồn; bảo đảm không vi phạm sở hữu trí tuệ của bên thứ ba (khả năng xảy ra tranh chấp)
+      - ma: "3.V1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Quyền sử dụng phần mềm và quyền sở hữu dữ liệu hệ thống thuộc về Bên A, ngoại trừ mã nguồn mở; tài liệu, thư viện, công cụ mà bên B mua lại, sử dụng của bên thứ ba."
+          - "Bên B cấp cho Bên A và các Bên theo quy định tại Khoản 7.9 Điều 7 quyền sử dụng phần mềm không độc quyền, không hủy ngang, không giới hạn thời gian, phục vụ hoạt động nội bộ của Bên A."
+        vi_tri: "5.1, trang 4; 5.5, trang 5"
+        ghi_chu: "Thiếu phạm vi Công ty được giữ lại (3.D2) và license thiếu lãnh thổ (3.D3)"
+
+  - so: 4
+    cau_hoi: "Điều khoản bảo mật thông tin và bảo vệ dữ liệu cá nhân có đảm bảo tuân thủ quy định pháp luật không?"
+    ket_qua: "luu_y"
+    tieu_chi:
+      # [Đạt] Hợp đồng xác định rõ có hay không có hoạt động chuyển giao, xử lý dữ liệu cá nhân giữa các bên (nếu không có thì phải có quy định nêu rõ Hợp đồng không có hoạt động này)
+      - ma: "4.D1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Bên B thực hiện xử lý và bảo vệ dữ liệu cá nhân khi có sự đồng ý của Bên A theo quy định tại Thỏa thuận này và các chính sách của Công ty cung cấp mạng viễn thông."
+          - "Bên Giao đồng ý cho phép Bên Nhận thu thập, lưu trữ, xử lý Dữ liệu cá nhân"
+        vi_tri: "Phụ lục 03, Điều 3.1 và 3.2.a, trang 44"
+        ghi_chu: "HĐ xác định có xử lý dữ liệu cá nhân."
+      # [Đạt] Nếu có chuyển giao dữ liệu cá nhân, xác định rõ loại dữ liệu cá nhân được xử lý
+      - ma: "4.D2"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Dữ liệu cá nhân bao gồm dữ liệu cá nhân cơ bản và dữ liệu cá nhân nhạy cảm của một Bên, nhân sự, đại diện, khách hàng thuộc bên đó theo quy định pháp luật hiện hành."
+          - "Danh sách tổ bay: họ và tên, chức vụ, thông tin liên lạc, năm sinh, số hộ chiếu, mã số tổ bay"
+        vi_tri: "Phụ lục 03, Điều 1.2, trang 43; Phụ lục 02, TOSS-195, trang 32"
+        ghi_chu: "Điều khoản DLCN chỉ định nghĩa chung, không liệt kê loại dữ liệu được xử lý. Loại dữ liệu chỉ suy ra được từ yêu cầu kỹ thuật (tổ bay, hành khách qua DCS/Amadeus)."
+      # [Đạt] Nếu có chuyển giao dữ liệu cá nhân, xác định rõ mục đích xử lý và thời gian lưu trữ
+      - ma: "4.D3"
+        danh_gia: "thoa"
+        trich_dan:
+          - "(i) cung cấp Dịch vụ cho Bên Giao, thực hiện quyền và nghĩa vụ nêu tại Hợp đồng; (ii) điều tra, giải quyết thắc mắc, khiếu nại phát sinh từ Hợp đồng;"
+          - "Bên Nhận sẽ lưu trữ dữ liệu cá nhân do Bên Giao cung cấp trên hệ thống nội bộ của Bên Nhận trong quá trình thực hiện Hợp đồng hoặc cho đến khi hoàn thành Mục đích kiểm soát, xử lý hoặc cho đến khi việc tuân thủ các nghĩa vụ theo luật định cho phép và các tranh chấp được giải quyết theo quy định pháp luật hiện hành hoặc cho đến thời điểm phải thực hiện xóa bỏ Dữ liệu cá nhân theo quy định pháp luật có liên quan như theo yêu cầu của chủ thể dữ liệu cá nhân."
+        vi_tri: "Phụ lục 03, Điều 3.2.a và 3.2.e, trang 45"
+        ghi_chu: "Mục đích liệt kê rõ (i)-(vii). Thời gian lưu trữ xác định theo sự kiện bằng chuỗi 'hoặc', không có thời hạn cụ thể."
+      # [Đạt] Nếu có chuyển giao dữ liệu cá nhân, có cam kết xóa dữ liệu sau khi kết thúc Hợp đồng
+      - ma: "4.D4"
+        danh_gia: "khong_thoa"
+        trich_dan: ""
+        vi_tri: ""
+        ghi_chu: "Không tìm thấy cam kết"
+      # [Đạt] Nếu có chuyển giao dữ liệu cá nhân, có cam kết phối hợp thực hiện quyền của chủ thể dữ liệu và yêu cầu của cơ quan nhà nước có thẩm quyền
+      - ma: "4.D5"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Bên Nhận có thể tiết lộ dữ liệu cá nhân cho Bên Cần Biết nhằm phục vụ những mục đích nêu tại Điều 3.1, với điều kiện Bên Nhận chịu toàn bộ trách nhiệm trước Bên Giao và Chủ thể dữ liệu cá nhân về các hành động xử lý, bảo vệ dữ liệu cá nhân của Bên Cần Biết đó."
+          - "Các Bên thừa nhận và đảm bảo tuân thủ quyền của chủ thể dữ liệu cá nhân, quyền và nghĩa vụ của Bên xử lý dữ liệu cá nhân; quyền và nghĩa vụ của Bên kiểm soát và/ hoặc Xử lý dữ liệu cá nhân theo quy định của pháp luật về bảo vệ dữ liệu cá nhân tuỳ từng thời điểm."
+        vi_tri: "Phụ lục 03, Điều 3.2.f, trang 45; Điều 3.2.i, trang 46"
+        ghi_chu: ""
+      # [Lưu ý] Điều khoản bảo vệ dữ liệu cá nhân không phân biệt dữ liệu cá nhân thông thường và dữ liệu nhạy cảm (sức khỏe, tài chính, sinh trắc học)
+      - ma: "4.L1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Dữ liệu cá nhân bao gồm dữ liệu cá nhân cơ bản và dữ liệu cá nhân nhạy cảm của một Bên, nhân sự, đại diện, khách hàng thuộc bên đó theo quy định pháp luật hiện hành."
+        vi_tri: "Phụ lục 03, Điều 1.2, trang 43"
+        ghi_chu: ""
+      # [Lưu ý] Điều khoản bảo vệ dữ liệu cá nhân không phân biệt dữ liệu có chuyển ra nước ngoài (xuyên biên giới) hay không
+      - ma: "4.L2"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Bên Nhận không được phép chuyển dữ liệu do Bên Giao cung cấp ra ngoài lãnh thổ Việt Nam, trừ trường hợp theo quy định của pháp luật hoặc theo thỏa thuận bằng văn bản với Bên Giao."
+          - "Cam kết bảo mật thông tin theo Quy định về dữ liệu trên không gian mạng phải lưu trữ tại Việt Nam theo nghị định 53/2022/NĐ-CP."
+        vi_tri: "Phụ lục 03, Điều 3.2.h, trang 46; Phụ lục 02, TOSS-011, trang 17"
+        ghi_chu: ""
+      # [Vi phạm] Hợp đồng có chuyển dữ liệu cá nhân ra nước ngoài mà không có đánh giá tác động/thông báo theo quy định (phạt đến 5% tổng doanh thu năm tài chính tại Việt Nam)
+      - ma: "4.V1"
+        danh_gia: "khong_ro"
+        trich_dan:
+          - "Chuyển dữ liệu cho WNI"
+          - "Chuyển dữ liệu cho Cirium"
+          - "Chuyển dữ liệu cho SPECTRA"
+        vi_tri: "Phụ lục 02, TOSS-089 đến TOSS-091, trang 24"
+        ghi_chu: "Yêu cầu kỹ thuật bắt hệ thống truyền dữ liệu cho WNI, Cirium, SPECTRA. HĐ không nói các luồng này có chứa DLCN hay không, cũng không có đánh giá tác động chuyển DLCN ra nước ngoài."
+
+  - so: 5
+    cau_hoi: "Điều khoản bảo mật thông tin có đảm bảo quyền lợi của Công ty không?"
+    ket_qua: "luu_y"
+    tieu_chi:
+      # [Đạt] Có định nghĩa thông tin mật
+      - ma: "5.D1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Thuật ngữ “Thông Tin” là tất cả các thông tin của Bên Giao, được tiết lộ trực tiếp hoặc gián tiếp cho Bên Nhận trong quá trình đàm phán, ký kết và thực hiện Hợp đồng trong thời hạn Thỏa Thuận này, không kể chúng được thể hiện và truyền đạt dưới hình thức nào."
+        vi_tri: "Phụ lục 03, Điều 1.1, trang 43"
+        ghi_chu: ""
+      # [Đạt] Có quy định nghĩa vụ bảo mật và thời hạn bảo mật
+      - ma: "5.D2"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Bên Nhận không được tiết lộ, sử dụng, công bố, phổ biến hoặc truyên truyền dưới bất kỳ hình thức nào một phần hay toàn bộ các Thông Tin, một cách trực tiếp hoặc gián tiếp, tại bất cứ thời điểm nào hoặc trong bất cứ hoàn cảnh nào mà không có sự đồng ý trước bằng văn bản của Bên Giao và Bên Nhận có nghĩa vụ thực hiện các biện pháp cần thiết để bảo toàn tính bảo mật của các Thông Tin tại mọi thời điểm."
+          - "Bên Nhận cam kết thực hiện tất cả những gì cần thiết và thích hợp để bảo vệ Thông Tin ở mức an toàn."
+          - "Nghĩa vụ bảo mật thông tin quy định tại Điều này sẽ tiếp tục có hiệu lực cho sau 01 (một) năm kể từ khi Hợp đồng ký kết giữa hai Bên chấm dứt hiệu lực."
+        vi_tri: "Phụ lục 03, Điều 2.2, 2.3 và 2.7, trang 44"
+        ghi_chu: "Thời hạn bảo mật: 01 năm sau khi HĐ chấm dứt."
+      # [Đạt] Có các trường hợp ngoại lệ của nghĩa vụ bảo mật
+      - ma: "5.D3"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Tuy nhiên, các Thông Tin không bao gồm các thông tin và dữ liệu mà:"
+          - "a. Các thông tin đã hoặc sẽ trở thành thông tin được phổ biến công khai;"
+          - "Những giới hạn về việc sử dụng và tiết lộ Thông Tin được quy định tại Điều 2.1 nêu trên sẽ không áp dụng đối với những thông tin bị bắt buộc tiết lộ theo yêu cầu của tòa án hoặc cơ quan nhà nước có thẩm quyền"
+        vi_tri: "Phụ lục 03, Điều 1.1, trang 43; Điều 2.5, trang 44"
+        ghi_chu: "Ngoại lệ a-d tại 1.1 và trường hợp bắt buộc tiết lộ tại 2.5."
+      # [Đạt] Công ty được tiết lộ thông tin cho nhà thầu (thầu phụ) của mình
+      - ma: "5.D4"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Bên Nhận có quyền tiết lộ Thông Tin cho nhân viên, đại lý, kiểm toán viên và chuyên viên tư vấn của Bên Nhận, những người cần phải biết các Thông Tin này để tham gia và tiến hành các hoạt động thảo luận, đàm phán, giao dịch và/hoặc thực hiện dịch vụ giữa Các Bên (sau đây gọi là “Bên Cần Biết”)."
+        vi_tri: "Phụ lục 03, Điều 2.4, trang 44"
+        ghi_chu: ""
+      # [Đạt] Công ty được quyền sử dụng thông tin về Hợp đồng để chứng minh năng lực
+      - ma: "5.D5"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Bên Nhận không được tiết lộ, sử dụng, công bố, phổ biến hoặc truyên truyền dưới bất kỳ hình thức nào một phần hay toàn bộ các Thông Tin, một cách trực tiếp hoặc gián tiếp, tại bất cứ thời điểm nào hoặc trong bất cứ hoàn cảnh nào mà không có sự đồng ý trước bằng văn bản của Bên Giao"
+        vi_tri: "Phụ lục 03, Điều 2.2, trang 44"
+        ghi_chu: "Không có ngoại lệ cho phép dùng thông tin HĐ để chứng minh năng lực."
+      # [Lưu ý] Quy định mức bồi thường thiệt hại cố định khi vi phạm bảo mật thông tin
+      - ma: "5.L1"
+        danh_gia: "khong_thoa"
+        trich_dan: ""
+        vi_tri: ""
+        ghi_chu: "Không tìm thấy quy định mức bồi thường thiệt hại"
+      # [Vi phạm] Chỉ quy định nghĩa vụ bảo mật của Công ty mà không quy định nghĩa vụ bảo mật của Khách hàng
+      - ma: "5.V1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Mỗi Bên có thể và sẽ cung cấp cho Bên kia những Thông Tin, dữ liệu cá nhân nhất định"
+          - "Hai Bên cam kết tuân thủ các quy định về bảo mật thông tin nêu tại Phụ lục 03 - Bảo mật thông tin và xử lý Dữ liệu cá nhân."
+        vi_tri: "Phụ lục 03, phần Xét rằng, trang 43; Điều 14, trang 11"
+        ghi_chu: "Nghĩa vụ hai chiều (Bên Giao/Bên Nhận)."
+
+  - so: 6
+    cau_hoi: "Việc kiểm soát xuất khẩu, nhập khẩu phần mềm/hàng hóa (nếu có) có tuân thủ quy định pháp luật không?"
+    ket_qua: "luu_y"
+    tieu_chi:
+      # [Đạt] Hàng hóa/phần mềm cung cấp theo Hợp đồng không khớp dấu hiệu nào trong Danh mục dau-hieu-ear
+      - ma: "6.D1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Yêu cầu xác thực đa yếu tố hoặc xác thực 2 bước (MFA/2FA) ít nhất cho nhóm quản trị viên"
+          - "Có thể sử dụng cơ chế token-based authentication như JWT để đảm bảo hiệu suất và bảo mật cao trong môi trường phân tán/microservices."
+          - "Kiểm soát dữ liệu vào/ra bằng xác thực nâng cao (OAuth2, JWT, IP validation)."
+          - "Quyền sử dụng phần mềm và quyền sở hữu dữ liệu hệ thống thuộc về Bên A, ngoại trừ mã nguồn mở; tài liệu, thư viện, công cụ mà bên B mua lại, sử dụng của bên thứ ba."
+        vi_tri: "Phụ lục 02, TOSS-020 và TOSS-021, trang 18; TOSS-059, trang 22; 5.1, trang 4"
+        ghi_chu: "Theo Danh mục dau-hieu-ear: KHỚP 'ma-hoa' (MFA/2FA, JWT, OAuth2, nhiều lớp bảo mật; HĐ không ghi trực tiếp chữ 'mã hóa'). CÓ THỂ KHỚP 'noi-dung-my' (thư viện, công cụ bên thứ ba - 5.1, TOSS-004; Kafka, Spark là mã nguồn mở) - HĐ không nêu xuất xứ. KHÔNG KHỚP: xuat-xu-my (Microsoft Edge ở TOSS-032 chỉ là trình duyệt phía người dùng, không phải hàng cung cấp); phan-cung-thiet-bi, tinh-toan-tien-tien (chạy trên Cloud của VNA); muc-dich-quan-su (hãng hàng không dân dụng); tai-xuat (7.9 chỉ mở cho các công ty trong VNA Group); chuyen-giao-cong-nghe (bàn giao mã nguồn do Bên B tự phát triển, chỉ là dấu hiệu nếu có phần gốc Mỹ). ben-bi-han-che: HĐ không có thông tin."
+      # [Đạt] Nếu Công ty bán hàng hóa, thiết bị theo Hợp đồng, Hợp đồng có điều khoản yêu cầu Khách hàng không xuất khẩu hàng hóa và không sử dụng cho mục đích quân sự
+      - ma: "6.D2"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Nhà cung cấp xây dựng và triển khai phần mềm hệ thống trên hạ tầng Cloud của VNA cung cấp"
+          - "DV thuê phần mềm"
+        vi_tri: "Phụ lục 02, TOSS-046, trang 21; Phụ lục 01, Mục A, trang 13"
+        ghi_chu: "Không bán hàng hóa/thiết bị; điều kiện 'Nếu' không xảy ra."
+      # [Lưu ý] Hàng hóa/phần mềm cung cấp theo Hợp đồng khớp ít nhất một dấu hiệu trong Danh mục dau-hieu-ear
+      - ma: "6.L1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Yêu cầu xác thực đa yếu tố hoặc xác thực 2 bước (MFA/2FA) ít nhất cho nhóm quản trị viên"
+          - "Có thể sử dụng cơ chế token-based authentication như JWT để đảm bảo hiệu suất và bảo mật cao trong môi trường phân tán/microservices."
+          - "Kiểm soát dữ liệu vào/ra bằng xác thực nâng cao (OAuth2, JWT, IP validation)."
+        vi_tri: "Phụ lục 02, TOSS-020 và TOSS-021, trang 18; TOSS-059, trang 22"
+        ghi_chu: "Khớp dấu hiệu 'ma-hoa' (xem 6.D1). Cần bộ phận tuân thủ phân loại (ECCN/EAR99, License Exception ENC)."
+      # [Vi phạm] Hàng hóa/phần mềm cung cấp theo Hợp đồng được xác định thuộc phạm vi điều chỉnh của EAR
+      - ma: "6.V1"
+        danh_gia: "khong_ro"
+        trich_dan:
+          - "Yêu cầu xác thực đa yếu tố hoặc xác thực 2 bước (MFA/2FA) ít nhất cho nhóm quản trị viên"
+          - "Có thể sử dụng cơ chế token-based authentication như JWT để đảm bảo hiệu suất và bảo mật cao trong môi trường phân tán/microservices."
+          - "Kiểm soát dữ liệu vào/ra bằng xác thực nâng cao (OAuth2, JWT, IP validation)."
+        vi_tri: "Phụ lục 02, TOSS-020 và TOSS-021, trang 18; TOSS-059, trang 22"
+        ghi_chu: "Danh mục chỉ để sàng lọc, không kết luận thuộc EAR."
+
+  - so: 7
+    cau_hoi: "Điều khoản phạt, bồi thường thiệt hại có đảm bảo bảo vệ quyền lợi của Công ty không?"
+    ket_qua: "luu_y"
+    tieu_chi:
+      # [Đạt] Mức phạt vi phạm cao nhất áp dụng cho Công ty không vượt 8% giá trị phần nghĩa vụ vi phạm
+      - ma: "7.D1"
+        danh_gia: "thoa"
+        # gia_tri: muc_phat_cao_nhat_phan_tram
+        gia_tri: 8
+        trich_dan:
+          - "Bên B sẽ bị phạt 0,2% giá trị Hợp đồng đối với Dịch vụ triển khai ban đầu cho mỗi ngày chậm trễ nhưng không quá 8% tổng giá trị phần nghĩa vụ bị vi phạm"
+          - "Ngoài các quy định phạt vi phạm như nêu trên, bất cứ Bên nào vi phạm nghĩa vụ khác quy định tại Hợp đồng và Pháp luật đều chịu phạt vi phạm Hợp đồng bằng một khoản tương đương 08% giá trị phần nghĩa vụ bị vi phạm."
+        vi_tri: "10.1, 10.4, trang 9"
+        ghi_chu: ""
+      # [Đạt] Có điều khoản bồi thường thiệt hại thực tế
+      - ma: "7.D2"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Ngoài mức phạt như quy định ở Điều này, bên vi phạm Hợp đồng có trách nhiệm bồi thường thiệt hại cho bên kia do hành vi vi phạm Hợp đồng gây ra và khoản lợi trực tiếp mà Bên vi phạm đáng lẽ được hưởng nếu không có hành vi vi phạm"
+        vi_tri: "10.5, trang 9"
+        ghi_chu: ""
+      # [Đạt] Có giới hạn trách nhiệm phạt và bồi thường tối đa (liability cap)
+      - ma: "7.D3"
+        danh_gia: "khong_thoa"
+        trich_dan: ""
+        vi_tri: ""
+        ghi_chu: "Không tìm thấy giới hạn"
+      # [Đạt] Loại trừ trách nhiệm bồi thường thiệt hại gián tiếp, mất lợi nhuận
+      - ma: "7.D4"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Ngoài mức phạt như quy định ở Điều này, bên vi phạm Hợp đồng có trách nhiệm bồi thường thiệt hại cho bên kia do hành vi vi phạm Hợp đồng gây ra và khoản lợi trực tiếp mà Bên vi phạm đáng lẽ được hưởng nếu không có hành vi vi phạm"
+        vi_tri: "10.5, trang 9"
+        ghi_chu: "Không loại trừ; 10.5 còn bao gồm khoản lợi bị mất."
+      # [Lưu ý] Phạt vi phạm/bồi thường chỉ áp dụng một chiều cho Công ty, không có quy định phạt và bồi thường đối với Khách hàng
+      - ma: "7.L1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Trường hợp Bên A chậm thanh toán tiền cho Bên B, Bên A sẽ phải chịu phạt theo lãi suất nợ quá hạn của ngân hàng TMCP Ngoại thương Việt Nam (Vietcombank) công bố tại thời điểm thanh toán cho mỗi ngày trả chậm tính trên tổng số tiền quá hạn thanh toán."
+          - "Ngoài các quy định phạt vi phạm như nêu trên, bất cứ Bên nào vi phạm nghĩa vụ khác quy định tại Hợp đồng và Pháp luật đều chịu phạt vi phạm Hợp đồng bằng một khoản tương đương 08% giá trị phần nghĩa vụ bị vi phạm."
+        vi_tri: "10.3, 10.4, trang 9"
+        ghi_chu: "Có phạt hai chiều"
+      # [Lưu ý] Không có giới hạn trách nhiệm tối đa
+      - ma: "7.L2"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Bên B cam kết sẽ bồi thường cho Bên A tất cả các chi phí, thiệt hại và các chi phí khác có liên quan mà Bên A phải gánh chịu phát sinh từ hoặc liên quan đến bất kỳ khiếu nại, khiếu kiện nào của bên thứ ba về bản quyền phần mềm của Bên B."
+        vi_tri: "5.4, trang 5"
+        ghi_chu: "Xem 7.D3."
+      # [Vi phạm] Mức phạt vi phạm vượt 8% giá trị phần nghĩa vụ vi phạm (phần vượt vô hiệu theo luật)
+      - ma: "7.V1"
+        danh_gia: "khong_thoa"
+        # gia_tri: muc_phat_cao_nhat_phan_tram
+        gia_tri: 8
+        trich_dan:
+          - "Bên B sẽ bị phạt 0,2% giá trị Hợp đồng đối với Dịch vụ triển khai ban đầu cho mỗi ngày chậm trễ nhưng không quá 8% tổng giá trị phần nghĩa vụ bị vi phạm"
+          - "Ngoài các quy định phạt vi phạm như nêu trên, bất cứ Bên nào vi phạm nghĩa vụ khác quy định tại Hợp đồng và Pháp luật đều chịu phạt vi phạm Hợp đồng bằng một khoản tương đương 08% giá trị phần nghĩa vụ bị vi phạm."
+        vi_tri: "10.1, 10.4, trang 9"
+        ghi_chu: ""
+      # [Vi phạm] Hợp đồng không có thỏa thuận phạt vi phạm (Công ty mất quyền phạt, chỉ được bồi thường thiệt hại thực tế và phải chứng minh)
+      - ma: "7.V2"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Trường hợp Bên A chậm thanh toán tiền cho Bên B, Bên A sẽ phải chịu phạt theo lãi suất nợ quá hạn của ngân hàng TMCP Ngoại thương Việt Nam (Vietcombank) công bố tại thời điểm thanh toán cho mỗi ngày trả chậm tính trên tổng số tiền quá hạn thanh toán."
+        vi_tri: "10.3, trang 9"
+        ghi_chu: ""
+
+  - so: 8
+    cau_hoi: "Căn cứ, hậu quả chấm dứt hợp đồng có bảo vệ quyền lợi của Công ty khi xảy ra tranh chấp không?"
+    ket_qua: "luu_y"
+    tieu_chi:
+      # [Đạt] Xác định rõ các vi phạm cơ bản (material breach) dẫn đến chấm dứt ngay
+      - ma: "8.D1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Hết thời hạn theo quy định tại khoản 1.3 Điều 1 và Hai Bên không thỏa thuận về việc gia hạn Hợp đồng. "
+          - "Khi có thỏa thuận bằng văn bản của cả Hai Bên chấm dứt Hợp đồng trước thời hạn. "
+          - "Một trong Hai Bên vi phạm nghĩa vụ quy định trong Hợp đồng này, và không có biện pháp khắc phục, sửa chữa vi phạm trong thời hạn 15 (mười lăm) ngày kể từ ngày nhận được thông báo yêu cầu khắc phục của Bên bị vi phạm và Bên bị vi phạm có văn bản yêu cầu chấm dứt Hợp đồng."
+          - "Bên B vi phạm nghiêm trọng Hợp đồng."
+          - "Các trường hợp khác theo quy định của pháp luật."
+        vi_tri: "12.1.1, 12.1.2, 12.1.3, 12.1.4, và 12.1.5 trang 10"
+        ghi_chu: ""
+      # [Đạt] Chấm dứt thuận tiện (for convenience) yêu cầu thông báo trước tối thiểu 30 ngày
+      - ma: "8.D2"
+        danh_gia: "khong_thoa"
+        # gia_tri: thoi_han_bao_truoc_cham_dut_thuan_tien_ngay
+        gia_tri:
+        trich_dan: ""
+        vi_tri: ""
+        ghi_chu: "Không tìm thấy điều khoản chấm dứt thuận tiện"
+      # [Đạt] Khi chấm dứt thuận tiện, Khách hàng phải thanh toán phần công việc đã hoàn thành
+      - ma: "8.D3"
+        danh_gia: "khong_thoa"
+        trich_dan: ""
+        vi_tri: ""
+        ghi_chu: "Không tìm thấy điều khoản chấm dứt thuận tiện"
+      # [Đạt] Liệt kê rõ các điều khoản tiếp tục có hiệu lực sau khi chấm dứt (bảo mật, sở hữu trí tuệ, thanh toán)
+      - ma: "8.D4"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Việc Hợp đồng này chấm dứt không ảnh hưởng đến quyền lợi và nghĩa vụ của mỗi bên phát sinh từ Hợp đồng cho đến ngày trước ngày Hợp đồng hết hạn hiệu lực, bị hủy bỏ hay bị đơn phương chấm dứt."
+        vi_tri: "12.6, trang 11"
+        ghi_chu: "Có nhắc đến quyền lợi và nghĩa vụ của các bên nhưng không liệt kê rõ"
+      # [Lưu ý] Điều kiện chấm dứt mơ hồ hoặc chỉ có lợi cho Khách hàng, Công ty không có quyền chấm dứt tương xứng
+      - ma: "8.L1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Bên A là Bên duy nhất có quyền đơn phương chấm dứt Hợp đồng mà không phải chịu bất cứ khoản phạt hay bồi thường thiệt hại nào."
+          - "Một trong Hai Bên vi phạm nghĩa vụ quy định trong Hợp đồng này, và không có biện pháp khắc phục, sửa chữa vi phạm trong thời hạn 15 (mười lăm) ngày kể từ ngày nhận được thông báo yêu cầu khắc phục của Bên bị vi phạm và Bên bị vi phạm có văn bản yêu cầu chấm dứt Hợp đồng."
+          - "Hết thời hạn theo quy định tại khoản 1.3 Điều 1 và Hai Bên không thỏa thuận về việc gia hạn Hợp đồng."
+        vi_tri: "12.4, trang 11; 12.1.3, 12.1.1, trang 10"
+        ghi_chu: "Công ty vẫn có quyền chấm dứt (12.1.3; 10.3 khi chậm thanh toán quá 40 ngày) nên không phải hoàn toàn một chiều. Nhưng có mất cân xứng: 12.1.4 chỉ áp cho Bên B. Thêm lỗi dẫn chiếu: 12.1.1 dẫn 'khoản 1.3 Điều 1' không tồn tại (đúng là 1.2)."
+      # [Vi phạm] Khách hàng có thể chấm dứt Hợp đồng bất kỳ lúc nào mà không phải bồi thường
+      - ma: "8.V1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Trong mọi trường hợp, nếu một Bên đơn phương chấm dứt Hợp đồng trái với quy định pháp luật và Hợp đồng, Bên đơn phương chấm dứt Hợp đồng có trách nhiệm bồi thường toàn bộ thiệt hại thực tế, trực tiếp phát sinh và trả một khoản tiền phạt bằng 8% giá trị Hợp đồng cho Bên còn lại."
+        vi_tri: "12.5, trang 11"
+        ghi_chu: "Bên A chỉ được chấm dứt không bồi thường khi Bên B vi phạm nghiêm trọng."
+      # [Vi phạm] Không có điều khoản về hậu quả chấm dứt Hợp đồng
+      - ma: "8.V2"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Bên vi phạm có trách nhiệm bồi thường toàn bộ thiệt hại thực tế, trực tiếp phát sinh và trả một khoản tiền phạt bằng 8% giá trị phần nghĩa vụ bị vi phạm."
+        vi_tri: "12.2 đến 12.6, trang 11"
+        ghi_chu: ""
+
+  - so: 9
+    cau_hoi: "Hợp đồng có cấm sử dụng nhà thầu phụ không?"
+    ket_qua: "luu_y"
+    tieu_chi:
+      # [Đạt] Hợp đồng cho phép Công ty sử dụng nhà thầu phụ
+      - ma: "9.D1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Bất cứ Bên nào trong Hợp đồng khi chưa được sự đồng ý bằng văn bản từ Bên còn lại đều không có quyền chuyển nhượng bất cứ quyền lợi và nghĩa vụ qui định trong Hợp đồng. Trước khi có được sự thống nhất bằng văn bản của cả Hai Bên thì bất cứ sự chuyển nhượng nào đều vô hiệu. Việc một Bên thuê bên thứ ba thực hiện một phần công việc theo Hợp đồng không được coi là hành vi chuyển nhượng Hợp đồng. "
+        vi_tri: "15.2, trang 11"
+        ghi_chu: ""
+      # [Đạt] Có quy định thủ tục thông báo/chấp thuận trước bằng văn bản khi sử dụng nhà thầu phụ
+      - ma: "9.D2"
+        danh_gia: "khong_thoa"
+        trich_dan: ""
+        vi_tri: ""
+        ghi_chu: "Không có thủ tục thông báo/chấp thuận."
+      # [Đạt] Có điều khoản về trách nhiệm đối với nhà thầu phụ
+      - ma: "9.D3"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Bên Nhận có thể tiết lộ dữ liệu cá nhân cho Bên Cần Biết nhằm phục vụ những mục đích nêu tại Điều 3.1, với điều kiện Bên Nhận chịu toàn bộ trách nhiệm trước Bên Giao và Chủ thể dữ liệu cá nhân về các hành động xử lý, bảo vệ dữ liệu cá nhân của Bên Cần Biết đó."
+        vi_tri: "Phụ lục 03, Điều 3.2.f, trang 45"
+        ghi_chu: "Chỉ có trách nhiệm với 'Bên Cần Biết' (nhân viên, đại lý, kiểm toán, tư vấn), không có điều khoản riêng cho thầu phụ."
+      # [Lưu ý] Hợp đồng cấm Công ty sử dụng nhà thầu phụ (cần đánh giá nhu cầu thuê ngoài và đàm phán điều chỉnh trước khi ký)
+      - ma: "9.L1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Việc một Bên thuê bên thứ ba thực hiện một phần công việc theo Hợp đồng không được coi là hành vi chuyển nhượng Hợp đồng."
+        vi_tri: "15.2, trang 11"
+        ghi_chu: ""
+      # [Vi phạm] Hợp đồng cấm thầu phụ nhưng Công ty dự kiến sử dụng thầu phụ (Khách hàng có quyền chấm dứt và yêu cầu bồi thường; Công ty chịu toàn bộ trách nhiệm)
+      - ma: "9.V1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Việc một Bên thuê bên thứ ba thực hiện một phần công việc theo Hợp đồng không được coi là hành vi chuyển nhượng Hợp đồng."
+        vi_tri: "15.2, trang 11"
+        ghi_chu: ""
+
+  - so: 10
+    cau_hoi: "Điều khoản thanh toán đã phù hợp và bảo vệ quyền lợi cho Công ty không?"
+    ket_qua: "luu_y"
+    tieu_chi:
+      # [Đạt] Có đặt cọc/tạm ứng trước khi triển khai (đề xuất 20–30% giá trị)
+      - ma: "10.D1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Thanh toán 70% giá trị dịch vụ kể từ Ngày đưa vào vận hành"
+        vi_tri: "Phụ lục 01, Mục B, kỳ I.1, trang 14"
+        ghi_chu: "Không có tạm ứng; Công ty tự ứng vốn toàn bộ 6 tháng triển khai và phải nộp bảo lãnh thực hiện HĐ (4.3.2)."
+      # [Đạt] Thanh toán theo các mốc (milestone) rõ ràng
+      - ma: "10.D2"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Thanh toán 70% giá trị dịch vụ kể từ Ngày đưa vào vận hành"
+          - "Thanh toán giá trị dịch vụ còn lại sau Ngày đưa vào vận hành 30 ngày nếu hệ thống không tồn tại các lỗi không thể khắc phục"
+          - "Thanh toán hàng tháng kể từ ngày ký Ngày đưa vào vận hành (CutOver date)"
+        vi_tri: "Phụ lục 01, Mục B, trang 14"
+        ghi_chu: ""
+      # [Đạt] Thời hạn thanh toán được xác định bằng số ngày cụ thể
+      - ma: "10.D3"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Bên A thanh toán trong vòng 15 ngày kể từ khi nhận được đầy đủ bộ hồ sơ thanh toán từ Bên B"
+        vi_tri: "Phụ lục 01, Mục B, trang 14"
+        ghi_chu: ""
+      # [Đạt] Có quy định lãi chậm thanh toán
+      - ma: "10.D4"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Trường hợp Bên A chậm thanh toán tiền cho Bên B, Bên A sẽ phải chịu phạt theo lãi suất nợ quá hạn của ngân hàng TMCP Ngoại thương Việt Nam (Vietcombank) công bố tại thời điểm thanh toán cho mỗi ngày trả chậm tính trên tổng số tiền quá hạn thanh toán."
+        vi_tri: "10.3, trang 9"
+        ghi_chu: ""
+      # [Đạt] Công ty có quyền tạm dừng dịch vụ khi Khách hàng chậm thanh toán quá thời hạn
+      - ma: "10.D5"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Bên B có quyền tạm dừng phần mềm cho đến khi Bên A thanh toán đầy đủ số tiền chậm nộp, phạt vi phạm và Bên B có quyền đơn phương chấm dứt Hợp đồng mà không phải chịu phạt hay bồi thường bất cứ khoản tiền nào."
+        vi_tri: "10.3, trang 9"
+        ghi_chu: "Chỉ khi chậm quá 40 ngày."
+      # [Lưu ý] Thời hạn thanh toán ngắn (dưới 30 ngày)
+      - ma: "10.L1"
+        danh_gia: "thoa"
+        # gia_tri: thoi_han_thanh_toan_ngay
+        gia_tri: 15
+        trich_dan:
+          - "Bên A thanh toán trong vòng 15 ngày kể từ khi nhận được đầy đủ bộ hồ sơ thanh toán từ Bên B"
+        vi_tri: "Phụ lục 01, Mục B, trang 14"
+        ghi_chu: ""
+      # [Lưu ý] Điều kiện thanh toán phụ thuộc vào xác nhận chủ quan của Khách hàng
+      - ma: "10.L2"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Thanh toán giá trị dịch vụ còn lại sau Ngày đưa vào vận hành 30 ngày nếu hệ thống không tồn tại các lỗi không thể khắc phục"
+          - "Có quyền từ chối ký Biên bản bàn giao nghiệm thu bản quyền phần mềm cho đến khi Bên B hoàn thành việc lắp đặt, cài đặt và các dịch vụ kĩ thuật kèm theo đáp ứng đúng yêu cầu của Hợp đồng."
+        vi_tri: "Phụ lục 01, Mục B, kỳ I.2, trang 14; 6.3, trang 5"
+        ghi_chu: "'Lỗi không thể khắc phục' không được định nghĩa. Các kỳ thanh toán đều cần biên bản do Bên A ký"
+      # [Lưu ý] Hồ sơ thanh toán phức tạp: đề nghị thanh toán, hóa đơn, nhiều loại biên bản nghiệm thu, chứng chỉ
+      - ma: "10.L3"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Hoá đơn tài chính hợp lệ tương ứng với 100% giá trị Dịch vụ triển khai ban đầu;"
+          - "Các chứng từ liên quan khác (nếu có)."
+        vi_tri: "Phụ lục 01, Mục B, trang 14"
+        ghi_chu: "Mỗi kỳ chỉ cần công văn + 1 biên bản + hóa đơn."
+      # [Vi phạm] Hồ sơ thanh toán yêu cầu tài liệu không phát sinh trong quá trình nghiệm thu, hoặc tài liệu do Khách hàng đơn phương lập
+      - ma: "10.V1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Các chứng từ liên quan khác (nếu có)."
+        vi_tri: "Phụ lục 01, Mục B, trang 14"
+        ghi_chu: "Không làm rõ 'chứng từ liên quan khác (nếu có)'"
+      # [Vi phạm] Thanh toán chỉ được thực hiện sau khi Khách hàng nhận được thanh toán từ bên thứ ba
+      - ma: "10.V2"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Bên A thanh toán trong vòng 15 ngày kể từ khi nhận được đầy đủ bộ hồ sơ thanh toán từ Bên B"
+        vi_tri: "Phụ lục 01, Mục B, trang 14"
+        ghi_chu: ""
+
+  - so: 11
+    cau_hoi: "Giá trị hợp đồng đã bao gồm, xác định đúng thuế, thuế suất chưa?"
+    ket_qua: "vi_pham"
+    tieu_chi:
+      # [Đạt] Ghi rõ giá chưa thuế và thuế GTGT tách riêng
+      - ma: "11.D1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "DV thuê phần mềm Tháng 60 454.848.484,85 27.290.909.091 2.729.090.909 30.020.000.000"
+          - "(Thuế, phí nêu trên là Thuế GTGT tạm tính, giá trị thực tế theo chính sách thuế và thông báo của CQ thuế tại thời điểm phát sinh)"
+        vi_tri: "Phụ lục 01, Mục A, trang 13"
+        ghi_chu: ""
+      # [Đạt] Cách xử lý thuế GTGT phù hợp với loại hàng hóa/dịch vụ theo Danh mục thue-gtgt — sản phẩm phần mềm/dịch vụ phần mềm ghi không chịu thuế GTGT; dịch vụ khác áp dụng thuế suất 10%
+      - ma: "11.D2"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "DV thuê phần mềm Tháng 60 454.848.484,85 27.290.909.091 2.729.090.909 30.020.000.000"
+          - "E1= 10% x D1"
+        vi_tri: "Phụ lục 01, Mục A, trang 13; Mục B, trang 14"
+        ghi_chu: "Cần xác minh: Phí triển khai 9,8 tỷ không tính thuế: khớp 'phan-mem' (cài đặt, triển khai, tích hợp), nhưng HĐ chỉ để trống cột thuế, không ghi chữ 'không chịu thuế GTGT'. Phí thuê tính 10%: theo Danh mục, phí thuê gồm quyền sử dụng phần mềm + bảo trì, nâng cấp, vận hành phần mềm và chạy trên Cloud của VNA (Bên B không cho thuê hạ tầng), nên gần 'phan-mem' (không chịu thuế) hơn 'dich-vu-khac' (10%)."
+      # [Đạt] Nếu Hợp đồng có yếu tố nước ngoài, ghi rõ bên nào chịu thuế nhà thầu
+      - ma: "11.D3"
+        danh_gia: "thoa"
+        trich_dan:
+          - "BÊN A:    TỔNG CÔNG TY HÀNG KHÔNG VIỆT NAM - CTCP "
+          - "BÊN B:    CÔNG TY TRÁCH NHIỆM HỮU HẠN MỘT THÀNH VIÊN ĐẦU TƯ CÔNG NGHỆ VIETTEL "
+        vi_tri: "Thông tin Bên A, và Bên B trang 1"
+        ghi_chu: "Cả hai bên là doanh nghiệp Việt Nam; điều kiện 'Nếu' không xảy ra."
+      # [Lưu ý] Giá ghi "đã bao gồm tất cả các loại thuế" nhưng không xác định cụ thể loại thuế và thuế suất
+      - ma: "11.L1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "(Thuế, phí nêu trên là Thuế GTGT tạm tính, giá trị thực tế theo chính sách thuế và thông báo của CQ thuế tại thời điểm phát sinh)"
+        vi_tri: "Phụ lục 01, Mục A, trang 13"
+        ghi_chu: ""
+      # [Lưu ý] Áp dụng thuế suất GTGT 8% (mức giảm thuế tạm thời)
+      - ma: "11.L2"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "E1= 10% x D1"
+        vi_tri: "Phụ lục 01, Mục B, trang 14"
+        ghi_chu: "Áp dụng 10%. Phí thuê chỉ tính từ Ngày đưa vào vận hành (khoảng 6 tháng sau khi HĐ có hiệu lực) nên nhiều khả năng xuất hóa đơn sau 31/12/2026, ngoài đợt giảm 8%."
+      # [Lưu ý] Hàng hóa/dịch vụ là hỗn hợp (phần mềm kèm hạ tầng, phần cứng, dịch vụ khác) hoặc không phân loại rõ được là sản phẩm/dịch vụ phần mềm
+      - ma: "11.L3"
+        danh_gia: "thoa"
+        trich_dan:
+          - "DV thuê phần mềm"
+          - "BÊN B hỗ trợ dịch vụ 24 giờ/ngày, 7 ngày/tuần và 365 ngày/năm, cung cấp đầy đủ thông tin liên quan đến đầu mối liên lạc để tiếp nhận yêu cầu"
+        vi_tri: "Phụ lục 01, Mục A, trang 13; Phụ lục 02, TOSS-037, trang 20"
+        ghi_chu: "Phí thuê tháng gộp quyền sử dụng phần mềm, vận hành 24/7, CR, tích hợp, báo cáo; HĐ không tách giá trị từng phần nên không phân loại được."
+      # [Vi phạm] Không xác định thuế suất/cách xử lý thuế GTGT, hoặc cách xử lý thuế GTGT sai so với loại hàng hóa/dịch vụ
+      - ma: "11.V1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "DV thuê phần mềm Tháng 60 454.848.484,85 27.290.909.091 2.729.090.909 30.020.000.000"
+          - "E1= 10% x D1"
+        vi_tri: "Phụ lục 01, Mục A, trang 13; Mục B, trang 14"
+        ghi_chu: "Cần xác minh: Theo Danh mục thue-gtgt, phí thuê phần mềm có vẻ thuộc 'phan-mem' (không chịu thuế) nhưng HĐ áp 10% (2.729.090.909 đồng). Nếu xác nhận thuê phần mềm là dịch vụ khác thì đổi thành khong_thoa."
+      # [Vi phạm] Hợp đồng không cho điều chỉnh giá khi thuế suất thay đổi
+      - ma: "11.V2"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Trường hợp thay đổi thuế phí theo quy định Nhà nước, hai Bên sẽ thực hiện điều chỉnh phù hợp với quy định, đảm bảo nguyên tắc đơn giá trước thuế không vượt quá đơn giá trước thuế được quy định tại Phụ lục 01 – Đơn giá và thanh toán trong suốt quá trình thực hiện Hợp đồng."
+        vi_tri: "4.1, trang 3"
+        ghi_chu: ""
+      # [Vi phạm] Điều khoản điều chỉnh giá khi thuế thay đổi gây bất lợi cho Công ty
+      - ma: "11.V3"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Thuế suất VAT thực tế được áp dụng theo quy định tại thời điểm xuất hóa đơn."
+          - "Trường hợp thay đổi thuế phí theo quy định Nhà nước, hai Bên sẽ thực hiện điều chỉnh phù hợp với quy định, đảm bảo nguyên tắc đơn giá trước thuế không vượt quá đơn giá trước thuế được quy định tại Phụ lục 01 – Đơn giá và thanh toán trong suốt quá trình thực hiện Hợp đồng."
+        vi_tri: "4.1, trang 3"
+        ghi_chu: "Giữ nguyên giá trước thuế, thuế chuyển theo quy định; không thấy bất lợi."
+
+  - so: 12
+    cau_hoi: "Các điều khoản thương mại (giá trị hợp đồng, điều kiện thanh toán, thời hạn thanh toán…) đã phù hợp chưa?"
+    ket_qua: "luu_y"
+    tieu_chi:
+      # [Đạt] Có cơ chế điều chỉnh giá khi phát sinh thêm phạm vi công việc (yêu cầu thay đổi phải ký phụ lục)
+      - ma: "12.D1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Những nội dung thay đổi không thuộc phạm vi tại Phụ lục 02 được gọi là “Yêu cầu thay đổi (CR)”."
+          - "Bên B thực hiện miễn phí các CR của Bên A trong trường hợp chi phí để thực hiện các CR được Bên B đánh giá có giá trị nhỏ hơn 120.000.000 VND trong mỗi Quý."
+        vi_tri: "4.5, trang 4"
+        ghi_chu: "Có khái niệm CR và ngưỡng miễn phí 120 triệu/quý, nhưng không quy định cách định giá CR vượt ngưỡng và không yêu cầu ký phụ lục."
+      # [Đạt] Ghi rõ đồng tiền thanh toán và tỷ giá quy đổi (nếu có ngoại tệ)
+      - ma: "12.D2"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Thanh toán theo hình thức chuyển khoản bằng tiền VND, theo kỳ thanh toán nêu tại Phụ lục 01."
+        vi_tri: "4.3, trang 4"
+        ghi_chu: "Thanh toán bằng VND, không có ngoại tệ."
+      # [Đạt] Xác định rõ loại giá hợp đồng (đơn giá cố định, đơn giá điều chỉnh, T&M, ODC...)
+      - ma: "12.D3"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Chi phí dịch vụ triển khai ban đầu, đơn giá thuê Dịch vụ và kỳ thanh toán: được quy định chi tiết tại Phụ lục 01."
+          - "Giá trị Hợp đồng dự kiến 37.090.909.091 2.729.090.909 39.820.000.000"
+        vi_tri: "4.1, trang 3; Phụ lục 01, Mục A, trang 13"
+        ghi_chu: ""
+      # [Lưu ý] Giá cố định (fixed price) nhưng phạm vi công việc mơ hồ
+      - ma: "12.L1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Tích hợp các hệ thống khác phục vụ xây dựng các chức năng thuộc hồ sơ yêu cầu"
+          - "Các báo cáo khác phát sinh theo nghiệp vụ thuộc yêu cầu kỹ thuật này"
+          - "Trong trường hợp cần di chuyển hệ thống sang hạ tầng khác do TCT cung cấp, Bên B có trách nhiệm thực hiện việc di chuyển và đảm bảo không phát sinh chi phí bổ sung."
+          - "Bên B cam kết tiếp tục thực hiện điều chỉnh, bổ sung, sửa đổi các yêu cầu, change request ngoài phạm vi Hợp đồng;"
+        vi_tri: "Phụ lục 02, TOSS-107, trang 25; TOSS-338, TOSS-341, trang 40; Phụ lục 05, Mẫu số 3, trang 50"
+        ghi_chu: "Nhiều yêu cầu dạng 'các ... khác' (TOSS-107, 170, 176, 213, 327, 338) và các cam kết miễn phí (TOSS-064: tối thiểu 10 giao tiếp; TOSS-339-341). Mẫu Biên bản nghiệm thu tổng thể còn bắt Bên B cam kết làm CR ngoài phạm vi."
+      # [Vi phạm] Không có điều khoản yêu cầu thay đổi (change order) — Công ty phải thực hiện thêm việc mà không được tính phí
+      - ma: "12.V1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Những nội dung thay đổi không thuộc phạm vi tại Phụ lục 02 được gọi là “Yêu cầu thay đổi (CR)”."
+          - "Chịu trách nhiệm thực hiện các yêu cầu thay đổi và chỉnh sửa phần mềm theo yêu cầu của Bên A trong thời gian thực hiện Hợp đồng với các yêu cầu không làm thay đổi kiến trúc phần mềm (không làm thay đổi danh sách chức năng phần mềm được nêu tại Phụ lục 02) và không phát sinh chi phí, trừ trường hợp quy định tại Khoản 4.5 Điều 4."
+        vi_tri: "4.5, trang 4; 7.8, trang 6"
+        ghi_chu: "Có điều khoản CR"
+      # [Vi phạm] Cho phép thay đổi giá không có căn cứ hợp đồng
+      - ma: "12.V2"
+        danh_gia: "khong_thoa"
+        trich_dan: ""
+        vi_tri: ""
+        ghi_chu: "Không tìm thấy điều khoản nào như vậy"
+      # [Vi phạm] Quy định thanh toán bằng ngoại tệ trong khi Khách hàng là doanh nghiệp Việt Nam
+      - ma: "12.V3"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Thanh toán theo hình thức chuyển khoản bằng tiền VND, theo kỳ thanh toán nêu tại Phụ lục 01."
+        vi_tri: "4.3, trang 4"
+        ghi_chu: ""
+
+  - so: 13
+    cau_hoi: "Khách hàng yêu cầu phạm vi công việc, cam kết dịch vụ hoặc SLA nào?"
+    ket_qua: "vi_pham"
+    tieu_chi:
+      # [Đạt] SLA được định nghĩa bằng chỉ số đo lường được (uptime %, thời gian phản hồi theo mức P1/P2/P3)
+      - ma: "13.D1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "SA = [(UT - DT)/UT] x 100%"
+          - "Phản hồi thông tin trong vòng ½ giờ kể từ khi tiếp nhận sự cố"
+          - "Khắc phục lỗi nhanh nhất có thể để phần mềm hoạt động lại trong vòng 01 (một) giờ và hoàn thành sửa toàn bộ lỗi không muộn hơn 04 (bốn) giờ kể từ thời điểm phát hiện lỗi với Cấp độ 1."
+        vi_tri: "8.1, trang 6; 8.3.1, trang 7"
+        ghi_chu: "SA ≥ 99%; phản hồi 30 phút; khắc phục: cấp 1 = 1h/4h, cấp 2 = 72h, cấp 3 = 96h."
+      # [Đạt] Cơ chế đo lường SLA rõ ràng
+      - ma: "13.D2"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "X: Là thời gian cam kết khắc phục xong sự cố lỗi, được tính kể từ khi Bên A thông báo cho Bên B về sự cố đến khi Bên A xác nhận (qua điện thoại/email) đã hoàn thành khắc phục sự cố lỗi."
+          - "SA được áp dụng trong trường hợp xảy ra sự cố cấp độ 1 được quy định tại Khoản 8.2 Điều 8."
+          - "24x7x2+X"
+        vi_tri: "8.1, trang 7; Phụ lục 05, Mẫu số 4, trang 51"
+        ghi_chu: "Cần xác minh: Có công thức nhưng không nhất quán: (1) điểm kết thúc X do Bên A xác nhận; (2) 8.1 tính X từ khi Bên A thông báo, 8.3.1 tính từ 'thời điểm phát hiện lỗi'; (3) Mẫu số 4 ghi SA ≥ 98% và '24x7x2+X', khác 8.1 (≥ 99%, 24x7x1/2+X)"
+      # [Đạt] Hậu quả vi phạm SLA có giới hạn tối đa — service credit không vượt 15% phí tháng vi phạm (đề xuất 10–15%)
+      - ma: "13.D3"
+        danh_gia: "khong_thoa"
+        # gia_tri: tran_giam_tru_sla_phan_tram_phi_thang
+        gia_tri: 100
+        trich_dan:
+          - "Thống nhất mức giảm trừ cho từng trường hợp cụ thể nhưng mức giảm trừ tối thiểu là 50% và tối đa 100% giá trị thanh toán của 1 tháng không đạt tiêu chuẩn dịch vụ cam kết, và/hoặc;"
+          - "Đơn giá Hợp đồng tính theo tháng khi phân bổ đều được hiểu là Giá trị Hợp đồng dự kiến chia cho 60 tháng."
+          - "Tổng giá trị giảm trừ trong một tháng là tổng giá trị giảm trừ của các lỗi vi phạm chất lượng dịch vụ trong tháng và các lỗi được tính riêng rẽ với nhau."
+        vi_tri: "9.2.1, 9.1, trang 8"
+        ghi_chu: "Bảng 9.1 tối đa 15%, nhưng (1) SA < 80% bị giảm trừ 50-100% (gia_tri 100 lấy từ 9.2.1); (2) các lỗi cộng dồn, không có trần tổng/tháng; (3) cơ sở tính là 39,82 tỷ / 60 = 663,67 triệu/tháng (gồm cả phí triển khai), cao hơn phí thuê thực trả 500,33 triệu/tháng (gồm VAT) - nên mức 15% bảng tương đương khoảng 19,9% phí thực trả."
+      # [Lưu ý] Cam kết uptime từ 99,9% trở lên (cần đánh giá khả năng đáp ứng của hạ tầng trước khi ký)
+      - ma: "13.L1"
+        danh_gia: "thoa"
+        # gia_tri: cam_ket_uptime_phan_tram
+        gia_tri: 99
+        trich_dan:
+          - "Nhà cung cấp đảm bảo tính sẵn sàng cao, SLA tối thiểu 99% (High Availability)"
+        vi_tri: "Phụ lục 02, TOSS-048, trang 21"
+        ghi_chu: "Cam kết 99%. Cần đánh giá khả năng của hạ tầng"
+      # [Vi phạm] SLA không có giới hạn giảm trừ/service credit — Khách hàng có thể yêu cầu bồi thường không giới hạn
+      - ma: "13.V1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Tổng giá trị giảm trừ trong một tháng là tổng giá trị giảm trừ của các lỗi vi phạm chất lượng dịch vụ trong tháng và các lỗi được tính riêng rẽ với nhau."
+        vi_tri: "9.1, trang 8; 10.5, trang 9"
+        ghi_chu: "Giảm trừ cộng dồn không có trần"
+      # [Vi phạm] SLA vượt quá khả năng thực tế dựa trên giá trị Hợp đồng và thời gian thực hiện
+      - ma: "13.V2"
+        danh_gia: "khong_ro"
+        trich_dan:
+          - "Khắc phục lỗi nhanh nhất có thể để phần mềm hoạt động lại trong vòng 01 (một) giờ và hoàn thành sửa toàn bộ lỗi không muộn hơn 04 (bốn) giờ kể từ thời điểm phát hiện lỗi với Cấp độ 1."
+        vi_tri: "8.3.1, trang 7"
+        ghi_chu: "Cần thông tin năng lực thực tế của Công ty (ngoài HĐ)."
+
+  - so: 14
+    cau_hoi: "Các cam kết với khách hàng về bảo mật, hỗ trợ vận hành, nhân sự hoặc thời gian phản hồi có khả thi không?"
+    ket_qua: "vi_pham"
+    tieu_chi:
+      # [Đạt] Mọi cam kết đã được đối chiếu với năng lực thực tế của Công ty (nhân sự, hạ tầng, ca trực)
+      - ma: "14.D1"
+        danh_gia: "khong_ro"
+        trich_dan:
+          - "BÊN B hỗ trợ dịch vụ 24 giờ/ngày, 7 ngày/tuần và 365 ngày/năm, cung cấp đầy đủ thông tin liên quan đến đầu mối liên lạc để tiếp nhận yêu cầu"
+        vi_tri: "Phụ lục 02, TOSS-037, trang 20"
+        ghi_chu: "Cần thông tin năng lực thực tế (ngoài HĐ)."
+      # [Đạt] Cam kết hỗ trợ ngoài giờ hành chính có phụ phí hoặc giới hạn số lần mỗi tháng
+      - ma: "14.D2"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Bên B phải chỉ định một đơn vị hoặc nhân sự chuyên trách chịu trách nhiệm quản lý dịch vụ và hỗ trợ bên A 24/7/365;"
+        vi_tri: "Phụ lục 02, Mục D.7, trang 41"
+        ghi_chu: "24/7 nằm trong phí thuê; không có phụ phí hay giới hạn."
+      # [Đạt] Nhân sự chủ chốt được chỉ định và có quy trình thay thế
+      - ma: "14.D3"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Bên B phải chỉ định một đơn vị hoặc nhân sự chuyên trách chịu trách nhiệm quản lý dịch vụ và hỗ trợ bên A 24/7/365;"
+          - "Trường hợp có sự thay đổi nhân sự theo thông tin nêu trên, Bên B có trách nhiệm gửi thông báo bằng văn bản cho Bên A trong vòng 05 ngày làm việc trước ngày có sự thay đổi về nhân sự phụ trách."
+        vi_tri: "Phụ lục 02, Mục D.7, trang 41; Mục D (cuối), trang 42"
+        ghi_chu: "Có quy trình thông báo thay thế, nhưng không chỉ định cụ thể nhân sự chủ chốt (chỉ có hotline/email)."
+      # [Lưu ý] Cam kết hỗ trợ 24/7
+      - ma: "14.L1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Đảm bảo hỗ trợ kỹ thuật 24 giờ/ ngày và 7 ngày/tuần."
+          - "BÊN B hỗ trợ dịch vụ 24 giờ/ngày, 7 ngày/tuần và 365 ngày/năm, cung cấp đầy đủ thông tin liên quan đến đầu mối liên lạc để tiếp nhận yêu cầu"
+        vi_tri: "8.1, trang 7; Phụ lục 02, TOSS-037, trang 20"
+        ghi_chu: ""
+      # [Vi phạm] Cam kết vượt khả năng thực tế của Công ty
+      - ma: "14.V1"
+        danh_gia: "khong_ro"
+        trich_dan:
+          - "BÊN B hỗ trợ dịch vụ 24 giờ/ngày, 7 ngày/tuần và 365 ngày/năm, cung cấp đầy đủ thông tin liên quan đến đầu mối liên lạc để tiếp nhận yêu cầu"
+        vi_tri: "Phụ lục 02, TOSS-037, trang 20"
+        ghi_chu: "Cần thông tin năng lực thực tế (ngoài HĐ)."
+      # [Vi phạm] Cam kết hỗ trợ ngoài giờ hành chính không có phụ phí
+      - ma: "14.V2"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Bên B phải chỉ định một đơn vị hoặc nhân sự chuyên trách chịu trách nhiệm quản lý dịch vụ và hỗ trợ bên A 24/7/365;"
+        vi_tri: "Phụ lục 02, Mục D.7, trang 41"
+        ghi_chu: ""
+      # [Vi phạm] Cam kết về trách nhiệm vượt quá giá trị Hợp đồng
+      - ma: "14.V3"
+        danh_gia: "khong_ro"
+        trich_dan: ""
+        vi_tri: ""
+        ghi_chu: "Không rõ mục này xét như thế nào"
+
+  - so: 15
+    cau_hoi: "Phạm vi công việc, deliverables, tiêu chí nghiệm thu và timeline có đủ rõ ràng không?"
+    ket_qua: "vi_pham"
+    tieu_chi:
+      # [Đạt] Sản phẩm bàn giao (deliverables) được liệt kê cụ thể, đo lường được
+      - ma: "15.D1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Bên A thuê Dịch vụ “Hệ thống Tối ưu Điều hành khai thác - Transformative Operations Support System (TOSS) giai đoạn T8/2026-T8/2031” của Bên B với các nội dung và phạm vi công việc chi tiết nêu tại Phụ lục 02: Yêu cầu kỹ thuật."
+          - "Các báo cáo khác phát sinh theo nghiệp vụ thuộc yêu cầu kỹ thuật này"
+        vi_tri: "1.1, trang 2; Phụ lục 02, TOSS-338, trang 40"
+        ghi_chu: "Phụ lục 02 liệt kê 341 yêu cầu, nhưng nhiều yêu cầu mở hoặc định tính, không đo được (xem 12.L1)."
+      # [Đạt] Tiêu chí nghiệm thu định lượng (số test case, tỷ lệ pass, chỉ số hiệu năng)
+      - ma: "15.D2"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Kết luận: Đáp ứng theo đúng yêu cầu kỹ thuật"
+        vi_tri: "Phụ lục 05, Mẫu số 1, trang 48"
+        ghi_chu: "Nghiệm thu Đạt/Không đạt theo chức năng; không có test case"
+      # [Đạt] Thời hạn nghiệm thu được xác định bằng số ngày
+      - ma: "15.D3"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Biên bản nghiệm thu kỹ thuật: Hai Bên thống nhất sẽ ký biên bản nghiệm thu kỹ thuật đối với chức năng phần mềm sau 03 (ba) ngày làm việc khi Bên B hoàn thành việc triển khai;"
+          - "Biên bản nghiệm thu tổng thể: Trên cơ sở Biên bản nghiệm thu kỹ thuật và Biên bản nghiệm thu đào tạo, hai Bên sẽ tiến hành ký Biên bản nghiệm thu tổng thể sau 03 (ba) ngày làm việc kể từ khi hoàn thành triển khai các hạng mục dịch vụ."
+        vi_tri: "3.3.1.b và c, trang 3"
+        ghi_chu: ""
+      # [Đạt] Có điều khoản nghiệm thu rõ ràng
+      - ma: "15.D4"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Bên A có trách nhiệm ký xác nhận vào Biên bản nghiệm thu đúng thời hạn theo quy định tại Điều 3.3 của Hợp đồng."
+          - "Trước ngày 10 (mười) hàng tháng của tháng kế tiếp, hai Bên sẽ tiến hành nghiệm thu chất lượng Dịch vụ của tháng trước đó."
+        vi_tri: "6.2, trang 5; 3.3.2, trang 3"
+        ghi_chu: "Có trình tự 3 biên bản + nghiệm thu tháng."
+      # [Đạt] Có cơ chế xử lý lỗi (defect) phân loại theo mức độ nghiêm trọng
+      - ma: "15.D5"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Cấp độ 1: Dịch vụ gián đoạn hoàn toàn hoặc bị gián đoạn phần lớn thời gian hoặc/và các chức năng quan trọng, thiết yếu không hoạt động, hoặc hoạt động không ổn định."
+        vi_tri: "8.2, 8.3, trang 7"
+        ghi_chu: "Phân loại áp cho giai đoạn vận hành; không có phân loại lỗi riêng trong giai đoạn nghiệm thu."
+      # [Lưu ý] Tiêu chí nghiệm thu chỉ định tính (ví dụ "đáp ứng yêu cầu kinh doanh") mà không có thước đo cụ thể
+      - ma: "15.L1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Kết luận: Đáp ứng theo đúng yêu cầu kỹ thuật"
+          - "Thanh toán giá trị dịch vụ còn lại sau Ngày đưa vào vận hành 30 ngày nếu hệ thống không tồn tại các lỗi không thể khắc phục"
+        vi_tri: "Phụ lục 05, Mẫu số 1, trang 48; Phụ lục 01, Mục B, trang 14"
+        ghi_chu: ""
+      # [Vi phạm] Không có tiêu chí nghiệm thu — Khách hàng toàn quyền từ chối, Công ty không được thanh toán
+      - ma: "15.V1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Kết luận: Đáp ứng theo đúng yêu cầu kỹ thuật"
+        vi_tri: "Phụ lục 05, Mẫu số 1, trang 48"
+        ghi_chu: "Có tiêu chí (định tính) theo Phụ lục 02."
+      # [Vi phạm] Không có nghiệm thu mặc nhiên (deemed acceptance) khi Khách hàng không ký/không phản hồi trong thời hạn — dự án có thể treo vô hạn
+      - ma: "15.V2"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Bên A có trách nhiệm ký xác nhận vào Biên bản nghiệm thu đúng thời hạn theo quy định tại Điều 3.3 của Hợp đồng."
+        vi_tri: "6.2 trang 5"
+        ghi_chu: "Bên A có nghĩa vụ ký đúng hạn nhưng không có hệ quả nghiệm thu mặc nhiên. Ngày đưa vào vận hành (mốc tính phí) phụ thuộc biên bản tổng thể."
+      # [Vi phạm] Chỉ nghiệm thu sau khi bên thứ ba thực hiện nghiệm thu
+      - ma: "15.V3"
+        danh_gia: "khong_thoa"
+        trich_dan: ""
+        vi_tri: ""
+        ghi_chu: "Không có nghiệm thu bởi bên thứ ba"
+
+  - so: 16
+    cau_hoi: "Tiến độ dự án, milestone và thời gian phản hồi/yêu cầu hỗ trợ có khả thi không?"
+    ket_qua: "luu_y"
+    tieu_chi:
+      # [Đạt] Milestone gắn với ngày cụ thể hoặc điều kiện rõ ràng
+      - ma: "16.D1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Thời gian triển khai dịch vụ: 06 tháng kể từ ngày HĐ có hiệu lực."
+          - "Triển khai và tích hợp hệ thống 138 T+8 T+150"
+        vi_tri: "1.2.1, trang 2; Phụ lục 04, trang 47"
+        ghi_chu: "Mốc theo T+n ngày."
+      # [Đạt] Có điều khoản điều chỉnh tiến độ khi Khách hàng chậm cung cấp thông tin/phê duyệt
+      - ma: "16.D2"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Nếu có những vướng mắc trong quá trình triển khai và nghiệm thu, Bên B thông báo bằng văn bản cho Bên A và trong vòng 03 (ba) ngày làm việc, Bên A sẽ tiến hành xem xét, đánh giá tình hình và chủ động phối hợp thống nhất phương án giải quyết/khắc phục."
+          - "thời gian triển khai kéo dài theo sự chấp thuận của Bên A"
+        vi_tri: "3.2, trang 2; 4.3.4, trang 3"
+        ghi_chu: "Không có cơ chế tự động giãn tiến độ khi Bên A chậm; gia hạn phụ thuộc sự chấp thuận của Bên A. Có điểm bảo vệ: thời gian ANTT không tính vào thời gian triển khai (7.6) và phạt chậm chỉ khi do lỗi Bên B (10.1)."
+      # [Đạt] Sự kiện bất khả kháng được định nghĩa rõ
+      - ma: "16.D3"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Bất Khả Kháng là sự kiện xảy ra một cách khách quan không thể lường trước được và không thể khắc phục được mặc dù đã áp dụng mọi biện pháp cần thiết và khả năng cho phép"
+        vi_tri: "11.1, trang 10"
+        ghi_chu: ""
+      # [Đạt] Thời hạn thông báo sự kiện bất khả kháng không ngắn hơn 7 ngày
+      - ma: "16.D4"
+        danh_gia: "khong_thoa"
+        # gia_tri: thoi_han_thong_bao_bat_kha_khang_ngay
+        gia_tri:
+        trich_dan:
+          - "Bên bị ảnh hưởng sẽ ngay lập tức thông báo cho Bên còn lại (“Bên không bị ảnh hưởng”) về sự kiện bất khả kháng hoặc trở ngại khách quan."
+        vi_tri: "11.3, trang 10"
+        ghi_chu: "'Ngay lập tức', không có số ngày."
+      # [Đạt] Thời hạn thông báo sự kiện bất khả kháng không dài hơn 15 ngày
+      - ma: "16.D5"
+        danh_gia: "thoa"
+        # gia_tri: thoi_han_thong_bao_bat_kha_khang_ngay
+        gia_tri:
+        trich_dan:
+          - "Bên bị ảnh hưởng sẽ ngay lập tức thông báo cho Bên còn lại (“Bên không bị ảnh hưởng”) về sự kiện bất khả kháng hoặc trở ngại khách quan."
+        vi_tri: "11.3, trang 10"
+        ghi_chu: "Cần xác minh: 'ngay lập tức' không dài hơn 15 ngày."
+      # [Lưu ý] Tiến độ phụ thuộc vào Khách hàng hoặc bên thứ ba (cung cấp dữ liệu, API...) nhưng không có điều khoản giãn tiến độ tương ứng
+      - ma: "16.L1"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Nhà cung cấp xây dựng và triển khai phần mềm hệ thống trên hạ tầng Cloud của VNA cung cấp"
+          - "Tích hợp các hệ thống khác phục vụ xây dựng các chức năng thuộc hồ sơ yêu cầu"
+        vi_tri: "Phụ lục 02, TOSS-046, trang 21; TOSS-107, trang 25"
+        ghi_chu: "Phụ thuộc hạ tầng Cloud của VNA và khoảng 40 hệ thống nguồn của VNA/đối tác (TOSS-065 đến 107), không có điều khoản giãn tiến độ tương ứng."
+      # [Vi phạm] Milestone cố định không có cơ chế điều chỉnh — Công ty bị phạt chậm tiến độ kể cả khi nguyên nhân từ phía Khách hàng
+      - ma: "16.V1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Trường hợp Bên B chậm triển khai Hợp đồng theo Quy định tại Khoản 3.1 Điều 3 và việc chậm trễ này được xác định do lỗi của Bên B gây ra"
+        vi_tri: "10.1, trang 9"
+        ghi_chu: "Phạt chậm chỉ khi do lỗi Bên B."
+      # [Vi phạm] Không có điều khoản bất khả kháng
+      - ma: "16.V2"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Bất Khả Kháng là sự kiện xảy ra một cách khách quan không thể lường trước được và không thể khắc phục được mặc dù đã áp dụng mọi biện pháp cần thiết và khả năng cho phép"
+        vi_tri: "11.1, trang 10"
+        ghi_chu: ""
+
+  - so: 17
+    cau_hoi: "Các điều khoản về nhân sự chủ chốt, bàn giao, nghiệm thu, hỗ trợ sau nghiệm thu đã phù hợp chưa?"
+    ket_qua: "vi_pham"
+    tieu_chi:
+      # [Đạt] Đầu mối phụ trách của các bên được chỉ định (tên hoặc vai trò)
+      - ma: "17.D1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Hotline: 0336501838"
+          - "Email: qa_vtit@viettel.com.vn"
+        vi_tri: "Phụ lục 02, Mục D.10, trang 41"
+        ghi_chu: "Chỉ có đầu mối Bên B (hotline/email); không có đầu mối Bên A."
+      # [Đạt] Quy trình thay thế nhân sự chủ chốt yêu cầu thông báo trước từ 15 ngày (đề xuất 15–30 ngày)
+      - ma: "17.D2"
+        danh_gia: "khong_thoa"
+        # gia_tri: thoi_han_bao_truoc_thay_nhan_su_ngay
+        gia_tri: 5
+        trich_dan:
+          - "Trường hợp có sự thay đổi nhân sự theo thông tin nêu trên, Bên B có trách nhiệm gửi thông báo bằng văn bản cho Bên A trong vòng 05 ngày làm việc trước ngày có sự thay đổi về nhân sự phụ trách."
+        vi_tri: "Phụ lục 02, Mục D (cuối), trang 42"
+        ghi_chu: ""
+      # [Đạt] Danh mục tài liệu bàn giao được liệt kê đầy đủ
+      - ma: "17.D3"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Cung cấp đầy đủ tài liệu hệ thống: mô tả công nghệ sử dụng, đặc tả yêu cầu, thiết kế kiến trúc tổng thể, thiết kế chi tiết, mã nguồn và đặc tả mã nguồn hệ thống"
+          - "Bên B cam kết bàn giao đầy đủ các hướng dẫn sử dụng, tài liệu đào tạo và tài liệu đặc tả yêu cầu cho bên A theo tiến độ được thống nhất;"
+        vi_tri: "Phụ lục 02, TOSS-053, trang 21; Mục B.1, trang 40"
+        ghi_chu: ""
+      # [Đạt] Thời gian và phạm vi bảo hành được xác định rõ
+      - ma: "17.D4"
+        danh_gia: "thoa"
+        trich_dan:
+          - "Thời gian đảm bảo hoạt động và bảo hành: 60 tháng kể từ Ngày đưa vào vận hành (CutOver Date);"
+          - "Sửa chữa và khắc phục tất cả các lỗi phần mềm phát sinh trong quá trình sử dụng cho Bên A (trong phạm vi, phân loại và trình tự xử lý được nêu trong Điều 8 hợp đồng chính);"
+        vi_tri: "Phụ lục 02, Mục D.2 và D.3, trang 41"
+        ghi_chu: ""
+      # [Đạt] Thời gian bảo hành tối thiểu 12 tháng
+      - ma: "17.D5"
+        danh_gia: "thoa"
+        # gia_tri: thoi_han_bao_hanh_thang
+        gia_tri: 60
+        trich_dan:
+          - "Thời gian đảm bảo hoạt động và bảo hành: 60 tháng kể từ Ngày đưa vào vận hành (CutOver Date);"
+        vi_tri: "Phụ lục 02, Mục D.2, trang 41"
+        ghi_chu: ""
+      # [Đạt] Có điều khoản không lôi kéo nhân sự (non-solicitation) cấm Khách hàng tuyển dụng nhân sự Công ty
+      - ma: "17.D6"
+        danh_gia: "khong_thoa"
+        trich_dan: ""
+        vi_tri: ""
+        ghi_chu: "Không có điều khoản non-solicitation trong toàn bộ HĐ và các phụ lục"
+      # [Đạt] Điều khoản non-solicitation có hiệu lực trong và sau Hợp đồng tối thiểu 12 tháng
+      - ma: "17.D7"
+        danh_gia: "khong_thoa"
+        # gia_tri: thoi_han_non_solicitation_sau_hop_dong_thang
+        gia_tri:
+        trich_dan: ""
+        vi_tri: ""
+        ghi_chu: "Không có điều khoản non-solicitation."
+      # [Lưu ý] Bảo hành chỉ quy định thời gian mà không xác định phạm vi
+      - ma: "17.L1"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Sửa chữa và khắc phục tất cả các lỗi phần mềm phát sinh trong quá trình sử dụng cho Bên A (trong phạm vi, phân loại và trình tự xử lý được nêu trong Điều 8 hợp đồng chính);"
+        vi_tri: "Phụ lục 02, Mục D.3, trang 41"
+        ghi_chu: ""
+      # [Vi phạm] Không có điều khoản non-solicitation — Khách hàng có thể tuyển dụng nhân sự chủ chốt, Công ty mất năng lực thực hiện
+      - ma: "17.V1"
+        danh_gia: "thoa"
+        trich_dan: ""
+        vi_tri: ""
+        ghi_chu: "Không có điều khoản"
+      # [Vi phạm] Không có danh mục bàn giao cụ thể — dễ tranh chấp về mức độ hoàn thành, chậm thanh toán đợt cuối
+      - ma: "17.V2"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Cung cấp đầy đủ tài liệu hệ thống: mô tả công nghệ sử dụng, đặc tả yêu cầu, thiết kế kiến trúc tổng thể, thiết kế chi tiết, mã nguồn và đặc tả mã nguồn hệ thống"
+        vi_tri: "Phụ lục 02, TOSS-053, trang 21"
+        ghi_chu: ""
+      # [Vi phạm] Không quy định đầu mối phụ trách của các bên
+      - ma: "17.V3"
+        danh_gia: "khong_thoa"
+        trich_dan:
+          - "Hotline: 0336501838"
+          - "Email: qa_vtit@viettel.com.vn"
+        vi_tri: "Phụ lục 02, Mục D.10, trang 41"
+        ghi_chu: "Cần xác minh: Có đầu mối Bên B nên không phải 'không quy định'"
